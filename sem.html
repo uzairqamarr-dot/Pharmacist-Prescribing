@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Semester 2 2026 — Study Dashboard</title>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#faf9f7; --card:#ffffff; --ink:#1c1a17; --mute:#6b6560;
+  --line:#e6e2dc; --accent:#8b5e3c; --accent2:#2f6b5f;
+  --red:#b4432e; --amber:#b07d17; --green:#2f6b5f;
+  --chip:#f2efe9;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+  padding:20px 18px 70px;}
+.wrap{max-width:940px;margin:0 auto}
+h1{font-size:23px;margin:0 0 3px;letter-spacing:-.3px}
+.sub{color:var(--mute);font-size:13px;margin-bottom:18px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:8px 12px;border:none;background:none;cursor:pointer;font-size:13.5px;
+  color:var(--mute);border-bottom:2px solid transparent;font-family:inherit;font-weight:500}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.pane{display:none}.pane.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:14px}
+.card h2{font-size:12px;text-transform:uppercase;letter-spacing:.9px;color:var(--mute);margin:0 0 12px;font-weight:600}
+.next{background:linear-gradient(180deg,#fff,#fdfbf8);border-left:3px solid var(--accent)}
+.next .big{font-size:19px;font-weight:600;margin:0 0 2px}
+.next .days{font-size:34px;font-weight:600;letter-spacing:-1px;line-height:1;color:var(--accent)}
+.next .dlbl{font-size:12px;color:var(--mute)}
+.row{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:680px){.grid,.grid3{grid-template-columns:1fr}}
+ul.plain{list-style:none;padding:0;margin:0}
+li.item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f2efe9}
+li.item:last-child{border-bottom:none}
+input[type=checkbox]{margin-top:3px;width:16px;height:16px;accent-color:var(--accent2);cursor:pointer;flex-shrink:0}
+.txt{flex:1;min-width:0}
+.done .txt{text-decoration:line-through;color:#a8a29b}
+.meta{font-size:12px;color:var(--mute);margin-top:1px}
+.chip{display:inline-block;font-size:10.5px;padding:1.5px 7px;border-radius:20px;background:var(--chip);
+  color:var(--mute);font-weight:600;letter-spacing:.3px;vertical-align:1px}
+.chip.c6202{background:#f0e6dd;color:#7a4f2e}
+.chip.c6302{background:#e0ecea;color:#26594f}
+.chip.must{background:#f7e2dd;color:var(--red)}
+.chip.soon{background:#f9edd4;color:#8a6210}
+.bar{height:6px;background:#eeeae3;border-radius:5px;overflow:hidden;margin:8px 0 4px}
+.bar i{display:block;height:100%;background:var(--accent2);border-radius:5px;transition:width .35s}
+.bar i.warnfill{background:var(--amber)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--mute);
+  padding:0 10px 7px 0;border-bottom:1px solid var(--line);font-weight:600}
+td{padding:9px 10px 9px 0;border-bottom:1px solid #f4f1ec;vertical-align:top}
+tr:last-child td{border-bottom:none}
+.wt{font-variant-numeric:tabular-nums;font-weight:600}
+.dt{white-space:nowrap;font-variant-numeric:tabular-nums}
+.hl{background:#fdf8ef}
+h3{font-size:14.5px;margin:16px 0 6px}
+h3:first-child{margin-top:0}
+.note{font-size:13px;color:var(--mute);background:#fbf8f2;border-left:2px solid #e3d5bd;
+  padding:8px 12px;border-radius:0 6px 6px 0;margin:10px 0}
+.warn{border-left-color:#e0b9ae;background:#fdf6f4}
+.ok{border-left-color:#b8d4cd;background:#f3f9f7}
+.small{font-size:12.5px;color:var(--mute)}
+.wk{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #f4f1ec;font-size:13px}
+.wk:last-child{border-bottom:none}
+.wkn{width:74px;flex-shrink:0;color:var(--mute);font-size:12px;padding-top:1px}
+.lnk{font-size:11.5px;color:#b5aea6;background:none;border:none;cursor:pointer;font-family:inherit;padding:0}
+.lnk:hover{color:var(--red)}
+input[type=text],input[type=date],input[type=number],select,textarea{
+  font-family:inherit;font-size:13.5px;padding:6px 9px;border:1px solid var(--line);
+  border-radius:6px;background:#fff;color:var(--ink);}
+input:focus,select:focus,textarea:focus{outline:2px solid #e8dccb;outline-offset:-1px;border-color:#d8cbb5}
+input[type=number]{width:72px;text-align:right;font-variant-numeric:tabular-nums}
+.btn{font-family:inherit;font-size:13px;font-weight:500;padding:6px 13px;border-radius:6px;
+  border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.btn:hover{background:#faf8f4;border-color:#d8d2c9}
+.btn.pri{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.btn.pri:hover{background:#265a50}
+.form{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:12px;
+  padding-top:12px;border-top:1px dashed #ece7de}
+.form input[type=text]{flex:1;min-width:150px}
+.big-n{font-size:27px;font-weight:600;letter-spacing:-.5px;line-height:1.1;font-variant-numeric:tabular-nums}
+.log{max-height:250px;overflow-y:auto;margin:0 -4px;padding:0 4px}
+.logrow{display:flex;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px solid #f4f1ec;align-items:flex-start}
+.logrow:last-child{border-bottom:none}
+.empty{font-size:13px;color:#a8a29b;font-style:italic;padding:6px 0}
+.gradein{display:flex;align-items:center;gap:5px;justify-content:flex-end}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#d8d2c9;margin-right:6px;flex-shrink:0}
+.dot.g{background:var(--green)}.dot.a{background:var(--amber)}.dot.r{background:var(--red)}
+.stat{display:flex;justify-content:space-between;font-size:13px;padding:5px 0}
+.stat b{font-variant-numeric:tabular-nums}
+textarea{width:100%;resize:vertical;min-height:70px;line-height:1.5}
+.tbadate{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f4f1ec;flex-wrap:wrap}
+.tbadate:last-child{border-bottom:none}
+.tbadate .lbl{flex:1;min-width:170px;font-size:13.5px}
+
+@media (prefers-color-scheme:dark){
+ :root{--bg:#171614;--card:#211f1c;--ink:#ece8e2;--mute:#9c948a;--line:#332f2b;
+  --accent:#c69a76;--teal:#6db3a2;--red:#e08a72;--amber:#d5a54a;--chip:#2b2825}
+ body{background:var(--bg);color:var(--ink)}
+}
+@media (prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Semester 2, 2026 — Study Dashboard</h1>
+  <div class="sub">Grad Cert in Pharmacist Prescribing &amp; Advanced Practice · University of Newcastle · Callaghan cohort · 17 Aug – 13 Nov</div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="now">Now</button>
+    <button class="tab" data-p="tasks">Tasks</button>
+    <button class="tab" data-p="dates">Key dates</button>
+    <button class="tab" data-p="assess">Assessments</button>
+    <button class="tab" data-p="grades">Grades</button>
+    <button class="tab" data-p="wil">WIL &amp; Portfolio</button>
+    <button class="tab" data-p="courses">Courses</button>
+    <button class="tab" data-p="rules">Rules</button>
+  </div>
+
+  <!-- NOW -->
+  <div class="pane on" id="p-now">
+    <div class="card next">
+      <h2>Next up</h2>
+      <div class="row">
+        <div><div class="days" id="nd">–</div><div class="dlbl" id="ndl">days</div></div>
+        <div style="flex:1;min-width:220px">
+          <p class="big" id="nt">—</p>
+          <div class="meta" id="nm"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div class="card">
+        <h2>Semester</h2>
+        <div class="bar"><i id="semBar" style="width:0%"></i></div>
+        <div class="small" id="semTxt">—</div>
+      </div>
+      <div class="card">
+        <h2>Tasks done</h2>
+        <div class="bar"><i id="taskBar" style="width:0%"></i></div>
+        <div class="small" id="taskTxt">—</div>
+      </div>
+      <div class="card">
+        <h2>WIL hours</h2>
+        <div class="bar"><i id="wilBarMini" style="width:0%"></i></div>
+        <div class="small" id="wilTxtMini">—</div>
+      </div>
+    </div>
+
+    <div class="card" id="alertCard" style="display:none">
+      <h2>Needs attention</h2>
+      <ul class="plain" id="alerts"></ul>
+    </div>
+
+    <div class="card">
+      <h2>This week's focus</h2>
+      <div id="thisWeek"></div>
+    </div>
+
+    <div class="card">
+      <h2>Coming up — next 6 weeks</h2>
+      <ul class="plain" id="upcoming"></ul>
+    </div>
+
+    <div class="card">
+      <h2>Don't get caught out</h2>
+      <div class="note warn"><b>Tutorial 3 is a Wednesday</b> (16 Sep) — every other tutorial is a Tuesday.</div>
+      <div class="note warn"><b>Week 10 (26–30 Oct) is the crunch.</b> 6302 viva voce that week, tutorial 5 on the Tue, then the Callaghan intensive that same weekend.</div>
+      <div class="note"><b>Late penalty is 10% of the max mark per day</b>, weekends included.</div>
+      <div class="note"><b>Miss any compulsory component and the course mark is zero</b> — not just the marks for that item.</div>
+    </div>
+  </div>
+
+  <!-- TASKS -->
+  <div class="pane" id="p-tasks">
+    <div class="card">
+      <h2>Admin — do these first</h2>
+      <ul class="plain" data-list="admin"></ul>
+      <div class="form"><input type="text" id="add-admin" placeholder="Add your own task…"><button class="btn" data-add="admin">Add</button></div>
+    </div>
+    <div class="card">
+      <h2>Assessment milestones</h2>
+      <ul class="plain" data-list="assess"></ul>
+      <div class="form"><input type="text" id="add-assess" placeholder="Add your own task…"><button class="btn" data-add="assess">Add</button></div>
+    </div>
+    <div class="card">
+      <h2>Watch Canvas for these</h2>
+      <ul class="plain" data-list="tba"></ul>
+      <div class="note">Fill the dates in on the <b>Key dates</b> tab once Canvas posts them — the countdown picks them up automatically.</div>
+    </div>
+    <div class="card">
+      <h2>Ongoing habits</h2>
+      <ul class="plain" data-list="ongoing"></ul>
+      <div class="form"><input type="text" id="add-ongoing" placeholder="Add your own task…"><button class="btn" data-add="ongoing">Add</button></div>
+    </div>
+    <div class="card">
+      <h2>Backup</h2>
+      <p class="small">Your ticks, logs and marks live in this browser only. Copy this out occasionally, or paste an old copy back in to restore.</p>
+      <textarea id="io" spellcheck="false" placeholder="Click Export to fill…"></textarea>
+      <div style="margin-top:8px;display:flex;gap:7px;flex-wrap:wrap">
+        <button class="btn" id="exp">Export</button>
+        <button class="btn" id="imp">Import</button>
+        <button class="lnk" id="reset" style="margin-left:auto;align-self:center">reset everything</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATES -->
+  <div class="pane" id="p-dates">
+    <div class="card">
+      <h2>Dates to confirm — fill in as Canvas posts them</h2>
+      <div id="tbaDates"></div>
+      <div class="note">Anything you enter here joins the countdown and the upcoming list on the Now tab.</div>
+    </div>
+
+    <div class="card">
+      <h2>Face-to-face intensives — Callaghan · compulsory</h2>
+      <table>
+        <tr><th>Week</th><th>Dates</th><th>Time</th><th>Leave</th></tr>
+        <tr><td>Week 5</td><td class="dt">Sat 19 + Sun 20 Sep</td><td class="dt">08:30–16:00</td><td class="small">Fri 18 – Sun 20 Sep</td></tr>
+        <tr><td>Week 10</td><td class="dt">Sat 31 Oct + Sun 1 Nov</td><td class="dt">08:30–16:00</td><td class="small">Fri 30 Oct – Sun 1 Nov</td></tr>
+      </table>
+      <div class="note">Rooms listed as TBC — check Canvas closer to the date. Attendance at both is required to pass PHAR6202.</div>
+    </div>
+
+    <div class="card">
+      <h2>Online tutorials — 6:30–8:30pm block</h2>
+      <table>
+        <tr><th>#</th><th>Date</th><th>PHAR6202</th><th>PHAR6302</th></tr>
+        <tr><td>1</td><td class="dt">Tue 18 Aug</td><td class="dt">6:30–7:30pm</td><td class="dt">7:30–8:30pm</td></tr>
+        <tr><td>2</td><td class="dt">Tue 1 Sep</td><td class="dt">6:30–7:30pm</td><td class="dt">7:30–8:30pm</td></tr>
+        <tr class="hl"><td>3</td><td class="dt"><b>Wed 16 Sep</b></td><td class="dt">6:30–7:30pm</td><td class="dt">7:30–8:30pm</td></tr>
+        <tr><td>4</td><td class="dt">Tue 13 Oct</td><td class="dt">6:30–7:30pm</td><td class="dt">7:30–8:30pm</td></tr>
+        <tr><td>5</td><td class="dt">Tue 27 Oct</td><td class="dt">6:30–7:30pm</td><td class="dt">7:30–8:30pm</td></tr>
+        <tr><td>6</td><td class="dt">Tue 10 Nov</td><td class="dt">6:30–7:30pm</td><td class="dt">7:30–8:30pm</td></tr>
+      </table>
+      <div class="note">Both courses run back to back — one 2-hour block. Shop closes 6pm Tue/Wed, so no leave needed.</div>
+    </div>
+
+    <div class="card">
+      <h2>Semester shape</h2>
+      <div class="wk"><span class="wkn">Wk 1</span><span>17 Aug — semester starts</span></div>
+      <div class="wk"><span class="wkn">Wk 5</span><span>14 Sep — <b>intensive weekend</b> 19–20 Sep</span></div>
+      <div class="wk"><span class="wkn">Recess</span><span>28 Sep – 2 Oct</span></div>
+      <div class="wk"><span class="wkn">Wk 10</span><span>26 Oct — viva voce week + <b>intensive weekend</b> 31 Oct–1 Nov</span></div>
+      <div class="wk"><span class="wkn">Wk 12</span><span>9 Nov — final teaching week</span></div>
+      <div class="wk"><span class="wkn">Exams</span><span>OSCE — date TBA</span></div>
+    </div>
+  </div>
+
+  <!-- ASSESSMENTS -->
+  <div class="pane" id="p-assess">
+    <div class="card">
+      <h2>All assessments — chronological</h2>
+      <table id="assessTbl">
+        <tr><th>Due</th><th>Course</th><th>Assessment</th><th>%</th><th></th></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>What each one actually involves</h2>
+      <h3>Prescribing Portfolio + WBAs <span class="chip c6202">6202</span></h3>
+      <p class="small">Evidence of learning across the semester: clinical case reflections, prescribing activities, documentation of clinical experiences, self-assessment, supervisor feedback. Must reflect on culturally safe prescribing incl. care for Aboriginal and Torres Strait Islander peoples. WBAs are clinical tasks done in practice — history taking, physical exam, diagnostic planning, management plans, documentation. <b>No AI permitted.</b></p>
+      <h3>GenAI Reflection <span class="chip c6202">6202</span></h3>
+      <p class="small">12-minute pre-recorded video of a simulated patient consultation. You document your own clinical notes, then compare them against notes produced by an approved GenAI tool. Budget filming and editing time on top of the writing.</p>
+      <h3>Multi-station OSCE <span class="chip c6202">6202</span></h3>
+      <p class="small">Several stations covering acute presentations and chronic/complex cases. Assesses history taking, examination, interpretation of investigations, clinical reasoning, diagnosis, management, communication, person-centred care. On campus. Cut-score by borderline regression. Supplementary attempt available but caps the course mark at 50.</p>
+      <h3>Action Plan + Viva Voce <span class="chip c6302">6302</span></h3>
+      <p class="small">Written chronic condition action plan relevant to your scope of practice, submitted Week 6. It then forms the basis of an oral examination with assessors in Week 10. Reattempt possible on either component.</p>
+      <h3>Interprofessional Handover <span class="chip c6302">6302</span></h3>
+      <p class="small">Written ISBAR handover for a chronic condition case, plus critical reflection. AI allowed for drafting and expression only — never the clinical content.</p>
+    </div>
+  </div>
+
+  <!-- GRADES -->
+  <div class="pane" id="p-grades">
+    <div class="note">Enter marks as they come back. Leave blank for anything not yet returned — the projection only counts what you've entered.</div>
+    <div class="grid">
+      <div class="card">
+        <h2>PHAR6202 — Advanced Clinical Decision Making</h2>
+        <table id="g6202"></table>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+          <div class="stat"><span>Marked so far</span><b id="s6202-done">—</b></div>
+          <div class="stat"><span>Running average</span><b id="s6202-avg">—</b></div>
+          <div class="stat"><span>Locked in toward final</span><b id="s6202-lock">—</b></div>
+        </div>
+        <div id="s6202-note"></div>
+      </div>
+      <div class="card">
+        <h2>PHAR6302 — Chronic &amp; Complex Conditions</h2>
+        <table id="g6302"></table>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+          <div class="stat"><span>Marked so far</span><b id="s6302-done">—</b></div>
+          <div class="stat"><span>Running average</span><b id="s6302-avg">—</b></div>
+          <div class="stat"><span>Locked in toward final</span><b id="s6302-lock">—</b></div>
+        </div>
+        <div id="s6302-note"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Grading scale</h2>
+      <table>
+        <tr><td><b>85–100</b></td><td>High Distinction</td><td><b>65–74</b></td><td>Credit</td></tr>
+        <tr><td><b>75–84</b></td><td>Distinction</td><td><b>50–64</b></td><td>Pass</td></tr>
+      </table>
+      <div class="note warn">Must-pass items are marked in the tables above. Failing one means failing the course regardless of your total.</div>
+    </div>
+  </div>
+
+  <!-- WIL -->
+  <div class="pane" id="p-wil">
+    <div class="grid">
+      <div class="card">
+        <h2>Integrated Learning hours with your DPP</h2>
+        <div class="row" style="align-items:flex-end;gap:10px">
+          <div class="big-n" id="wilNum">0</div>
+          <div class="small" style="padding-bottom:4px">of 30 hours required</div>
+        </div>
+        <div class="bar"><i id="wilBar" style="width:0%"></i></div>
+        <div class="small" id="wilPace">—</div>
+        <div class="form">
+          <input type="date" id="wil-d">
+          <input type="number" id="wil-h" placeholder="hrs" step="0.5" min="0">
+          <input type="text" id="wil-n" placeholder="What you did…">
+          <button class="btn pri" id="wil-add">Log</button>
+        </div>
+        <div class="log" id="wilLog" style="margin-top:10px"></div>
+      </div>
+      <div class="card">
+        <h2>Prescribing portfolio entries</h2>
+        <div class="row" style="align-items:flex-end;gap:10px">
+          <div class="big-n" id="pfNum">0</div>
+          <div class="small" style="padding-bottom:4px">entries logged</div>
+        </div>
+        <div class="small" id="pfBreak" style="margin-top:6px">—</div>
+        <div class="form">
+          <input type="date" id="pf-d">
+          <select id="pf-t">
+            <option>Case reflection</option>
+            <option>Prescribing activity</option>
+            <option>WBA</option>
+            <option>Supervisor feedback</option>
+            <option>Self-assessment</option>
+            <option>Cultural safety reflection</option>
+          </select>
+          <input type="text" id="pf-n" placeholder="Brief note…">
+          <button class="btn pri" id="pf-add">Log</button>
+        </div>
+        <div class="log" id="pfLog" style="margin-top:10px"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="note warn"><b>The portfolio is the single easiest thing to fall behind on.</b> It's due 13 Nov but built from evidence gathered all semester — you can't retrofit twelve weeks of clinical reflection in the final fortnight. One entry a week keeps it honest.</div>
+      <div class="note">The portfolio must include reflection on <b>culturally safe prescribing practice</b>, covering cultural, social and health system factors — including care provided to Aboriginal and Torres Strait Islander peoples and other priority populations. Log at least a few entries under that category as you go.</div>
+      <div class="note">WIL participation needs <b>sign-off by your DPP</b> to count. Keep the log current so there are no gaps to reconstruct at the end.</div>
+    </div>
+  </div>
+
+  <!-- COURSES -->
+  <div class="pane" id="p-courses">
+    <div class="grid">
+      <div class="card">
+        <h2>PHAR6202 — Advanced Clinical Decision Making &amp; Professional Prescribing</h2>
+        <p class="small"><b>Mode:</b> Callaghan — face-to-face intensives + online<br>
+        <b>Coordinators:</b> Alison Hooper · A/Prof Sarah Dineen-Griffin<br>
+        <b>Contact hours:</b> 4 hrs online/wk × 12 wks · 30 hrs Integrated Learning (WIL) with your DPP · 2 × 7.5 hr practical days in Wks 5 &amp; 10<br>
+        <b>Workload:</b> 120–140 hrs total</p>
+        <div class="note"><b>Equipment to buy</b> before the Week 5 intensive: penlight torch · Littmann Classic III stethoscope · otoscope</div>
+      </div>
+      <div class="card">
+        <h2>PHAR6302 — Advanced Clinical Management of Chronic &amp; Complex Conditions</h2>
+        <p class="small"><b>Mode:</b> fully online<br>
+        <b>Coordinators:</b> Kristin Xenos · A/Prof Sarah Dineen-Griffin<br>
+        <b>Contact hours:</b> 4 hrs online/wk + 4 hrs self-directed/wk × 12 wks · 6 × 1 hr tutorials fortnightly<br>
+        <b>Workload:</b> 120–140 hrs total</p>
+        <div class="note">Roughly 8 hrs/week across both courses on top of the WIL hours. Block it out now.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Weekly topics</h2>
+      <table id="topicTbl">
+        <tr><th style="width:56px">Week</th><th>PHAR6202</th><th>PHAR6302</th></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- RULES -->
+  <div class="pane" id="p-rules">
+    <div class="card">
+      <h2>Compulsory requirements</h2>
+      <h3>PHAR6202</h3>
+      <ul class="small" style="margin:0;padding-left:18px">
+        <li>Attendance at <b>both</b> face-to-face intensives</li>
+        <li>Compulsory attendance + satisfactory participation in Integrated Learning Sessions, signed off by your <b>DPP</b></li>
+        <li>Must <b>submit</b>: Portfolio &amp; WBAs · GenAI Reflection</li>
+        <li>Must <b>pass</b>: Multi-station OSCE</li>
+        <li><b>NSW Health verification requirements</b> must be met for WIL at a NSW Health facility</li>
+      </ul>
+      <h3>PHAR6302</h3>
+      <ul class="small" style="margin:0;padding-left:18px">
+        <li>Must <b>pass</b>: Chronic Condition Action Plan + Viva Voce</li>
+        <li>Must <b>submit</b>: Interprofessional Handover &amp; Documentation</li>
+      </ul>
+      <div class="note warn">If all compulsory components aren't completed, the mark is <b>zero</b>.</div>
+    </div>
+
+    <div class="card">
+      <h2>AI rules — they differ per assessment</h2>
+      <table>
+        <tr><th>Assessment</th><th>AI</th></tr>
+        <tr><td>6202 Portfolio &amp; WBAs</td><td style="color:var(--red)">Not permitted</td></tr>
+        <tr><td>6202 OSCE</td><td style="color:var(--red)">Not permitted</td></tr>
+        <tr><td>6202 GenAI Reflection</td><td style="color:var(--green)"><b>Required</b> — approved tool, only as specified</td></tr>
+        <tr><td>6302 Action Plan / Viva</td><td style="color:var(--red)">Not permitted</td></tr>
+        <tr><td>6302 ISBAR Handover</td><td style="color:var(--amber)">Drafting, editing, grammar, structure only</td></tr>
+      </table>
+      <div class="note">For the ISBAR handover: AI must <b>not</b> generate the clinical content, prescribing decisions, the ISBAR itself, or professional judgement. Any use must be acknowledged.</div>
+      <div class="note warn">An <b>interview may be conducted on any assessment item</b> in either course to verify you authored the work. If your oral answers don't match what you submitted, it goes to the Student Academic Conduct Officer.</div>
+    </div>
+
+    <div class="card">
+      <h2>Contacts</h2>
+      <table>
+        <tr><td><b>Alison Hooper</b><div class="small">PHAR6202 · by email</div></td><td class="small">Alison.Hooper@newcastle.edu.au</td></tr>
+        <tr><td><b>Kristin Xenos</b><div class="small">PHAR6302</div></td><td class="small">Kristin.Xenos@newcastle.edu.au<br>(02) 4055 0296</td></tr>
+        <tr><td><b>A/Prof Sarah Dineen-Griffin</b><div class="small">both courses</div></td><td class="small">Sarah.DineenGriffin@newcastle.edu.au</td></tr>
+        <tr><td><b>School Office</b><div class="small">Biomedical Sciences &amp; Pharmacy · 8:30–5 Mon–Fri</div></td><td class="small">Biomedsci-Admin@newcastle.edu.au<br>02 4921 2058 / 4921 2008</td></tr>
+      </table>
+      <div class="note">Both courses have compulsory attendance, so <b>Adverse Circumstances</b> applies — if you can't make an intensive, lodge it through the online system rather than just emailing the coordinator.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var KEY = "phar-sem2-2026-v2", OLD = "phar-sem2-2026-v1";
+var S = { checks:{}, custom:[], dates:{}, wil:[], pf:[], marks:{} };
+try {
+  var raw = localStorage.getItem(KEY);
+  if (raw) {
+    var p = JSON.parse(raw);
+    for (var k in S) if (p[k] != null) S[k] = p[k];
+  } else {
+    var o = localStorage.getItem(OLD);
+    if (o) S.checks = JSON.parse(o) || {};
+  }
+} catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+// ---------- data ----------
+var TASKS = {
+  admin: [
+    ["a1","Send the leave email to Lisa","covers both intensive weekends"],
+    ["a2","Confirm your DPP is locked in","30 hrs of WIL needs their sign-off to pass PHAR6202"],
+    ["a3","Check NSW Health verification is current","required if you'll be in a NSW Health facility for WIL"],
+    ["a4","Buy equipment","penlight torch · Littmann Classic III · otoscope — before 19 Sep"],
+    ["a5","Put all tutorial dates in your calendar","note Tutorial 3 is Wed 16 Sep"],
+    ["a6","Book travel + accommodation for both intensives","19–20 Sep and 31 Oct–1 Nov"],
+    ["a7","Block a recurring weekly study slot","~8 hrs/week across the two courses"]
+  ],
+  assess: [
+    ["s1","Chronic Condition Action Plan — written","Fri 25 Sep · 6302 · 20% · must pass"],
+    ["s2","GenAI in Clinical Documentation reflection","Fri 9 Oct · 6202 · 20% · 12-min recorded consult"],
+    ["s3","Interprofessional Handover (ISBAR)","Fri 23 Oct · 6302 · 30% · must submit"],
+    ["s4","Prescribing Portfolio + WBAs","Fri 13 Nov · 6202 · 30% · must submit"]
+  ],
+  tba: [
+    ["t1","Module Quiz 1 date","6302 · during Week 4 (7–11 Sep)"],
+    ["t2","Module Quiz 2 date","6302 · during Week 8 (12–16 Oct)"],
+    ["t3","Viva voce date","6302 · Week 10 — may clash with the intensive weekend"],
+    ["t4","OSCE date","6202 · formal examination period"],
+    ["t5","Intensive room locations","both listed as TBC in the outline"]
+  ],
+  ongoing: [
+    ["o1","Add to the Prescribing Portfolio weekly","use the WIL & Portfolio tab to log entries"],
+    ["o2","Schedule WBAs with your DPP progressively","spread across the semester, not crammed"],
+    ["o3","Start OSCE prep from Week 9","physical assessment content builds directly into it"]
+  ]
+};
+
+var FIXED = [
+  {d:"2026-08-18", t:"Tutorial 1", m:"6:30–8:30pm online (both courses)", k:"tut"},
+  {d:"2026-09-01", t:"Tutorial 2", m:"6:30–8:30pm online", k:"tut"},
+  {d:"2026-09-16", t:"Tutorial 3 — WEDNESDAY", m:"6:30–8:30pm online · note the day change", k:"tut"},
+  {d:"2026-09-18", t:"Travel day — leave requested", m:"Friday before the Week 5 intensive", k:"leave"},
+  {d:"2026-09-19", t:"INTENSIVE — Week 5, day 1", m:"Sat 08:30–16:00 · Callaghan · compulsory", k:"int"},
+  {d:"2026-09-20", t:"INTENSIVE — Week 5, day 2", m:"Sun 08:30–16:00 · Callaghan · compulsory", k:"int"},
+  {d:"2026-09-25", t:"Chronic Condition Action Plan due", m:"6302 · 11:59pm · 20% · must pass", k:"as"},
+  {d:"2026-10-09", t:"GenAI Reflection due", m:"6202 · 11:59pm · 20% · 12-min video", k:"as"},
+  {d:"2026-10-13", t:"Tutorial 4", m:"6:30–8:30pm online", k:"tut"},
+  {d:"2026-10-23", t:"Interprofessional Handover due", m:"6302 · 11:59pm · 30% · must submit", k:"as"},
+  {d:"2026-10-27", t:"Tutorial 5", m:"6:30–8:30pm online", k:"tut"},
+  {d:"2026-10-30", t:"Travel day — leave requested", m:"Friday before the Week 10 intensive", k:"leave"},
+  {d:"2026-10-31", t:"INTENSIVE — Week 10, day 1", m:"Sat 08:30–16:00 · Callaghan · compulsory", k:"int"},
+  {d:"2026-11-01", t:"INTENSIVE — Week 10, day 2", m:"Sun 08:30–16:00 · Callaghan · compulsory", k:"int"},
+  {d:"2026-11-10", t:"Tutorial 6", m:"6:30–8:30pm online", k:"tut"},
+  {d:"2026-11-13", t:"Prescribing Portfolio + WBAs due", m:"6202 · 11:59pm · 30% · must submit", k:"as"}
+];
+
+var TBA = [
+  {id:"quiz1", label:"Module Quiz 1", hint:"6302 · during Week 4 (7–11 Sep)", k:"as"},
+  {id:"quiz2", label:"Module Quiz 2", hint:"6302 · during Week 8 (12–16 Oct)", k:"as"},
+  {id:"viva",  label:"Viva Voce (oral)", hint:"6302 · Week 10 (26–30 Oct)", k:"as"},
+  {id:"osce",  label:"Multi-station OSCE", hint:"6202 · formal examination period", k:"as"}
+];
+
+var ASSESS = [
+  ["Week 4 (TBA)","6302","Module Quiz 1","10%",""],
+  ["Fri 25 Sep","6302","Chronic Condition Action Plan (written)","20%","must pass"],
+  ["Fri 9 Oct","6202","Reflection on GenAI in Clinical Documentation","20%","must submit"],
+  ["Week 8 (TBA)","6302","Module Quiz 2","10%",""],
+  ["Fri 23 Oct","6302","Interprofessional Handover (ISBAR)","30%","must submit"],
+  ["Week 10 (TBA)","6302","Viva Voce (oral)","30%","must pass"],
+  ["Fri 13 Nov","6202","Prescribing Portfolio + WBAs","30%","must submit"],
+  ["Exams (TBA)","6202","Multi-station OSCE","50%","must pass"]
+];
+
+var MARKS = {
+  "6202":[["m1","Prescribing Portfolio + WBAs",30,"submit"],
+          ["m2","GenAI Reflection",20,"submit"],
+          ["m3","Multi-station OSCE",50,"pass"]],
+  "6302":[["m4","Module Quiz 1",10,""],
+          ["m5","Module Quiz 2",10,""],
+          ["m6","Action Plan (written)",20,"pass"],
+          ["m7","Viva Voce",30,"pass"],
+          ["m8","Interprofessional Handover",30,"submit"]]
+};
+
+var WEEKS = [
+  ["1 · 17 Aug","Thinking ethically: frameworks, autonomy, accountability","Cardiovascular disease &amp; risk assessment",0],
+  ["2 · 24 Aug","Practising ethically: communication, boundaries, safe prescribing","CV assessment &amp; hypertension",0],
+  ["3 · 31 Aug","Communication foundations for prescribers","Diabetes &amp; dyslipidaemia",0],
+  ["4 · 7 Sep","Advanced communication in complex contexts","Weight management <span class='chip'>quiz 1</span>",0],
+  ["5 · 14 Sep","<b>Clinical reasoning &amp; decision-making</b> + intensive","Smoking, vaping &amp; nicotine dependence",1],
+  ["6 · 21 Sep","Error, uncertainty &amp; patient safety","Respiratory assessment &amp; COPD",0],
+  ["7 · 5 Oct","Interprofessional communication &amp; collaboration","Asthma",0],
+  ["8 · 12 Oct","When things go wrong — RCA, Swiss cheese model","Mental health <span class='chip'>quiz 2</span>",0],
+  ["9 · 19 Oct","Advanced physical assessment I","Opioid dependence",0],
+  ["10 · 26 Oct","<b>Advanced physical assessment II</b> + intensive","Injectable medicines &amp; administration <span class='chip'>viva</span>",1],
+  ["11 · 2 Nov","Governance &amp; leadership","Travel health",0],
+  ["12 · 9 Nov","Technology in prescribing: AI, CDSS, wearables","Oral health",0]
+];
+var WEEKSTART = ["2026-08-17","2026-08-24","2026-08-31","2026-09-07","2026-09-14","2026-09-21",
+                 "2026-10-05","2026-10-12","2026-10-19","2026-10-26","2026-11-02","2026-11-09"];
+
+// ---------- helpers ----------
+function today(){ var n=new Date(); return new Date(n.getFullYear(),n.getMonth(),n.getDate()); }
+function parse(s){ var p=s.split("-"); return new Date(+p[0],+p[1]-1,+p[2]); }
+function daydiff(a,b){ return Math.round((b-a)/86400000); }
+function fmt(dt){
+  var d=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
+      m=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return d[dt.getDay()]+" "+dt.getDate()+" "+m[dt.getMonth()];
+}
+function el(tag,cls,html){ var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+
+// ---------- tabs ----------
+var tabs=document.querySelectorAll(".tab");
+Array.prototype.forEach.call(tabs,function(t){
+  t.addEventListener("click",function(){
+    Array.prototype.forEach.call(tabs,function(x){x.classList.remove("on")});
+    t.classList.add("on");
+    Array.prototype.forEach.call(document.querySelectorAll(".pane"),function(p){p.classList.remove("on")});
+    document.getElementById("p-"+t.getAttribute("data-p")).classList.add("on");
+  });
+});
+
+// ---------- tasks ----------
+function listFor(key){
+  var base=(TASKS[key]||[]).slice();
+  S.custom.forEach(function(c){ if(c.list===key) base.push([c.id,c.label,"added by you",true]); });
+  return base;
+}
+function renderTasks(){
+  Array.prototype.forEach.call(document.querySelectorAll("[data-list]"),function(ul){
+    var key=ul.getAttribute("data-list");
+    ul.innerHTML="";
+    var rows=listFor(key);
+    if(!rows.length){ ul.appendChild(el("li","empty","Nothing here yet.")); return; }
+    rows.forEach(function(r){
+      var id=r[0], li=el("li","item"+(S.checks[id]?" done":""));
+      var cb=document.createElement("input"); cb.type="checkbox"; cb.checked=!!S.checks[id];
+      cb.addEventListener("change",function(){
+        S.checks[id]=cb.checked; save();
+        li.className="item"+(cb.checked?" done":""); refresh();
+      });
+      var d=el("div","txt","<div>"+esc(r[1])+"</div><div class='meta'>"+r[2]+"</div>");
+      li.appendChild(cb); li.appendChild(d);
+      if(r[3]){
+        var x=el("button","lnk","remove");
+        x.addEventListener("click",function(){
+          S.custom=S.custom.filter(function(c){return c.id!==id});
+          delete S.checks[id]; save(); renderTasks(); refresh();
+        });
+        li.appendChild(x);
+      }
+      ul.appendChild(li);
+    });
+  });
+}
+Array.prototype.forEach.call(document.querySelectorAll("[data-add]"),function(btn){
+  var key=btn.getAttribute("data-add"), inp=document.getElementById("add-"+key);
+  function add(){
+    var v=inp.value.trim(); if(!v) return;
+    S.custom.push({id:"c"+Date.now()+Math.floor(Math.random()*99),label:v,list:key});
+    inp.value=""; save(); renderTasks(); refresh();
+  }
+  btn.addEventListener("click",add);
+  inp.addEventListener("keydown",function(e){ if(e.key==="Enter") add(); });
+});
+function countTasks(){
+  var t=0,d=0;
+  ["admin","assess","tba","ongoing"].forEach(function(k){
+    listFor(k).forEach(function(r){ t++; if(S.checks[r[0]]) d++; });
+  });
+  return [d,t];
+}
+
+// ---------- TBA dates ----------
+function renderTBA(){
+  var box=document.getElementById("tbaDates"); box.innerHTML="";
+  TBA.forEach(function(t){
+    var row=el("div","tbadate");
+    row.appendChild(el("div","lbl","<b>"+t.label+"</b><div class='meta'>"+t.hint+"</div>"));
+    var inp=document.createElement("input"); inp.type="date"; inp.value=S.dates[t.id]||"";
+    inp.addEventListener("change",function(){
+      if(inp.value) S.dates[t.id]=inp.value; else delete S.dates[t.id];
+      save(); refresh();
+    });
+    row.appendChild(inp);
+    var st=el("span","small", S.dates[t.id] ? "confirmed" : "not set");
+    row.appendChild(st);
+    box.appendChild(row);
+  });
+}
+function allEvents(){
+  var out=FIXED.slice();
+  TBA.forEach(function(t){
+    if(S.dates[t.id]) out.push({d:S.dates[t.id],t:t.label,m:t.hint+" · date you confirmed",k:"as"});
+  });
+  out.sort(function(a,b){ return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; });
+  return out;
+}
+
+// ---------- now ----------
+function renderNow(){
+  var now=today(), ev=allEvents().filter(function(e){ return parse(e.d)>=now; });
+  var n=ev[0];
+  if(!n){
+    document.getElementById("nd").textContent="✓";
+    document.getElementById("ndl").textContent="";
+    document.getElementById("nt").textContent="Semester complete";
+    document.getElementById("nm").textContent="";
+  } else {
+    var dd=daydiff(now,parse(n.d));
+    document.getElementById("nd").textContent = dd===0?"today":dd;
+    document.getElementById("ndl").textContent = dd===0?"":(dd===1?"day away":"days away");
+    document.getElementById("nt").textContent=n.t;
+    document.getElementById("nm").textContent=fmt(parse(n.d))+" · "+n.m;
+  }
+  var ul=document.getElementById("upcoming"); ul.innerHTML="";
+  var cut=new Date(now.getTime()+42*86400000);
+  var show=ev.filter(function(e){ return parse(e.d)<=cut; });
+  if(!show.length) show=ev.slice(0,5);
+  if(!show.length){ ul.appendChild(el("li","empty","Nothing scheduled ahead.")); return; }
+  show.forEach(function(e){
+    var dt=parse(e.d), dd=daydiff(now,dt);
+    var chip = e.k==="int" ? "<span class='chip must'>intensive</span>"
+             : e.k==="as"  ? "<span class='chip soon'>assessment</span>"
+             : e.k==="leave"? "<span class='chip'>leave</span>"
+             : "<span class='chip c6302'>tutorial</span>";
+    ul.appendChild(el("li","item",
+      "<div style='width:78px;flex-shrink:0' class='small dt'><b>"+fmt(dt)+"</b></div>"+
+      "<div class='txt'><div>"+esc(e.t)+" "+chip+"</div><div class='meta'>"+esc(e.m)+"</div></div>"+
+      "<div class='small' style='flex-shrink:0'>"+(dd===0?"today":dd+"d")+"</div>"));
+  });
+}
+
+function renderThisWeek(){
+  var now=today(), idx=-1;
+  for(var i=0;i<WEEKSTART.length;i++){
+    var s=parse(WEEKSTART[i]);
+    if(now>=s && now < new Date(s.getTime()+7*86400000)){ idx=i; break; }
+  }
+  var box=document.getElementById("thisWeek");
+  if(idx<0){
+    var start=parse(WEEKSTART[0]);
+    box.innerHTML = now<start
+      ? "<div class='small'>Semester starts "+fmt(start)+" — "+daydiff(now,start)+" days away. Good window to clear the admin list.</div>"
+      : "<div class='small'>Outside teaching weeks — recess or exam period.</div>";
+    return;
+  }
+  var w=WEEKS[idx];
+  box.innerHTML =
+    "<div class='wk'><span class='wkn'>Week "+(idx+1)+"</span><span><b>6202</b> — "+w[1]+"</span></div>"+
+    "<div class='wk'><span class='wkn'></span><span><b>6302</b> — "+w[2]+"</span></div>"+
+    (w[3] ? "<div class='note warn'>Intensive weekend this week — pack the stethoscope, torch and otoscope.</div>" : "");
+}
+
+function renderAlerts(){
+  var now=today(), out=[];
+  var wil=S.wil.reduce(function(a,e){return a+(+e.h||0)},0);
+  var sem=daydiff(parse("2026-08-17"),now), tot=daydiff(parse("2026-08-17"),parse("2026-11-13"));
+  var frac=Math.max(0,Math.min(1,sem/tot));
+  if(sem>14 && wil < 30*frac*0.7) out.push(["r","WIL hours behind pace","logged "+wil.toFixed(1)+" of 30 — expected around "+(30*frac).toFixed(1)+" by now"]);
+  var weeksIn=Math.max(0,Math.floor(sem/7));
+  if(weeksIn>=3 && S.pf.length < weeksIn-1) out.push(["a","Portfolio entries thin","only "+S.pf.length+" logged in "+weeksIn+" weeks — aim for roughly one a week"]);
+  if(!S.dates.osce && sem>42) out.push(["a","OSCE date still unset","it's worth 50% and must be passed — check Canvas"]);
+  if(!S.dates.viva && sem>28) out.push(["a","Viva date still unset","Week 10 clashes with the intensive weekend, so confirm it early"]);
+  allEvents().forEach(function(e){
+    var dd=daydiff(now,parse(e.d));
+    if(e.k==="as" && dd>=0 && dd<=7) out.push(["r",e.t,"due in "+(dd===0?"today":dd+" days")]);
+  });
+  var c=document.getElementById("alertCard"), ul=document.getElementById("alerts");
+  if(!out.length){ c.style.display="none"; return; }
+  c.style.display=""; ul.innerHTML="";
+  out.forEach(function(a){
+    ul.appendChild(el("li","item","<span class='dot "+a[0]+"' style='margin-top:7px'></span>"+
+      "<div class='txt'><div>"+esc(a[1])+"</div><div class='meta'>"+esc(a[2])+"</div></div>"));
+  });
+}
+
+function renderProgress(){
+  var c=countTasks(), pct=c[1]?Math.round(c[0]/c[1]*100):0;
+  document.getElementById("taskBar").style.width=pct+"%";
+  document.getElementById("taskTxt").textContent=c[0]+" of "+c[1]+" — "+pct+"%";
+
+  var start=parse("2026-08-17"), end=parse("2026-11-13"), now=today();
+  var tot=daydiff(start,end), elp=daydiff(start,now);
+  var sp=Math.max(0,Math.min(100,Math.round(elp/tot*100)));
+  document.getElementById("semBar").style.width=sp+"%";
+  var wk=Math.floor(elp/7)+1;
+  document.getElementById("semTxt").textContent =
+    now<start ? "Starts in "+daydiff(now,start)+" days" :
+    now>end   ? "Teaching period complete" :
+    "Week "+wk+" of 12 — "+daydiff(now,end)+" days to the final due date";
+
+  var wil=S.wil.reduce(function(a,e){return a+(+e.h||0)},0);
+  var wp=Math.min(100,Math.round(wil/30*100));
+  var mini=document.getElementById("wilBarMini");
+  mini.style.width=wp+"%";
+  var frac=Math.max(0,Math.min(1,elp/tot));
+  mini.className = (elp>14 && wil<30*frac*0.7) ? "warnfill" : "";
+  document.getElementById("wilTxtMini").textContent=wil.toFixed(1)+" of 30 hrs — "+wp+"%";
+}
+
+// ---------- assessments / topics ----------
+(function(){
+  var t=document.getElementById("assessTbl");
+  ASSESS.forEach(function(r){
+    t.appendChild(el("tr",null,
+      "<td class='dt small'>"+r[0]+"</td><td><span class='chip c"+r[1]+"'>"+r[1]+"</span></td>"+
+      "<td>"+r[2]+"</td><td class='wt'>"+r[3]+"</td>"+
+      "<td>"+(r[4]?"<span class='chip must'>"+r[4]+"</span>":"")+"</td>"));
+  });
+  var tt=document.getElementById("topicTbl");
+  WEEKS.forEach(function(w,i){
+    tt.appendChild(el("tr",w[3]?"hl":null,
+      "<td class='dt'>"+w[0]+"</td><td>"+w[1]+"</td><td>"+w[2]+"</td>"));
+    if(i===5) tt.appendChild(el("tr",null,"<td class='dt'>Recess</td><td colspan='2' class='small'>28 Sep – 2 Oct</td>"));
+  });
+})();
+
+// ---------- grades ----------
+function renderGrades(){
+  ["6202","6302"].forEach(function(code){
+    var tbl=document.getElementById("g"+code); tbl.innerHTML="";
+    tbl.appendChild(el("tr",null,"<th>Assessment</th><th>Weight</th><th style='text-align:right'>Mark %</th>"));
+    var done=0,earned=0,possible=0;
+    MARKS[code].forEach(function(m){
+      var id=m[0], v=S.marks[id];
+      var flag = m[3]==="pass" ? " <span class='chip must'>must pass</span>"
+               : m[3]==="submit" ? " <span class='chip'>must submit</span>" : "";
+      var tr=el("tr",null,"<td>"+m[1]+flag+"</td><td class='wt'>"+m[2]+"%</td>");
+      var td=el("td"); td.style.textAlign="right";
+      var wrap=el("div","gradein");
+      var inp=document.createElement("input"); inp.type="number"; inp.min=0; inp.max=100;
+      inp.placeholder="—"; inp.value=(v==null?"":v);
+      inp.addEventListener("input",function(){
+        var n=parseFloat(inp.value);
+        if(isNaN(n)) delete S.marks[id]; else S.marks[id]=Math.max(0,Math.min(100,n));
+        save(); renderGrades();
+      });
+      wrap.appendChild(inp); td.appendChild(wrap); tr.appendChild(td); tbl.appendChild(tr);
+      if(v!=null){ done+=m[2]; earned+=v*m[2]/100; }
+      possible+=m[2];
+    });
+    var avg = done ? (earned/done*100) : null;
+    document.getElementById("s"+code+"-done").textContent = done+"% of "+possible+"%";
+    document.getElementById("s"+code+"-avg").textContent = avg==null ? "—" : avg.toFixed(1)+"%";
+    document.getElementById("s"+code+"-lock").textContent = done ? earned.toFixed(1)+" marks" : "—";
+    var note=document.getElementById("s"+code+"-note"); note.innerHTML="";
+    if(done && done<possible){
+      var rem=possible-done;
+      var needP=(50-earned)/rem*100, needD=(75-earned)/rem*100;
+      var lines=[];
+      if(needP>100) lines.push("<b>A pass is no longer reachable</b> on the remaining "+rem+"%.");
+      else lines.push("Need <b>"+Math.max(0,needP).toFixed(0)+"%</b> average across the remaining "+rem+"% to pass"+(needD<=100?", or <b>"+Math.max(0,needD).toFixed(0)+"%</b> for a Distinction":"")+".");
+      note.appendChild(el("div","note"+(needP>100?" warn":""),lines.join(" ")));
+    } else if(done===possible){
+      note.appendChild(el("div","note"+(earned>=50?" ok":" warn"),
+        "Final: <b>"+earned.toFixed(1)+"</b> — "+
+        (earned>=85?"High Distinction":earned>=75?"Distinction":earned>=65?"Credit":earned>=50?"Pass":"below the pass mark")+
+        ". Must-pass items still have to be passed individually."));
+    }
+  });
+}
+
+// ---------- WIL + portfolio ----------
+function renderWil(){
+  var tot=S.wil.reduce(function(a,e){return a+(+e.h||0)},0);
+  document.getElementById("wilNum").textContent=tot.toFixed(1).replace(/\.0$/,"");
+  var pct=Math.min(100,Math.round(tot/30*100));
+  var bar=document.getElementById("wilBar"); bar.style.width=pct+"%";
+  var now=today(), elp=daydiff(parse("2026-08-17"),now), totd=daydiff(parse("2026-08-17"),parse("2026-11-13"));
+  var frac=Math.max(0,Math.min(1,elp/totd)), target=30*frac;
+  var behind = elp>14 && tot<target*0.7;
+  bar.className = behind ? "warnfill" : "";
+  document.getElementById("wilPace").textContent =
+    elp<0 ? "Not started yet — 30 hours across the semester." :
+    tot>=30 ? "Requirement met. Make sure your DPP has signed off." :
+    "On pace you'd be around "+target.toFixed(1)+" hrs by now. "+(30-tot).toFixed(1)+" hrs to go — about "+
+      (Math.max(1,Math.ceil((30-tot)/Math.max(1,Math.ceil(daydiff(now,parse("2026-11-13"))/7))*10)/10))+" hrs/week from here.";
+
+  var log=document.getElementById("wilLog"); log.innerHTML="";
+  if(!S.wil.length){ log.appendChild(el("div","empty","No hours logged yet.")); }
+  else S.wil.slice().sort(function(a,b){return a.d<b.d?1:-1}).forEach(function(e){
+    var row=el("div","logrow",
+      "<span class='dt small' style='width:74px;flex-shrink:0'>"+fmt(parse(e.d))+"</span>"+
+      "<b style='width:44px;flex-shrink:0;font-variant-numeric:tabular-nums'>"+(+e.h).toFixed(1)+"h</b>"+
+      "<span style='flex:1;min-width:0'>"+esc(e.n||"")+"</span>");
+    var x=el("button","lnk","×");
+    x.addEventListener("click",function(){
+      S.wil=S.wil.filter(function(o){return o!==e}); save(); renderWil(); refresh();
+    });
+    row.appendChild(x); log.appendChild(row);
+  });
+}
+function renderPf(){
+  document.getElementById("pfNum").textContent=S.pf.length;
+  var by={};
+  S.pf.forEach(function(e){ by[e.t]=(by[e.t]||0)+1; });
+  var parts=Object.keys(by).map(function(k){ return by[k]+" × "+k.toLowerCase(); });
+  var cs = by["Cultural safety reflection"]||0;
+  document.getElementById("pfBreak").innerHTML =
+    (parts.length?parts.join(" · "):"Nothing logged yet.") +
+    (S.pf.length && !cs ? " <span style='color:var(--red)'>— no cultural safety reflection yet, and it's required.</span>" : "");
+  var log=document.getElementById("pfLog"); log.innerHTML="";
+  if(!S.pf.length){ log.appendChild(el("div","empty","No entries yet.")); return; }
+  S.pf.slice().sort(function(a,b){return a.d<b.d?1:-1}).forEach(function(e){
+    var row=el("div","logrow",
+      "<span class='dt small' style='width:74px;flex-shrink:0'>"+fmt(parse(e.d))+"</span>"+
+      "<span class='chip' style='flex-shrink:0'>"+esc(e.t)+"</span>"+
+      "<span style='flex:1;min-width:0'>"+esc(e.n||"")+"</span>");
+    var x=el("button","lnk","×");
+    x.addEventListener("click",function(){
+      S.pf=S.pf.filter(function(o){return o!==e}); save(); renderPf(); refresh();
+    });
+    row.appendChild(x); log.appendChild(row);
+  });
+}
+function iso(d){ return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2); }
+document.getElementById("wil-d").value=iso(today());
+document.getElementById("pf-d").value=iso(today());
+document.getElementById("wil-add").addEventListener("click",function(){
+  var d=document.getElementById("wil-d").value, h=parseFloat(document.getElementById("wil-h").value);
+  if(!d||isNaN(h)||h<=0) return;
+  S.wil.push({d:d,h:h,n:document.getElementById("wil-n").value.trim()});
+  document.getElementById("wil-h").value=""; document.getElementById("wil-n").value="";
+  save(); renderWil(); refresh();
+});
+document.getElementById("pf-add").addEventListener("click",function(){
+  var d=document.getElementById("pf-d").value;
+  if(!d) return;
+  S.pf.push({d:d,t:document.getElementById("pf-t").value,n:document.getElementById("pf-n").value.trim()});
+  document.getElementById("pf-n").value="";
+  save(); renderPf(); refresh();
+});
+
+// ---------- backup ----------
+document.getElementById("exp").addEventListener("click",function(){
+  document.getElementById("io").value=JSON.stringify(S);
+});
+document.getElementById("imp").addEventListener("click",function(){
+  var v=document.getElementById("io").value.trim(); if(!v) return;
+  try{
+    var p=JSON.parse(v);
+    for(var k in S) if(p[k]!=null) S[k]=p[k];
+    save(); renderAll();
+    document.getElementById("io").value="Restored.";
+  }catch(e){ document.getElementById("io").value="That didn't parse as valid backup data."; }
+});
+document.getElementById("reset").addEventListener("click",function(){
+  S={checks:{},custom:[],dates:{},wil:[],pf:[],marks:{}}; save(); renderAll();
+});
+
+// ---------- run ----------
+function refresh(){ renderProgress(); renderNow(); renderAlerts(); }
+function renderAll(){
+  renderTasks(); renderTBA(); renderGrades(); renderWil(); renderPf();
+  renderThisWeek(); refresh();
+}
+renderAll();
+})();
+</script>
+</body>
+</html>
