@@ -234,7 +234,8 @@ kbd{font:600 var(--fs-xs) ui-monospace,Menlo,monospace;background:var(--surface-
 
   <div class="tabs">
     <button class="tab on" data-p="today">Today</button>
-    <button class="tab" data-p="plan">Plan
+    <button class="tab" data-p="learn">Learn
+<button class="tab" data-p="plan">Plan
 <button class="tab" data-p="course">Course</button>
     <button class="tab" data-p="cond">Conditions</button>
     <button class="tab" data-p="cards">Flashcards</button>
@@ -275,6 +276,11 @@ kbd{font:600 var(--fs-xs) ui-monospace,Menlo,monospace;background:var(--surface-
         Questions and exam — <kbd>A</kbd>–<kbd>E</kbd> to answer, <kbd>&larr;</kbd> <kbd>&rarr;</kbd> to move.
       </p>
     </div>
+  </div>
+
+  <!-- LEARN -->
+  <div class="pane" id="p-learn">
+    <div id="learnBody"></div>
   </div>
 
   <!-- PLAN -->
@@ -465,7 +471,7 @@ window.__SEM1__ = {"conds":[{"id":"impetigo","name":"Impetigo","tag":"Impetigo �
 (function(){
 "use strict";
 var KEY="phar-hub-v1";
-var S={box:{},mcq:{},osce:{},exams:[],days:{},sem:"s2",steps:{}};
+var S={box:{},mcq:{},osce:{},exams:[],days:{},sem:"s2",steps:{},right:{},read:{}};
 try{var r=localStorage.getItem(KEY); if(r){var p=JSON.parse(r); for(var k in S) if(p[k]!=null) S[k]=p[k];}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e}
@@ -556,6 +562,106 @@ var PLAN=[
    ["o5","Confirm your day, time and venue","You attend one of 26 or 27 November. Check Canvas announcements.","2026-11-23",10]]}
 ];
 
+
+
+/* ============ MUST-KNOW BRIEFS ============
+   The condensed, assessable version of each topic — what to read BEFORE being
+   tested. Every figure traces to the course pages or a named designated
+   reference. This is deliberately not the full topic page: it is the subset
+   worth carrying into an exam. */
+var BRIEFS={
+htn:{mins:7,src:"Heart Foundation 2016 · QLD hypertension protocol · PHAR6302 Week 2",pts:[
+["Two risk frameworks, and they disagree","<b>AusCVDRisk</b> (your course): high ≥10%, intermediate 5% to &lt;10%, low &lt;5%. <b>Heart Foundation 2016</b>: low &lt;10%, moderate 10–15%. Same numbers, different labels. Answer in whichever framework the question names."],
+["Classification of clinic BP","Optimal &lt;120/&lt;80 · Normal 120–129 and/or 80–84 · High-normal 130–139 and/or 85–89 · <b>Grade 1</b> 140–159 and/or 90–99 · <b>Grade 2</b> 160–179 and/or 100–109 · <b>Grade 3</b> ≥180 and/or ≥110. Where systolic and diastolic differ, <b>the higher category applies</b>."],
+["Diagnosis depends on how you measured","Clinic ≥140/90 · Home ≥135/85 · ABPM daytime ≥135/85 · ABPM 24h ≥130/80 · ABPM night ≥120/70. Offer out-of-clinic monitoring if clinic BP ≥140/90."],
+["But use CLINIC readings in the risk calculator","Home or ambulatory figures can make risk look inappropriately low. Finger and wrist devices are not recommended."],
+["When to start therapy (Heart Foundation bands)","Low risk: persistent ≥160/100. Moderate risk: persistent ≥140 and/or ≥90. Target &lt;140/90 once treating, or lower if tolerated."],
+["Drug choice","First-line, all equal: <b>ACE inhibitor OR ARB</b>, <b>calcium channel blocker</b>, <b>thiazide</b>. <b>Beta-blockers are NOT first-line</b> in uncomplicated hypertension. <b>Never combine an ACE inhibitor with an ARB.</b>"],
+["Resistant hypertension","Systolic ≥140 on <b>three or more</b> agents <b>including a diuretic</b> at optimal tolerated doses. Think adherence, white-coat effect, secondary cause. Renal denervation not recommended."],
+["Comorbidity shortcuts","CKD with albuminuria → ACEi or ARB first-line, never both. Post-MI → ACEi + beta-blocker. Angina → beta-blocker or CCB. Over 75 → sub-120 systolic benefits <b>unless</b> they also have diabetes."],
+["Scope","NSW expanded scope does <b>not</b> include routine pharmacist prescribing for hypertension. The QLD protocol is taught as a model of care, not as your authority."]]},
+
+lipid:{mins:6,src:"QLD dyslipidaemia protocol · Therapeutic Guidelines: Cardiovascular · PHAR6302 Week 3",pts:[
+["Who gets pharmacotherapy","<b>High</b> CVD risk → recommended for all. <b>Intermediate</b> → consider; lifestyle trial may suffice. <b>Low</b> → not routine; lifestyle first."],
+["The number that overrides the calculator","<b>Severe hyperlipidaemia</b> — total cholesterol ≥7.5 or LDL-C ≥5.0 mmol/L — is managed <b>regardless of the AusCVDRisk result</b>. Refer to their usual provider."],
+["LDL-C targets","High risk: ≥50% reduction from baseline <b>AND</b> &lt;1.8, whichever is lowest. Intermediate &lt;2.6. Low &lt;3.0."],
+["The tier above that","<b>Established ASCVD or very high risk</b>: ≥50% reduction <b>AND &lt;1.4</b>. Non-HDL-C &lt;2.2. Only answerable with 1.4."],
+["Non-HDL-C and triglycerides","Non-HDL-C &lt;2.6 / &lt;3.4 / &lt;3.8 by risk tier. Triglycerides &lt;1.7 (high) or &lt;2.0."],
+["Drug choice","<b>Statins first-line.</b> High dose of a high-potency statin if high risk or LDL-C &gt;4.0. <b>Ezetimibe</b> if statins contraindicated or not tolerated. <b>Fenofibrate</b> as add-on for triglycerides. PCSK9 inhibitors and bempedoic acid are out of scope in the QLD guideline."],
+["Pathology before starting","Statins: baseline <b>LFT and CK</b>. Fenofibrate: FBC + LFT before and <b>3-monthly through year one</b>, CK if combined with a statin, renal function with dose reduction at <b>CrCl 30–60</b>, and watch for a paradoxical fall in HDL."]]},
+
+bgl:{mins:6,src:"QLD blood glucose protocol · Therapeutic Guidelines: Diabetes · PHAR6302 Week 3",pts:[
+["HbA1c targets — learn the ladder","Recently diagnosed, no CVD, lifestyle + metformin: <b>≤6%</b>. Metformin + another non-insulin agent: <b>≤6.5%</b>. On insulin: <b>≤7%</b>. Longer duration or with CVD: ≤7%. <b>At risk of hypoglycaemia</b> (older, renal impairment, multiple agents): less stringent, <b>closer to 8%</b>."],
+["The review rule","Recheck HbA1c at <b>3 months</b>. If a second agent (not metformin) hasn't produced <b>at least a 0.5% reduction</b>, stop it and try another. Targets still unmet on <b>two</b> agents → refer."],
+["Renal function drives choice","<b>eGFR below 30</b>: avoid or stop metformin, stop sulfonylureas, don't start an SGLT-2 inhibitor. At 30+, low appetite / low weight / harmful weight loss points to a <b>DPP-4 inhibitor</b>."],
+["Sick day rules","<b>SGLT-2 inhibitors</b>: stop during acute serious illness, prolonged fasting, bowel prep, low-carb intake, excess alcohol — <b>ketoacidosis risk</b>. <b>Metformin and GLP-1s</b>: withhold with vomiting, diarrhoea or reduced intake."],
+["Two traps","<b>Euglycaemic ketoacidosis</b> on an SGLT-2 inhibitor — glucose looks normal. <b>Kussmaul breathing</b> is the hyperventilation of DKA."],
+["Hypoglycaemia","BGL <b>below 4 mmol/L</b>. Educate anyone on insulin or a sulfonylurea."],
+["Activity target","<b>150 minutes</b> moderate-to-vigorous per week, plus <b>two resistance sessions</b> totalling ≥60 minutes."]]},
+
+wt:{mins:4,src:"PHAR6302 Week 4 · NHMRC overweight and obesity guideline",pts:[
+["Targets","<b>5–10%</b> initially. <b>10–15% or more</b> with significant obesity-related complications. Non-weight wins count — deferred joint surgery, waist circumference, function."],
+["Agents","<b>Orlistat</b> — GI lipase inhibitor. <b>Liraglutide</b> (Saxenda) and <b>semaglutide</b> (Wegovy) — GLP-1 agonists. <b>Tirzepatide</b> (Mounjaro) — <b>dual GIP and GLP-1</b>."],
+["Referral thresholds","Specialist obesity management: <b>BMI over 40</b>, or <b>over 35 with significant complications</b>. Bariatric surgery generally not recommended below those, and the comorbidity route needs something like diabetes or OSA."],
+["Very low energy diets","<b>Under 3300 kJ/day</b> via complete meal replacements. Consider when lifestyle has failed, rapid loss is clinically indicated, severe obesity, or preparing for bariatric surgery."],
+["Check the diabetes meds first","Weight loss and dietary change raise <b>euglycaemic ketoacidosis</b> risk on SGLT-2 inhibitors and <b>hypoglycaemia</b> on agents that cause it."],
+["Trials named","<b>SELECT</b> — semaglutide cut major CV events in obesity with established CVD. <b>FLOW</b> — semaglutide cut kidney failure and death in CKD with T2D."]]},
+
+smoke:{mins:5,src:"RACGP cessation guideline · PHAR6302 Week 5",pts:[
+["First-line","Behavioural support, <b>NRT</b>, <b>varenicline</b>, <b>bupropion</b>. Pharmacotherapy works best <i>with</i> behavioural support and follow-up."],
+["Combination NRT","Patch for baseline + a fast-acting product (gum, lozenge, spray) for breakthrough. <b>More effective than monotherapy.</b> Consider at moderate-to-high dependence."],
+["The dependence clue","Smoking <b>soon after waking</b> signals higher dependence — favour combination therapy."],
+["Varenicline","<b>Most effective monotherapy.</b> Partial agonist at nicotinic ACh receptors. Start <b>before</b> the quit date, usually <b>12 weeks</b>. After food, full glass of water, warn about vivid dreams."],
+["Bupropion","Start before the quit date, <b>7–9 weeks</b>. <b>Contraindicated</b>: current or previous <b>seizure disorder</b>, <b>anorexia nervosa</b>, <b>bulimia nervosa</b>, <b>CNS tumours</b>. Assess alcohol — excess raises seizure risk."],
+["NRT adverse effects","Patches — skin irritation, sleep disturbance, vivid dreams. Gum/lozenge — hiccups, jaw discomfort, dyspepsia. Spray — throat irritation, hiccups, cough."],
+["Vaping products","<b>Not first-line.</b> Consider only when first-line approaches have failed or are unsuitable."]]},
+
+copd:{mins:6,src:"Therapeutic Guidelines: Respiratory · COPD-X · GOLD 2026 · PHAR6302 Week 6",pts:[
+["Case finding, not screening","COPD-X recommends <b>targeted case-finding</b> in people with risk factors. Screening tools <b>do not diagnose</b> — they identify who needs diagnostic spirometry."],
+["Stepwise management","<b>Step 1</b> short-acting bronchodilator · <b>Step 2</b> long-acting <b>monotherapy</b> (LAMA or LABA) · <b>Step 3</b> <b>dual</b> LAMA + LABA."],
+["Where the guidelines split","<b>NICE</b> recommends LAMA + LABA from the start, and adds <b>ICS</b> at Step 3. Therapeutic Guidelines does not. The course names both — know that they differ."],
+["Exacerbation signs","Worsening beyond usual variation: more breathlessness, more cough, more sputum, change in colour or purulence, reduced exercise tolerance."],
+["Managing an exacerbation","Short-acting bronchodilator — <b>salbutamol preferred</b> for rapid onset. <b>Do not add ipratropium if already on a LAMA</b> (both muscarinic, overlapping). <b>Prednisolone</b> for increasing breathlessness and airflow limitation. <b>Antibiotics → refer to a medical practitioner.</b>"],
+["Escalate urgently","Severe breathlessness · <b>SpO₂ drifting towards 92%</b> · chest pain or arrhythmia · can't function at home · peripheral oedema · high fever · can't tolerate oral prednisolone · <b>drowsiness, agitation or confusion</b> (hypercapnia) · central cyanosis · suspected pneumonia."],
+["Comorbidities worth knowing","CV event risk stays raised for <b>up to a year</b> after a moderate-severe exacerbation. <b>BMI under 21</b> → higher mortality. <b>Over 30</b> → metabolic syndrome and OSA; CPAP reduces mortality in overlap."],
+["Pulmonary rehabilitation","Improves exercise capacity, quality of life and mental health <b>regardless of severity</b>, and cuts exacerbation hospitalisations."]]},
+
+eth:{mins:4,src:"PHAR6202 Weeks 1–2",pts:[
+["Four pillars","<b>Autonomy · beneficence · non-maleficence · justice.</b> Autonomy in practice = informed consent, truth-telling, privacy and confidentiality."],
+["Paternalism","<b>Soft</b> — the patient lacks understanding or capacity. <b>Hard</b> — overriding a <b>competent</b> patient's wishes for their own good."],
+["Its trade-off","Protects vulnerable patients and prevents harm, but reduces autonomy and damages trust. Modern practice has moved to <b>shared decision-making</b> and informed consent."],
+["Subjective ethics","Respects diversity and the individual's perspective — but produces inconsistent decisions and lets personal bias take over. Conscience matters; professional guidelines keep it fair."],
+["What shapes professional autonomy","Scope of practice · accountability · regulatory requirements · organisational policy · collaborative care · patient preferences."]]},
+
+comm:{mins:5,src:"PHAR6202 Weeks 3–4",pts:[
+["Two question types to avoid","<b>Compound</b> (double-barrelled) — two questions at once, raising cognitive load so answers come back incomplete. <b>Leading</b> — implies the answer, biasing the response and producing false reassurance."],
+["When you'll ask a leading question","Under time pressure, from preconceived assumptions, or when you already think you know the answer. That is exactly when to slow down."],
+["Disclosing an error — the sequence","<b>Acknowledge</b> the event · <b>apologise appropriately</b> · <b>facts only</b> · <b>assess understanding</b> · <b>address emotion</b> · <b>describe next steps</b> · <b>adapt to the person</b>."],
+["How to apologise","A sincere apology <i>for the situation</i> — “I'm sorry this occurred” — <b>without language implying legal blame</b>."],
+["Checking understanding","<b>Teach-back</b> or open questions. Never “does that make sense?”. Avoid jargon; explain slowly in plain language."],
+["Telling the GP","<b>Professional, factual, collaborative</b> — no blame, no defensiveness. <b>Timely and transparent</b> so harm is prevented. <b>Respectful and patient-centred</b>, focused on wellbeing not fault."]]},
+
+reas:{mins:4,src:"PHAR6202 Week 5",pts:[
+["What it actually is","Gather and interpret information → consider possible causes → decide <b>treat, test, refer or monitor</b> → explain and document your reasoning."],
+["Semantic qualifiers","<b>Paired, contrasting</b> terms — acute vs chronic, sudden vs gradual, unilateral vs bilateral. The contrast is the point; they sharpen a case summary."],
+["It is iterative","Reasoning evolves as information arrives. Revisit and refine rather than settling early."],
+["The OSCE consequence","Marking covers <b>the reasoning process</b>, not just the decision. <b>Narrate aloud</b> — silent correct thinking scores nothing."]]},
+
+safe:{mins:6,src:"PHAR6202 Week 6",pts:[
+["The question after an error","Not “<b>who</b> made the error?” but “<b>what contributed</b> to it?”"],
+["SEIPS work system","<b>Person · Tasks · Tools and technology · Organisation · Internal and external environment.</b> These shape processes, producing <b>system performance</b>, <b>patient outcomes</b> and <b>clinician wellbeing</b>."],
+["Diagnostic error → prescribing error","A missed, delayed or wrong diagnosis means the wrong drug, an omitted treatment, or the wrong dose, duration or choice."],
+["Bayesian vocabulary","<b>Prior</b> — likelihood before the test (prevalence, risk factors, context). <b>Likelihood</b> — how good the test is (sensitivity, specificity). <b>Posterior</b> — the updated probability after."],
+["Likelihood ratios","<b>LR+ above 10</b> — strong evidence <i>for</i>. <b>LR− below 0.1</b> — strong evidence <i>against</i>. Mid-range values move probability only modestly."],
+["Why LRs beat sensitivity alone","They apply to <b>this patient's</b> pre-test probability, via calculation or a Fagan nomogram, showing whether you have crossed a threshold to rule in, rule out or test further."],
+["The worked example","<b>D-dimer for PE.</b> Sensitivity 95%, specificity 45%, pre-test 20%. A <b>positive</b> takes you to about <b>30%</b> — <b>not</b> a diagnosis. Proceed to CTPA. A sensitive-but-unspecific test rules little IN; its value is ruling OUT when negative."]]},
+
+asthma:{mins:5,src:"Australian Asthma Handbook · QLD asthma protocol (Apr 2026 revision)",pts:[
+["Where the authority sits","The protocol states explicitly: where the <b>Australian Asthma Handbook</b> and Therapeutic Guidelines differ, <b>follow the AAH</b>."],
+["The April 2026 rewrite","Montelukast, SABA monotherapy and the treatment levels all changed. Anything you learned before that date needs re-checking."],
+["Montelukast","TGA-registered for asthma, so its Product Information says indicated — but the AAH and the protocol say <b>no routine role</b>, and pharmacists <b>must not initiate it</b>. PI tells you what is <i>registered</i>; guidelines tell you what is <i>recommended</i>."],
+["Assessment 3 link","Your ISBAR handover case must have <b>asthma or COPD</b>. Inhaler technique, adherence, control and exacerbation risk are the natural content."]]}
+};
 
 /* ============ THE CALENDAR THAT DRIVES REVISION ============
    Every dated thing you have to be ready FOR, and what it covers.
@@ -1857,6 +1963,7 @@ Array.prototype.forEach.call(tabs,function(t){t.addEventListener("click",functio
   if(p==="exam"){ if(!EX) renderExamSetup(); }
   if(p==="today") renderToday();
   if(p==="plan") renderPlan();
+  if(p==="learn") renderLearn();
   if(p==="course") renderCourse();
   if(p==="anat"){ if(!anatState.order.length) anatStart(); }
 })});
@@ -2204,8 +2311,16 @@ function renderToday(){
     html+="</div>";
   }
 
-  /* ---- study, offered small ---- */
+  /* ---- study: lead with a guided session ---- */
   var acts=[];
+  var sg=(typeof suggestTopic==="function")?suggestTopic():null;
+  if(sg && BRIEFS[sg.id]){
+    var sgm=masteryOf(sg.id);
+    acts.push({b:(S.read[sg.id]?"Continue ":"Learn ")+topicName(sg.id),
+      s:"Read the brief, then cards and questions. Anything you miss repeats until you get it. "+
+        (sgm.pct?"You're at "+sgm.pct+"%.":"About "+(BRIEFS[sg.id].mins+8)+" minutes."),
+      go:"learn", learn:sg.id});
+  }
   if(due){
     var bite=Math.min(due,8);
     acts.push({b:"Review "+bite+" card"+(bite===1?"":"s"),
@@ -2220,8 +2335,9 @@ function renderToday(){
     s:"No cards due. Ten minutes on a week you have not opened yet is never wasted.", go:"course"});
 
   html+="<div class='card'><h2>Or study</h2>";
-  acts.slice(0,2).forEach(function(a){
-    html+="<button class='next' data-go='"+a.go+"'"+(a.topic?" data-topic='"+a.topic+"'":"")+">"+
+  acts.slice(0,3).forEach(function(a){
+    html+="<button class='next' data-go='"+a.go+"'"+(a.topic?" data-topic='"+a.topic+"'":"")+
+          (a.learn?" data-learn='"+a.learn+"'":"")+">"+
           "<span class='lbl'><b>"+esc(a.b)+"</b><span>"+esc(a.s)+"</span></span>"+
           "<span class='go'>Start &rarr;</span></button>";
   });
@@ -2248,8 +2364,9 @@ function renderToday(){
   box.innerHTML=html;
   Array.prototype.forEach.call(box.querySelectorAll(".next"),function(b){
     b.addEventListener("click",function(){
-      var tp=b.getAttribute("data-topic");
+      var tp=b.getAttribute("data-topic"), lt=b.getAttribute("data-learn");
       if(tp){ mcqFilter=tp; mcqI=0; }
+      if(lt){ goTab("learn"); startSession(lt); return; }
       goTab(b.getAttribute("data-go"));
     });
   });
@@ -2260,6 +2377,206 @@ function renderToday(){
   var sp=document.getElementById("stepPlan");
   if(sp) sp.addEventListener("click",function(){ goTab("plan") });
   renderHeat();
+}
+
+
+/* ============ GUIDED LEARNING SESSION ============
+   Read -> Recall -> Test -> Fix. One path, no menus. A topic is not finished
+   until every question in it has been answered correctly at least once. */
+var LS=null;   /* live session, not persisted — a half-finished session is noise */
+
+function topicName(id){var c=CONDS.filter(function(x){return x.id===id})[0];return c?c.name:id}
+function cardsOf(id){var o=[];for(var i=0;i<CARDS.length;i++) if(CARDS[i][0]===id) o.push(i);return o}
+function mcqsOf(id){var o=[];for(var i=0;i<MCQ.length;i++) if(MCQ[i][0]===id) o.push(i);return o}
+function masteryOf(id){
+  var q=mcqsOf(id); if(!q.length) return {pct:null,right:0,total:0};
+  var r=0; q.forEach(function(i){ if(S.right[pk(i)]) r++; });
+  return {pct:Math.round(100*r/q.length),right:r,total:q.length};
+}
+/* which topic should they do next: the one the nearest event needs most */
+function suggestTopic(){
+  var ev=nextEvents(1)[0], pool=[];
+  if(ev&&ev.cov.length) pool=ev.cov.slice();
+  if(!pool.length) pool=CONDS.map(function(c){return c.id});
+  var best=null;
+  pool.forEach(function(t){
+    if(!BRIEFS[t]) return;
+    var m=masteryOf(t); if(m.pct===null) return;
+    if(!best||m.pct<best.pct) best={id:t,pct:m.pct,ev:ev};
+  });
+  return best;
+}
+
+function startSession(id){
+  var q=mcqsOf(id).filter(function(i){return !S.right[pk(i)]});
+  LS={t:id,phase:S.read[id]?"recall":"read",ci:0,cards:cardsOf(id).slice(0,8),
+      qs:q,qi:0,wrong:[],shown:false,done:0};
+  renderLearn();
+}
+
+function renderLearn(){
+  var box=document.getElementById("learnBody"); if(!box) return;
+  if(!LS){ return renderLearnHome(box); }
+  var t=LS.t, b=BRIEFS[t];
+  var steps=["read","recall","test","fix"], names={read:"Read",recall:"Recall",test:"Test",fix:"Fix"};
+  var cur=steps.indexOf(LS.phase);
+  var head="<div class='card'><h2>"+esc(topicName(t))+"</h2><div class='fcbar' style='margin:0 0 4px'>";
+  steps.forEach(function(p,i){
+    head+="<span class='chip"+(i<cur?" g":i===cur?" b":"")+"'>"+(i<cur?"✓ ":"")+names[p]+"</span>";
+  });
+  head+="<button class='btn' id='lsQuit' style='margin-left:auto'>Stop</button></div></div>";
+
+  var html=head;
+
+  if(LS.phase==="read"){
+    html+="<div class='card'><h2>Before you're tested <span style='float:right;text-transform:none;letter-spacing:0' class='small'>~"+b.mins+" min</span></h2>";
+    b.pts.forEach(function(p,i){
+      html+="<h3>"+(i+1)+". "+esc(p[0])+"</h3><div class='box'>"+p[1]+"</div>";
+    });
+    html+="<div class='small' style='margin-top:12px'>Source: "+esc(b.src)+"</div>"+
+      "<div class='fcbar'><button class='btn pri' id='lsNext'>Read it — test me</button>"+
+      "<button class='btn' id='lsFull'>Open the full topic page</button></div></div>";
+  }
+
+  else if(LS.phase==="recall"){
+    if(!LS.cards.length){ LS.phase="test"; return renderLearn(); }
+    var ci=LS.cards[LS.ci], c=CARDS[ci];
+    html+="<div class='card'><h2>Recall <span style='float:right;text-transform:none;letter-spacing:0' class='small'>"+(LS.ci+1)+" of "+LS.cards.length+"</span></h2>"+
+      "<div class='fc' id='lsCard'><div class='q'>"+c[1]+"</div>"+
+      (LS.shown?"<div class='a'>"+c[2]+"</div>":"<div class='hint'>tap to reveal</div>")+"</div>";
+    if(LS.shown) html+="<div class='fcbar'><button class='btn' id='lsMiss'>Didn't know it</button>"+
+      "<button class='btn pri' id='lsGot'>Knew it</button></div>";
+    html+="</div>";
+  }
+
+  else if(LS.phase==="test"||LS.phase==="fix"){
+    /* Test walks the list once. Fix always works on the head of the wrong
+       queue — a miss rotates it to the back, a hit removes it. No index maths,
+       so nothing can be skipped and the queue always drains. */
+    if(LS.phase==="test" && LS.qi>=LS.qs.length){ LS.phase=LS.wrong.length?"fix":"done"; LS.qi=0; return renderLearn(); }
+    if(LS.phase==="test" && !LS.qs.length){ LS.phase=LS.wrong.length?"fix":"done"; return renderLearn(); }
+    if(LS.phase==="fix" && !LS.wrong.length){ LS.phase="done"; return renderLearn(); }
+    var qi = LS.phase==="fix" ? LS.wrong[0] : LS.qs[LS.qi];
+    var q=MCQ[qi], ans=S.mcq[pk(qi)];
+    html+="<div class='card'><h2>"+(LS.phase==="fix"?"Fix — these came back":"Test")+
+      " <span style='float:right;text-transform:none;letter-spacing:0' class='small'>"+
+      (LS.phase==="fix" ? LS.wrong.length+" to clear" : (LS.qi+1)+" of "+LS.qs.length)+"</span></h2>";
+    if(LS.phase==="fix"&&ans==null)
+      html+="<div class='box amb' style='margin-top:0'>These repeat until you get them right.</div>";
+    html+="<div style='font-size:var(--fs-base);margin-bottom:12px'>"+q[1]+"</div><div id='lsOpts'></div>";
+    if(ans!=null){
+      html+="<div class='box "+(ans===q[3]?"grn":"red")+"'><b>"+
+        (ans===q[3]?"✓ Correct.":"✗ Not quite.")+"</b> "+q[4]+"</div>"+
+        "<div class='fcbar'><button class='btn pri' id='lsNext'>Next</button></div>";
+    }
+    html+="</div>";
+  }
+
+  else if(LS.phase==="done"){
+    var m=masteryOf(t);
+    html+="<div class='card'><h2>Done</h2>"+
+      "<div class='box grn' style='margin-top:0'><b>"+esc(topicName(t))+" — "+m.pct+"% mastered.</b>"+
+      "<div style='margin-top:6px'>"+m.right+" of "+m.total+" questions answered correctly at least once.</div></div>"+
+      "<div class='bar'><i style='width:"+m.pct+"%'></i></div>"+
+      (m.pct===100?"<div class='small'>Nothing outstanding on this topic.</div>"
+        :"<div class='small'>The rest come back next time you run this topic.</div>")+
+      "<div class='fcbar'><button class='btn pri' id='lsHome'>Pick another topic</button></div></div>";
+  }
+
+  box.innerHTML=html;
+
+  var qb=document.getElementById("lsQuit"); if(qb) qb.addEventListener("click",function(){LS=null;renderLearn()});
+  var hb=document.getElementById("lsHome"); if(hb) hb.addEventListener("click",function(){LS=null;renderLearn()});
+  var fb=document.getElementById("lsFull"); if(fb) fb.addEventListener("click",function(){curCond=LS.t;goTab("cond");renderCond&&renderCond()});
+
+  var nb=document.getElementById("lsNext");
+  if(nb) nb.addEventListener("click",function(){
+    if(LS.phase==="read"){ S.read[LS.t]=true; save(); LS.phase="recall"; }
+    else if(LS.phase==="fix"){
+      var cq=LS.wrong[0];
+      if(cq!=null){
+        if(S.right[pk(cq)]) LS.wrong.shift();          /* learned — drop it */
+        else { delete S.mcq[pk(cq)]; LS.wrong.shift(); LS.wrong.push(cq); }  /* missed — back of the queue */
+        save();
+      }
+    }
+    else {
+      var tq=LS.qs[LS.qi];
+      if(tq!=null && !S.right[pk(tq)]){ delete S.mcq[pk(tq)]; save(); }
+      LS.qi++;
+    }
+    renderLearn();
+  });
+
+  var cd=document.getElementById("lsCard");
+  if(cd) cd.addEventListener("click",function(){ if(!LS.shown){LS.shown=true;renderLearn();} });
+  var gb=document.getElementById("lsGot"), mb=document.getElementById("lsMiss");
+  function advCard(known){
+    var ci=LS.cards[LS.ci], k=pk(ci);
+    S.box[k]=known?Math.min(5,(S.box[k]||0)+1):1; save(); logAction&&logAction(1);
+    LS.ci++; LS.shown=false;
+    if(LS.ci>=LS.cards.length){ LS.phase="test"; LS.qi=0; }
+    renderLearn();
+  }
+  if(gb) gb.addEventListener("click",function(){advCard(true)});
+  if(mb) mb.addEventListener("click",function(){advCard(false)});
+
+  var ow=document.getElementById("lsOpts");
+  if(ow){
+    var qi = LS.phase==="fix" ? LS.wrong[0] : LS.qs[LS.qi];
+    var q=MCQ[qi], ans=S.mcq[pk(qi)];
+    if(!window.__perm) window.__perm={};
+    if(!window.__perm[qi]){
+      var idx=q[2].map(function(_,z){return z});
+      for(var z=idx.length-1;z>0;z--){var r=Math.floor(Math.random()*(z+1));var tt=idx[z];idx[z]=idx[r];idx[r]=tt;}
+      window.__perm[qi]=idx;
+    }
+    window.__perm[qi].forEach(function(oi,pos){
+      var cls="opt";
+      if(ans!=null){ if(oi===q[3]) cls+=" right"; else if(oi===ans) cls+=" wrong"; else cls+=" dim"; }
+      var btn=el("button",cls,"<b>"+"ABCDEF"[pos]+"</b>"+q[2][oi]);
+      if(ans==null) btn.addEventListener("click",function(){
+        S.mcq[pk(qi)]=oi;
+        if(oi===q[3]) S.right[pk(qi)]=true;
+        else if(LS.phase==="test" && LS.wrong.indexOf(qi)<0) LS.wrong.push(qi);
+        save(); logAction&&logAction(1); renderLearn(); renderProg&&renderProg();
+      });
+      ow.appendChild(btn);
+    });
+  }
+}
+
+function renderLearnHome(box){
+  var sug=suggestTopic();
+  var html="";
+  if(sug){
+    var b=BRIEFS[sug.id], m=masteryOf(sug.id);
+    html+="<div class='card'><h2>Start here</h2>"+
+      "<div class='box "+(m.pct<50?"amb":"blu")+"' style='margin-top:0'><b>"+esc(topicName(sug.id))+"</b>"+
+      "<div style='margin-top:6px'>"+(sug.ev?"Needed for "+esc(sug.ev.t)+", "+esc(whenWord(daysTo(sug.ev.d)))+". ":"")+
+      "You're at <b>"+m.pct+"%</b> on this one."+"</div>"+
+      "<div class='small' style='margin-top:8px'>Read the brief (~"+b.mins+" min), then "+
+      Math.min(8,cardsOf(sug.id).length)+" cards and "+mcqsOf(sug.id).length+" questions. Anything you miss repeats until you get it.</div></div>"+
+      "<div class='fcbar'><button class='btn pri' data-start='"+esc(sug.id)+"'>Start this session</button></div></div>";
+  }
+  html+="<div class='card'><h2>Every topic</h2><div class='small' style='margin-bottom:12px'>"+
+    "Mastery counts a question as learned once you've answered it correctly. Missed ones come back.</div>";
+  var ids=CONDS.map(function(c){return c.id}).filter(function(i){return BRIEFS[i]});
+  ids.sort(function(a,b){var x=masteryOf(a),y=masteryOf(b);return (x.pct===null?101:x.pct)-(y.pct===null?101:y.pct)});
+  ids.forEach(function(id){
+    var m=masteryOf(id), b=BRIEFS[id];
+    html+="<div style='margin-bottom:14px'>"+
+      "<div class='stat'><span><b>"+esc(topicName(id))+"</b>"+(S.read[id]?" <span class='chip g'>brief read</span>":"")+"</span>"+
+      "<b>"+(m.pct===null?"—":m.pct+"%")+"</b></div>"+
+      "<div class='bar'><i style='width:"+(m.pct||0)+"%"+((m.pct||0)<50?";background:var(--red)":(m.pct||0)<80?";background:var(--amber)":"")+"'></i></div>"+
+      "<div class='stat'><span class='small'>"+cardsOf(id).length+" cards · "+m.right+" of "+m.total+" questions right · ~"+b.mins+" min read</span>"+
+      "<button class='btn' data-start='"+esc(id)+"'>"+(m.pct===100?"Revise":m.pct?"Continue":"Start")+"</button></div></div>";
+  });
+  html+="</div>";
+  box.innerHTML=html;
+  Array.prototype.forEach.call(box.querySelectorAll("[data-start]"),function(b){
+    b.addEventListener("click",function(){ startSession(b.getAttribute("data-start")) });
+  });
 }
 
 function renderPlan(){
