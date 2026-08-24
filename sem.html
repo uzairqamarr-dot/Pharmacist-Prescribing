@@ -251,9 +251,9 @@ textarea{width:100%;resize:vertical;min-height:70px;line-height:1.5}
       <div class="wk"><span class="wkn">Wk 1</span><span>17 Aug — semester starts</span></div>
       <div class="wk"><span class="wkn">Wk 5</span><span>14 Sep — <b>intensive weekend</b> 19–20 Sep</span></div>
       <div class="wk"><span class="wkn">Recess</span><span>28 Sep – 2 Oct</span></div>
-      <div class="wk"><span class="wkn">Wk 10</span><span>26 Oct — viva voce week + <b>intensive weekend</b> 31 Oct–1 Nov</span></div>
+      <div class="wk"><span class="wkn">Wk 10</span><span>26 Oct — <b>viva 28 Oct</b> + <b>intensive weekend</b> 31 Oct–1 Nov</span></div>
       <div class="wk"><span class="wkn">Wk 12</span><span>9 Nov — final teaching week</span></div>
-      <div class="wk"><span class="wkn">Exams</span><span>OSCE — date TBA</span></div>
+      <div class="wk"><span class="wkn">Exams</span><span>OSCE — <b>26 or 27 Nov</b>, one day only</span></div>
     </div>
   </div>
 
@@ -502,27 +502,29 @@ var FIXED = [
   {d:"2026-10-27", t:"Tutorial 5", m:"6:30–8:30pm online", k:"tut"},
   {d:"2026-10-30", t:"Travel day — leave requested", m:"Friday before the Week 10 intensive", k:"leave"},
   {d:"2026-10-31", t:"INTENSIVE — Week 10, day 1", m:"Sat 08:30–16:00 · Callaghan · compulsory", k:"int"},
+  {d:"2026-10-28", t:"Viva Voce", m:"6302 · tentative · 15 min online · 30% · must pass", k:"as"},
   {d:"2026-11-01", t:"INTENSIVE — Week 10, day 2", m:"Sun 08:30–16:00 · Callaghan · compulsory", k:"int"},
   {d:"2026-11-10", t:"Tutorial 6", m:"6:30–8:30pm online", k:"tut"},
-  {d:"2026-11-13", t:"Prescribing Portfolio + WBAs due", m:"6202 · 11:59pm · 30% · must submit", k:"as"}
+  {d:"2026-11-13", t:"Prescribing Portfolio + WBAs due", m:"6202 · 11:59pm · 30% · must submit", k:"as"},
+  {d:"2026-11-26", t:"OSCE — day 1 option", m:"6202 · tentative · 50% · must pass · on campus", k:"as"},
+  {d:"2026-11-27", t:"OSCE — day 2 option", m:"6202 · tentative · you attend ONE of the two days", k:"as"}
 ];
 
 var TBA = [
-  {id:"quiz1", label:"Module Quiz 1", hint:"6302 · during Week 4 (7–11 Sep)", k:"as"},
-  {id:"quiz2", label:"Module Quiz 2", hint:"6302 · during Week 8 (12–16 Oct)", k:"as"},
-  {id:"viva",  label:"Viva Voce (oral)", hint:"6302 · Week 10 (26–30 Oct)", k:"as"},
-  {id:"osce",  label:"Multi-station OSCE", hint:"6202 · formal examination period", k:"as"}
+  {id:"viva",  label:"Viva Voce — exact time", hint:"6302 · tentative Wed 28 Oct · individual slot to be allocated", k:"as"},
+  {id:"osce",  label:"OSCE — which day, what time, where", hint:"6202 · tentative Thu 26 or Fri 27 Nov · you attend ONE day", k:"as"},
+  {id:"stream", label:"Intensive stream allocation", hint:"6202 · Block 1, 2 or 3 · advised before the intensives", k:"int"}
 ];
 
 var ASSESS = [
-  ["Week 4 (TBA)","6302","Module Quiz 1","10%",""],
-  ["Fri 25 Sep","6302","Chronic Condition Action Plan (written)","20%","must pass"],
+  ["7–13 Sep","6302","Module Quiz 1 — opens Mon 7, closes 11:59pm Sun 13","10%",""],
+  ["Fri 25 Sep","6302","Chronic Condition Action Plan — max 2000 words","20%","must pass"],
   ["Fri 9 Oct","6202","Reflection on GenAI in Clinical Documentation","20%","must submit"],
-  ["Week 8 (TBA)","6302","Module Quiz 2","10%",""],
-  ["Fri 23 Oct","6302","Interprofessional Handover (ISBAR)","30%","must submit"],
-  ["Week 10 (TBA)","6302","Viva Voce (oral)","30%","must pass"],
-  ["Fri 13 Nov","6202","Prescribing Portfolio + WBAs","30%","must submit"],
-  ["Exams (TBA)","6202","Multi-station OSCE","50%","must pass"]
+  ["12–18 Oct","6302","Module Quiz 2 — opens Mon 12, closes 11:59pm Sun 18","10%",""],
+  ["Fri 23 Oct","6302","Interprofessional Handover (ISBAR) — asthma or COPD case","30%","must submit"],
+  ["Wed 28 Oct","6302","Viva Voce — 15 min, online, closed book","30%","must pass"],
+  ["Fri 13 Nov","6202","Prescribing Portfolio + Case Reflections + OPU Diary","30%","must submit"],
+  ["26–27 Nov","6202","Multi-station OSCE — you attend one of the two days","50%","must pass"]
 ];
 
 var MARKS = {
