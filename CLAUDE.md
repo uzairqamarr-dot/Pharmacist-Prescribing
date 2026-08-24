@@ -9,6 +9,50 @@ Hosted on GitHub Pages at
 https://uzairqamarr-dot.github.io/Pharmacist-Prescribing/ — added to the phone
 home screen, used often with no signal.
 
+## Session handover — read this first
+
+**Last worked: 25 August 2026.** Live version v2026.08.25d; there may be uncommitted
+work in `study.html` beyond that — check `git status` before doing anything.
+
+### What exists now, beyond the original four-file layout
+
+| Thing | Where | Notes |
+|---|---|---|
+| `BRIEFS` | `study.html` | Condensed must-know content per topic, read BEFORE testing. `{mins, src, pts:[[heading, html]]}` |
+| `PLAN` | `study.html` | All 9 assessments decomposed into dated, startable steps |
+| `EVENTS` | `study.html` | Tutorials, intensives, quizzes, viva, OSCE — with `cov:[topicIds]` driving readiness |
+| `PACKS` | `study.html` | Per-condition prescribing pack: eligibility, referral, prescribable medicines, clinical checks, non-pharm, self-care |
+| Learn tab | `renderLearn()` | Guided Read → Recall → Test → Fix session. `LS` holds the live session, not persisted |
+| Mastery | `S.right{}` | A question is learned once answered correctly. Wrong ones repeat until right |
+
+New state keys: `S.steps` (plan), `S.right` (mastery), `S.read` (briefs seen).
+**Any code that rebuilds `S` from scratch must include all of them** — omitting them
+previously bricked three tabs.
+
+### Hard-won lessons — do not relearn these
+
+- **`S.box` entries are objects** `{b, due, seen}`, never bare numbers. A build that
+  wrote numbers made cards permanently un-due. There is a repair-on-load in place;
+  leave it.
+- **Two risk frameworks disagree and both are examinable.** QLD protocol: low and
+  intermediate treat at ≥160/100 target 140/90; high treat at ≥130/85 target SBP 120.
+  Heart Foundation 2016: low ≥160/100, moderate ≥140/90, target <140/90. Never state
+  one as if it were the other.
+- **jsdom tests must scope queries to the pane under test.** Document-wide selectors
+  hit other panes and give false passes.
+- **I cannot push to GitHub.** No credentials in the sandbox. Always hand the user:
+  `cd ~/Pharmacist-Prescribing && git add -A && git commit -m "..." && git push`
+- Do not run git write commands from the sandbox — they leave `.git/index.lock`
+  files that cannot be deleted and block the user's own commits.
+
+### Standing requests from the user
+
+- Teach before testing: content first, then assessment.
+- Prioritise by what is due soonest and what is actually assessable.
+- Run the `review-panel` skill's agents before shipping content changes.
+- Tell them when material is missing (eTG, AMH, unreleased weeks) rather than guessing.
+
+
 ## Layout
 
 Four files at the repo root. No build step, no bundler, no npm.
@@ -116,19 +160,23 @@ revised (e.g. well-controlled asthma and mild COPD are now eligible). The
 changes summary is in the corpus under "Updates Apr 2026". Prefer current
 criteria over anything older.
 
-## Coverage as at v2026.08.18g
+## Coverage as at v2026.08.26a
 
-Semester 1 — 20 conditions, 143 cards, 91 MCQ, 0 OSCE.
+Semester 1 — 20 conditions, 143 cards, 91 MCQ, 8 OSCE stations.
 
-Semester 2 — 5 conditions:
+Semester 2 — 11 topics, **204 cards, 100 MCQ, 10 OSCE stations**, plus guided
+Learn sessions with must-know briefs and per-condition prescribing packs.
 
-| Condition | Cards | MCQ | Corpus chunks |
-|---|---|---|---|
-| htn | 54 | 27 | 57 |
-| asthma | 22 | 10 | 68 |
-| lipid | 10 | 5 | 36 |
-| bgl | 9 | 5 | 45 |
-| copd | 7 | 4 | 55 |
+| Topic | Cards | MCQ | Brief | Pack |
+|---|---|---|---|---|
+| htn | 59+ | 30+ | yes | yes |
+| asthma | 26+ | 12+ | yes | yes |
+| copd | 25+ | 12+ | yes | yes |
+| lipid | 21+ | 10+ | yes | yes |
+| bgl | 19+ | 11+ | yes | yes |
+| smoke / wt | 13 | 4 | yes | — not Program conditions |
+| eth / comm / reas / safe (6202) | 27 | 13 | yes | — |
+
 
 ## Known gaps
 
