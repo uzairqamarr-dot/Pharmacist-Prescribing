@@ -529,6 +529,11 @@ body{padding:0}
       <h2>Coverage by condition</h2>
       <div id="covBody"></div>
     </div>
+
+    <div class="card">
+      <h2>Read this before you trust the bars</h2>
+      <div id="honest"></div>
+    </div>
     <div class="card">
       <h2>Backup</h2>
       <p class="small">Progress lives in this browser. Copy this out occasionally.</p>
@@ -3944,6 +3949,27 @@ function renderProg(){
     return "<div class='stat'><span>"+esc(c.name)+"</span><b>"+cm+"/"+cd+" cards · "+qn+"/"+qt+" MCQs</b></div>";
   }).join("");
   document.getElementById("covBody").innerHTML=cov;
+
+  /* What the numbers above do and do not mean. This sits here deliberately:
+     a progress bar reading 87% is exactly where false confidence is made. */
+  var vv=Object.keys(S.viva||{}).length, vtot=(typeof VIVA!=="undefined"?VIVA.length:0);
+  var runs=Object.keys(S.osceRuns||{}).length;
+  var hb=document.getElementById("honest");
+  if(hb) hb.innerHTML=
+    "<div class='box amb' style='margin-top:0'><b>What these numbers are not.</b> "+
+    "Everything above measures <i>recognition</i> — you picked the right option, or you felt you knew the card. "+
+    "Your viva is oral and closed-book and your OSCE marks reasoning under time. Neither is scored above.</div>"+
+    "<div class='stat'><span>Spoken viva prompts self-rated</span><b>"+vv+" / "+vtot+"</b></div>"+
+    "<div class='stat'><span>OSCE stations run against the clock</span><b>"+runs+" / "+OSCE.length+"</b></div>"+
+    (vv<vtot/3||runs<1
+      ? "<div class='box red'>The two things closest to how you are actually assessed are the two you have done least. "+
+        "Box 5 on every card will not carry you through a station.</div>"
+      : "<div class='box grn'>You are practising production, not just recognition. That is the part that transfers.</div>")+
+    "<div class='box blu'><b>What this app is.</b> A revision aid built from your own Canvas materials and the "+
+    "Queensland pilot protocols. It is not a clinical reference, not a substitute for eTG, AMH or the "+
+    "Australian Asthma Handbook, and not evidence of competence to prescribe. Where two guidelines disagree it "+
+    "names both rather than picking one. Where your materials are silent it says so instead of filling the gap. "+
+    "Check anything before you act on it with a patient.</div>";
 }
 document.getElementById("exp").addEventListener("click",function(){document.getElementById("io").value=JSON.stringify(S)});
 document.getElementById("imp").addEventListener("click",function(){
