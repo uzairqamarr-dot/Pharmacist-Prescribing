@@ -306,6 +306,7 @@ body{padding:0}
     <button class="tab" data-p="mcq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3M12 17h.01"/></svg><span>MCQs</span></button>
     <button class="tab" data-p="exam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM14 2v6h6M9 13h6M9 17h4"/></svg><span>Exam</span></button>
     <button class="tab" data-p="anat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 013 3v2a3 3 0 01-6 0V5a3 3 0 013-3zM6 22v-5a6 6 0 0112 0v5"/></svg><span>Anatomy</span></button>
+    <button class="tab" data-p="viva"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 00-3 3v6a3 3 0 006 0V5a3 3 0 00-3-3zM19 10v1a7 7 0 01-14 0v-1M12 18v4M8 22h8"/></svg><span>Say it out loud</span></button>
     <button class="tab" data-p="osce"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6v3H9zM8 5h8a2 2 0 012 2v13a2 2 0 01-2 2H8a2 2 0 01-2-2V7a2 2 0 012-2zM9 12h6M9 16h4"/></svg><span>OSCE</span></button>
     <button class="tab" data-p="ask"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.4 8.4 0 01-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.4 8.4 0 013.8-.9h.5a8.5 8.5 0 018 8v.5z"/></svg><span>Ask the Hub</span></button>
     <button class="tab" data-p="prog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-4 3 3 6-6"/></svg><span>Progress</span></button>
@@ -364,6 +365,9 @@ body{padding:0}
     <div class="condnav" id="wkNav"></div>
     <div id="wkBody"></div>
   </div>
+
+  <!-- VIVA -->
+  <div class="pane" id="p-viva"><div id="vivaBody"></div></div>
 
   <!-- CRAM -->
   <div class="pane" id="p-cram"><div id="cramBody"></div></div>
@@ -553,7 +557,7 @@ window.__SEM1__ = {"conds":[{"id":"impetigo","name":"Impetigo","tag":"Impetigo �
 (function(){
 "use strict";
 var KEY="phar-hub-v1";
-var S={box:{},mcq:{},osce:{},exams:[],days:{},sem:"s2",steps:{},right:{},read:{}};
+var S={box:{},mcq:{},osce:{},exams:[],days:{},sem:"s2",steps:{},right:{},read:{},viva:{}};
 try{var r=localStorage.getItem(KEY); if(r){var p=JSON.parse(r); for(var k in S) if(p[k]!=null) S[k]=p[k];}}catch(e){}
 /* Repair: an earlier build wrote plain numbers (and NaN->null) into S.box, which
    made those cards never come due again. Coerce anything non-object back to a
@@ -2264,6 +2268,7 @@ Array.prototype.forEach.call(tabs,function(t){t.addEventListener("click",functio
   if(p==="learn") renderLearn();
   if(p==="exams") renderExams();
   if(p==="cram") renderCram();
+  if(p==="viva") renderViva();
   if(p==="cards"){ pickCard(); renderFc(); }
   if(p==="mcq") renderMcq();
   if(p==="course") renderCourse();
@@ -3103,6 +3108,120 @@ var VITALS=[
 ];
 
 
+
+/* ============ SAY IT OUT LOUD ============
+   The viva is 30%, oral and closed-book. The OSCE marks the reasoning, not the
+   answer. Recognising a right option in a list does not train either of those.
+   Here you get a prompt, you say the answer ALOUD, and only then see a model
+   answer to mark yourself against. Uncomfortable on purpose. */
+var VIVA=[
+["htn","Talk me through how you calculated this patient's cardiovascular risk, and what you did with the number.",
+ "Name the calculator (AusCVDRisk), state you used CLINIC blood pressure not home readings, give the category, then say what the category changed — the treatment threshold and the target. Mention any reclassification factor you applied and why."],
+["htn","Why did you choose that antihypertensive rather than one of the others?",
+ "Name the class, then justify against THIS patient — comorbidity, age, renal function, pregnancy plans, adverse effect profile, cost. State the alternatives you considered and why they lost. Note the Program permits a maximum of two agents."],
+["htn","This patient's blood pressure is 148/92 and their risk is intermediate. What do you do?",
+ "Name the framework you are answering in. Under the QLD protocol: between 140/90 and 160/100 at intermediate risk, reinforce lifestyle and repeat in 2 months. Under the Heart Foundation bands, moderate risk at ≥140/90 would start therapy. Say that they differ, and say which you are applying."],
+["htn","What would make you refer this patient rather than manage them?",
+ "BP ≥180/110 regardless of symptoms. Any complex CVD, CKD stage 3–5, type 1 diabetes, pregnancy or planning. Suspected secondary cause. Target unmet on two agents at maximum tolerated dose. And say you would hand over with a comprehensive clinical handover."],
+["lipid","Justify your lipid-lowering choice and the target you set.",
+ "Statin first-line unless contraindicated or not tolerated; high dose of a high-potency statin if high risk or LDL-C above 4.0. State the target by risk category, and the ≥50% reduction rule. Name the baseline pathology — LFT and CK — and when you would recheck."],
+["lipid","Their total cholesterol is 7.8. Walk me through your thinking.",
+ "That is severe hyperlipidaemia (TC ≥7.5 or LDL-C ≥5.0). It is managed REGARDLESS of the calculated risk — refer to their usual provider. Say explicitly that the calculator does not override a markedly abnormal lipid result."],
+["bgl","Defend your choice of glucose-lowering agent for this patient.",
+ "Metformin first-line unless contraindicated. Then justify the second agent against renal function, weight, cardiovascular and renal benefit, hypoglycaemia risk and cost. State their individualised HbA1c target and why it is that number rather than a default."],
+["bgl","What would you tell this patient about sick days?",
+ "SGLT-2 inhibitors: stop during acute serious illness, prolonged fasting, bowel prep, low-carbohydrate intake or excess alcohol — ketoacidosis risk, and the glucose can look normal. Metformin and GLP-1s: withhold with vomiting, diarrhoea or poor intake. Give them the NDSS sick day plan and tell their usual provider."],
+["copd","Take me through your management plan for this patient's COPD.",
+ "Confirm eligibility first — FEV₁ ≥60% predicted, exacerbation history, no exclusion. Then: smoking cessation as the single most beneficial measure, pulmonary rehabilitation, immunisation, a written action plan, and the stepwise pharmacotherapy with where they sit and why."],
+["copd","When would you not manage this COPD patient under the Program?",
+ "Under 35. FEV₁ below 60% predicted. Ever hospitalised, ever an exacerbation needing both steroids and antibiotics, or ≥2 exacerbations in 12 months. Poorly controlled mental health. No improvement after a month on Step 3 needing triple therapy. Complex cardiovascular disease. Any alarm feature."],
+["asthma","How would you assess whether this patient's asthma is adequately controlled?",
+ "Symptom frequency, night waking, reliever use, activity limitation, and exacerbation history. Check inhaler technique by WATCHING, not asking. Then map against the AAH treatment levels — and note that needing Level 4 puts them outside the Program."],
+["comm","A patient asks for an antibiotic you do not think is indicated. Show me that conversation.",
+ "Assess before you negotiate. Name the tension aloud — autonomy against non-maleficence. Explain the reasoning in plain language, not authority. Offer a genuine alternative plan with safety netting and specific return criteria. Maintain the relationship without conceding the clinical point."],
+["comm","You have made a prescribing error and the patient has been harmed. What do you say?",
+ "Acknowledge the event. Apologise sincerely for the situation without language implying legal blame. Facts only, no speculation. Address the emotion before the logistics. Teach-back to check understanding. Describe what has been done and what monitoring follows. Then tell the GP promptly, factually, without defensiveness."],
+["comm","How would you explain absolute cardiovascular risk to someone with low health literacy?",
+ "Avoid the bare percentage. Use natural frequency — out of 100 people like you. Anchor it to something they care about. Check understanding with teach-back, not 'does that make sense'. Offer the choice genuinely, including the choice to wait."],
+["reas","Talk me through your reasoning on this presentation — think aloud.",
+ "Narrate, do not conclude silently. Gather and interpret, generate more than one possibility, use paired contrasting terms, say what would raise or lower each, name the decision explicitly as treat, test, refer or monitor, and state your uncertainty honestly."],
+["reas","What might you have got wrong here?",
+ "Name a specific bias and how it could have operated on THIS case — anchoring on the first diagnosis, premature closure, availability from a recent case. Then say what you would do differently. Saying 'nothing' is the wrong answer."],
+["safe","This test came back positive. What does that actually tell you?",
+ "Start with the pre-test probability, not the result. Apply the likelihood ratio. State the post-test probability and whether it crosses a threshold to rule in, rule out, or test further. For a sensitive but unspecific test, a positive rules little in."],
+["safe","An error happened on your watch. What questions do you ask?",
+ "Not who, but WHAT CONTRIBUTED. Walk the SEIPS components — person, tasks, tools and technology, organisation, environment. Then the outcomes: system performance, patient outcomes, clinician wellbeing."],
+["eth","A competent patient is refusing the treatment you believe they need. What now?",
+ "Explore why before persuading. Confirm capacity and that their refusal is informed, not misinformed. Respect the refusal — overriding it is hard paternalism. Document the discussion, agree a review, and leave the door open."],
+["eth","What limits your professional autonomy as a prescriber?",
+ "Scope of practice, professional accountability, regulatory requirements, organisational policy, collaborative care and patient preferences. And say plainly: NSW expanded scope does not include routine pharmacist prescribing for hypertension — knowing a QLD protocol is not the same as being authorised to use it."],
+["wt","How would you open a conversation about weight?",
+ "Ask permission first. Use neutral, non-judgemental language. Establish what THEY want before offering a plan. Set a realistic target — 5–10% initially — and name non-weight outcomes as success. Check what their glucose-lowering medicines do before changing anything."],
+["smoke","This patient has tried to quit twice and failed. What do you offer?",
+ "Explore what happened, not just what they took. Assess dependence — time to first cigarette. Combination NRT or varenicline, matched to previous response, contraindications and preference. Behavioural support alongside, and follow-up scheduled rather than offered."]
+];
+
+var vvI=0, vvShown=false, vvFilter="__all__", vvT=null, vvSec=0;
+function vivaList(){ return VIVA.map(function(v,i){return {i:i,v:v}})
+  .filter(function(o){ return vvFilter==="__all__" || o.v[0]===vvFilter }); }
+
+function renderViva(){
+  var box=document.getElementById("vivaBody"); if(!box) return;
+  var list=vivaList();
+  if(!list.length){ vvFilter="__all__"; list=vivaList(); }
+  if(vvI>=list.length) vvI=0;
+  var it=list[vvI], v=it.v, key="vv:"+it.i, mark=S.viva[key];
+
+  var opts=[["__all__","Every prompt ("+VIVA.length+")"]];
+  var counts={}; VIVA.forEach(function(x){counts[x[0]]=(counts[x[0]]||0)+1});
+  CONDS.forEach(function(c){ if(counts[c.id]) opts.push([c.id,c.name+" ("+counts[c.id]+")"]); });
+
+  var scored=0,tot=0;
+  VIVA.forEach(function(x,i){ if(S.viva["vv:"+i]!=null){tot++; scored+=S.viva["vv:"+i];} });
+
+  var h="<div class='card'><h2>Say it out loud</h2>"+
+    "<div class='box blu' style='margin-top:0'>Your viva is <b>15 minutes, oral and closed-book</b>, and the OSCE marks "+
+    "the reasoning rather than the answer. Recognising a correct option in a list trains neither. "+
+    "<b>Say your answer aloud before you reveal the model one</b> — thinking it is not the same skill.</div>"+
+    "<select id='vvSel' style='margin-bottom:8px'>"+opts.map(function(o){
+      return "<option value='"+o[0]+"'"+(o[0]===vvFilter?" selected":"")+">"+esc(o[1])+"</option>"}).join("")+"</select>"+
+    "<div class='stat'><span class='small'>"+(vvI+1)+" of "+list.length+"</span>"+
+      "<span class='small'>"+(tot?"self-rated "+Math.round(scored/tot/2*100)+"% across "+tot:"")+"</span></div></div>";
+
+  h+="<div class='card'><h2>Prompt <span style='float:right;text-transform:none;letter-spacing:0' class='small' id='vvClock'>"+
+      (vvT?"recording…":"")+"</span></h2>"+
+    "<div style='font-size:var(--fs-md);line-height:1.5'>"+esc(v[1])+"</div>";
+
+  if(!vvShown){
+    h+="<div class='box amb'>Answer it out loud now. Take the time you would in the room.</div>"+
+       "<div class='fcbar'><button class='btn pri' id='vvShow'>I've said it — show me a good answer</button>"+
+       "<button class='btn' id='vvSkip'>Skip</button></div>";
+  } else {
+    h+="<div class='box grn'><b>A good answer covers:</b><div style='margin-top:6px'>"+esc(v[2])+"</div></div>"+
+       "<div class='small'>How close were you? Be honest — this only works if you are.</div>"+
+       "<div class='fcbar'>"+
+       "<button class='btn' data-vv='0'>Not really</button>"+
+       "<button class='btn' data-vv='1'>Partly</button>"+
+       "<button class='btn pri' data-vv='2'>Nailed it</button></div>";
+    if(mark!=null) h+="<div class='small'>Last time: "+["not really","partly","nailed it"][mark]+"</div>";
+  }
+  h+="</div>";
+  box.innerHTML=h;
+
+  var sel=document.getElementById("vvSel");
+  if(sel) sel.onchange=function(){ vvFilter=sel.value; vvI=0; vvShown=false; renderViva(); };
+  var sh=document.getElementById("vvShow");
+  if(sh) sh.addEventListener("click",function(){ vvShown=true; renderViva(); });
+  var sk=document.getElementById("vvSkip");
+  if(sk) sk.addEventListener("click",function(){ vvI++; vvShown=false; renderViva(); });
+  Array.prototype.forEach.call(box.querySelectorAll("[data-vv]"),function(b){
+    b.addEventListener("click",function(){
+      S.viva[key]=+b.getAttribute("data-vv"); save(); logAction&&logAction(1);
+      vvI++; vvShown=false; renderViva();
+    });
+  });
+}
+
 /* ============ THEME TAGS ============
    Questions get a theme by inspecting their own text, so nothing is stored and
    no saved index can shift. Lets you drill "every eligibility question across
@@ -3690,7 +3809,7 @@ document.getElementById("imp").addEventListener("click",function(){
   catch(e){document.getElementById("io").value="That didn't parse."}
 });
 document.getElementById("rst").addEventListener("click",function(){
-  S={box:{},mcq:{},osce:{},exams:[],days:{},sem:SEM,steps:{},right:{},read:{}};LS=null;save();mcqI=0;pickCard();renderFc();renderMcq();renderOsce();renderProg();
+  S={box:{},mcq:{},osce:{},exams:[],days:{},sem:SEM,steps:{},right:{},read:{},viva:{}};LS=null;save();mcqI=0;pickCard();renderFc();renderMcq();renderOsce();renderProg();
 });
 
 /* ============ ASK THE HUB ============ */
