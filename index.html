@@ -124,6 +124,37 @@ iframe.on{display:block}
         reg.addEventListener("updatefound", function(){ watch(reg.installing); });
       }).catch(function(){});
 
+      /* Tap the version to force an update check. Without this the only way to
+         know whether the phone had picked up a push was to wait and hope. */
+      (function(){
+        var vb = document.getElementById("verBtn");
+        if(!vb) return;
+        var label = vb.textContent, busy = false;
+        vb.addEventListener("click", function(){
+          if(busy) return;
+          busy = true;
+          vb.classList.add("chk"); vb.textContent = "checking…";
+          function done(msg, good){
+            vb.classList.remove("chk");
+            if(good) vb.classList.add("okv");
+            vb.textContent = msg;
+            setTimeout(function(){
+              vb.textContent = label; vb.classList.remove("okv"); busy = false;
+            }, 2600);
+          }
+          if(!navigator.serviceWorker){ return done(label + " · no cache", false); }
+          navigator.serviceWorker.getRegistration().then(function(reg){
+            if(!reg) return done(label + " · not cached", false);
+            return reg.update().then(function(){
+              /* If a new worker is waiting or installing, the normal update flow
+                 reveals the Update ready button; just say so. */
+              if(reg.waiting || reg.installing) done("update found", true);
+              else done(label + " · latest", true);
+            });
+          }).catch(function(){ done(label + " · offline", false); });
+        });
+      })();
+
       document.getElementById("upd").addEventListener("click", function(){
         navigator.serviceWorker.getRegistration().then(function(reg){
           var w = reg && (reg.waiting || reg.installing);
