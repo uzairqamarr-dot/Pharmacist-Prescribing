@@ -479,17 +479,6 @@ body{padding:0}
 
   <!-- OSCE -->
   <div class="pane" id="p-osce">
-    <div class="card">
-      <div class="stephead">
-        <h2 style="margin:0">Station timer</h2>
-        <div class="timer" id="timer">08:00</div>
-      </div>
-      <div class="fcbar">
-        <button class="btn pri" id="tStart">Start</button>
-        <button class="btn" id="tReset">Reset</button>
-        <select id="tLen" class="btn"><option value="480">8 min</option><option value="300">5 min</option><option value="600">10 min</option><option value="720">12 min</option></select>
-      </div>
-    </div>
     <div id="osceBody"></div>
   </div>
 
@@ -2258,6 +2247,7 @@ function applySem(){
   CONDS=d.conds; CARDS=d.cards; MCQ=d.mcq; OSCE=d.osce;
   curCond=CONDS.length?CONDS[0].id:null; mcqI=0; fcCur=null; fcShown=false;
   fcFilter="__all__"; mcqFilter="__all__"; examReset();
+  vvFilter="__all__"; vvI=0; vvShown=false;   /* viva prompts are semester-scoped too */
 }
 
 /* ============ RENDER ============ */
@@ -2304,11 +2294,9 @@ Array.prototype.forEach.call(document.querySelectorAll(".sem"),function(b){
     var d=DATA[s];
     document.getElementById("semNote").textContent=
       d.conds.length+" topics · "+d.cards.length+" cards · "+d.mcq.length+" questions";
-    /* Re-render the pane you are actually looking at. Previously this list was
-       written by hand and omitted exams/vitals, so switching semester left the
-       old semester's examinations on screen until you reloaded. */
-    renderCond();pickCard();renderFc();renderMcq();renderOsce();renderProg();
-    renderExamSetup();renderCourse();renderToday();
+    /* Just the pane you are actually looking at. The hand-written list that used
+       to live here omitted exams, so switching semester left the old semester's
+       examinations on screen until you reloaded. renderPane is a superset. */
     renderPane(activePane());
   });
 });
@@ -2551,10 +2539,13 @@ function osceMins(st){ var m=/(\d+)/.exec(st.time||""); return m?+m[1]:8; }
 
 function osceStart(st){
   osceStop();
-  OR={id:st.id, phase:"run", left:osceMins(st)*60, iv:null, ticks:[]};
+  /* Wall-clock, not a counter. A phone throttles or freezes setInterval when the
+     screen locks or you switch apps, which would silently gift you extra minutes
+     on a timed station. */
+  OR={id:st.id, phase:"run", left:osceMins(st)*60, end:Date.now()+osceMins(st)*60000, iv:null, ticks:[], logged:false};
   OR.iv=setInterval(function(){
     if(!OR){return}
-    OR.left--;
+    OR.left=Math.max(0,Math.round((OR.end-Date.now())/1000));
     var c=document.getElementById("orClock");
     if(c){ c.textContent=fmtT(OR.left); c.className=OR.left<=60?"chip r":(OR.left<=120?"chip a":"chip g"); }
     if(OR.left<=0){ osceStop(); OR.phase="mark"; renderOsce(); }
@@ -2621,10 +2612,11 @@ function renderOsce(){
       var missedCrit=crit.filter(function(i){return OR.ticks.indexOf(i)<0});
       var missed=st.marks.map(function(m,i){return i}).filter(function(i){return OR.ticks.indexOf(i)<0});
       /* persist the best attempt so the station list shows progress */
-      var key=SEM+":"+st.id, prev=S.osce[key]||[];
-      if(OR.ticks.length>=prev.length) S.osce[key]=OR.ticks.slice();
-      S.osceRuns=S.osceRuns||{}; S.osceRuns[key]={pct:pct,crit:missedCrit.length,when:typeof todayISO==="function"?todayISO():""};
-      save(); if(typeof logAction==="function")logAction(2);
+      var key=SEM+":"+st.id;
+      S.osce[key]=OR.ticks.slice();                 /* single source of truth: this attempt */
+      S.osceRuns=S.osceRuns||{}; S.osceRuns[key]={pct:pct,crit:missedCrit.length,marks:tot};
+      if(!OR.logged){ if(typeof logAction==="function")logAction(2); OR.logged=true; }
+      save();
 
       var out="<div class='card'><h2>"+esc(st.title)+" — result</h2>"+
         "<div style='font-size:28px;font-weight:800;letter-spacing:-.02em'>"+pct+"%"+
@@ -2635,8 +2627,13 @@ function renderOsce(){
           "A high percentage with any of these missed is still a poor station."+
           "<ul style='margin:8px 0 0;padding-left:18px'>"+
           missedCrit.map(function(i){return "<li>"+esc(st.marks[i])+"</li>"}).join("")+"</ul></div>";
+      } else if(!crit.length){
+        out+="<div class='box blu'><b>This station has no safety-critical items.</b> Nothing in its mark scheme "+
+          "matches the eligibility / alarm / referral / monitoring wording, so there is no safety verdict to give — "+
+          "judge it on the list below.</div>";
       } else {
-        out+="<div class='box grn'><b>No safety-critical items missed.</b> Eligibility, alarm features, referral and monitoring were all covered.</div>";
+        out+="<div class='box grn'><b>No safety-critical items missed.</b> All "+crit.length+
+          " eligibility, alarm-feature, referral and monitoring marks were covered.</div>";
       }
       var other=missed.filter(function(i){return missedCrit.indexOf(i)<0});
       if(other.length){
@@ -2672,7 +2669,7 @@ function renderOsce(){
       (last?"<div class='small'>Last attempt "+last.pct+"%"+
         (last.crit?" · <span class='chip r'>"+last.crit+" safety missed</span>":" · <span class='chip g'>no safety misses</span>")+"</div>":"");
     var bar=el("div","fcbar");
-    var go=el("button","btn pri",null); go.textContent="Run this station ("+esc(st.time)+")";
+    var go=el("button","btn pri",null); go.textContent="Run this station ("+st.time+")";
     go.addEventListener("click",function(){ osceStart(st) });
     bar.appendChild(go);
     var det=el("details");
@@ -3309,7 +3306,7 @@ var VIVA=[
  "Explore what happened, not just what they took. Assess dependence — time to first cigarette. Combination NRT or varenicline, matched to previous response, contraindications and preference. Behavioural support alongside, and follow-up scheduled rather than offered."]
 ];
 
-var vvI=0, vvShown=false, vvFilter="__all__", vvT=null, vvSec=0;
+var vvI=0, vvShown=false, vvFilter="__all__";
 function vivaList(){ return VIVA.map(function(v,i){return {i:i,v:v}})
   .filter(function(o){ return vvFilter==="__all__" || o.v[0]===vvFilter }); }
 
@@ -3336,8 +3333,7 @@ function renderViva(){
     "<div class='stat'><span class='small'>"+(vvI+1)+" of "+list.length+"</span>"+
       "<span class='small'>"+(tot?"self-rated "+Math.round(scored/tot/2*100)+"% across "+tot:"")+"</span></div></div>";
 
-  h+="<div class='card'><h2>Prompt <span style='float:right;text-transform:none;letter-spacing:0' class='small' id='vvClock'>"+
-      (vvT?"recording…":"")+"</span></h2>"+
+  h+="<div class='card'><h2>Prompt</h2>"+
     "<div style='font-size:var(--fs-md);line-height:1.5'>"+esc(v[1])+"</div>";
 
   if(!vvShown){
@@ -3361,11 +3357,11 @@ function renderViva(){
   var sh=document.getElementById("vvShow");
   if(sh) sh.addEventListener("click",function(){ vvShown=true; renderViva(); });
   var sk=document.getElementById("vvSkip");
-  if(sk) sk.addEventListener("click",function(){ vvI++; vvShown=false; renderViva(); });
+  if(sk) sk.addEventListener("click",function(){ vvI=(vvI+1)%Math.max(1,vivaList().length); vvShown=false; renderViva(); });
   Array.prototype.forEach.call(box.querySelectorAll("[data-vv]"),function(b){
     b.addEventListener("click",function(){
       S.viva[key]=+b.getAttribute("data-vv"); save(); if(typeof logAction==="function")logAction(1);
-      vvI++; vvShown=false; renderViva();
+      vvI=(vvI+1)%Math.max(1,vivaList().length); vvShown=false; renderViva();
     });
   });
 }
@@ -3952,8 +3948,9 @@ function renderProg(){
 
   /* What the numbers above do and do not mean. This sits here deliberately:
      a progress bar reading 87% is exactly where false confidence is made. */
-  var vv=Object.keys(S.viva||{}).length, vtot=(typeof VIVA!=="undefined"?VIVA.length:0);
-  var runs=Object.keys(S.osceRuns||{}).length;
+  var vtot=(typeof VIVA!=="undefined"?VIVA.length:0);
+  var vv=0; for(var _v=0;_v<vtot;_v++) if((S.viva||{})["vv:"+_v]!=null) vv++;
+  var runs=Object.keys(S.osceRuns||{}).filter(function(k){return k.indexOf(SEM+":")===0}).length;
   var hb=document.getElementById("honest");
   if(hb) hb.innerHTML=
     "<div class='box amb' style='margin-top:0'><b>What these numbers are not.</b> "+
@@ -3961,7 +3958,7 @@ function renderProg(){
     "Your viva is oral and closed-book and your OSCE marks reasoning under time. Neither is scored above.</div>"+
     "<div class='stat'><span>Spoken viva prompts self-rated</span><b>"+vv+" / "+vtot+"</b></div>"+
     "<div class='stat'><span>OSCE stations run against the clock</span><b>"+runs+" / "+OSCE.length+"</b></div>"+
-    (vv<vtot/3||runs<1
+    (vv<vtot/3||(OSCE.length&&runs<1)
       ? "<div class='box red'>The two things closest to how you are actually assessed are the two you have done least. "+
         "Box 5 on every card will not carry you through a station.</div>"
       : "<div class='box grn'>You are practising production, not just recognition. That is the part that transfers.</div>")+
