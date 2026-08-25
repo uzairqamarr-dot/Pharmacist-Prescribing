@@ -557,7 +557,7 @@ window.__SEM1__ = {"conds":[{"id":"impetigo","name":"Impetigo","tag":"Impetigo �
 (function(){
 "use strict";
 var KEY="phar-hub-v1";
-var S={box:{},mcq:{},osce:{},exams:[],days:{},sem:"s2",steps:{},right:{},read:{},viva:{}};
+var S={box:{},mcq:{},osce:{},osceRuns:{},exams:[],days:{},sem:"s2",steps:{},right:{},read:{},viva:{}};
 try{var r=localStorage.getItem(KEY); if(r){var p=JSON.parse(r); for(var k in S) if(p[k]!=null) S[k]=p[k];}}catch(e){}
 /* Repair: an earlier build wrote plain numbers (and NaN->null) into S.box, which
    made those cards never come due again. Coerce anything non-object back to a
@@ -2247,6 +2247,7 @@ var CONDS,CARDS,MCQ,OSCE;
 function pk(i){return SEM+":"+i}          /* progress keys are namespaced per semester */
 function applySem(){
   LS=null; curExam=null;                 /* a live session's indices belong to the old semester */
+  if(typeof osceStop==="function") osceStop(); OR=null;
   window.__perm={};        /* option shuffles are keyed by bare index too */
   var d=DATA[SEM];
   CONDS=d.conds; CARDS=d.cards; MCQ=d.mcq; OSCE=d.osce;
@@ -2265,7 +2266,6 @@ function renderPane(p){
   if(p==="plan") renderPlan();
   if(p==="learn") renderLearn();
   if(p==="exams") renderExams();
-  if(p==="vitals") renderVitals&&renderVitals();
   if(p==="cram") renderCram();
   if(p==="viva") renderViva();
   if(p==="cards"){ pickCard(); renderFc(); }
@@ -2526,37 +2526,163 @@ function renderWeak(){
 }
 
 /* OSCE */
+/* ============ OSCE ============
+   Rebuilt 26 Aug. The old pane showed the mark scheme beside the brief, which
+   meant you were reading the answers while "practising". A station you have
+   already read the marking for tests nothing. Now: brief only, clock running,
+   scheme revealed after you finish.
+
+   Critical items are derived from the wording of each mark — eligibility
+   exclusions, alarm-feature screening, referral triggers, baseline monitoring
+   and consent/scope. These are the omissions that would harm a patient, so they
+   are reported separately from the percentage rather than averaged into it. */
+var OSC_CRIT=/exclud|ineligib|not eligible|alarm|red flag|refer|referral|baseline|consent|scope|contraindicat|safety net|urgent|emergenc|hand ?over|action plan/i;
+function critIdx(st){ var o=[]; st.marks.forEach(function(m,i){ if(OSC_CRIT.test(m)) o.push(i) }); return o; }
+
+var OR=null;            /* live run: {id, phase, left, iv, ticks[]} */
+
+function osceStop(){ if(OR&&OR.iv){clearInterval(OR.iv);OR.iv=null} }
+function osceMins(st){ var m=/(\d+)/.exec(st.time||""); return m?+m[1]:8; }
+
+function osceStart(st){
+  osceStop();
+  OR={id:st.id, phase:"run", left:osceMins(st)*60, iv:null, ticks:[]};
+  OR.iv=setInterval(function(){
+    if(!OR){return}
+    OR.left--;
+    var c=document.getElementById("orClock");
+    if(c){ c.textContent=fmtT(OR.left); c.className=OR.left<=60?"chip r":(OR.left<=120?"chip a":"chip g"); }
+    if(OR.left<=0){ osceStop(); OR.phase="mark"; renderOsce(); }
+  },1000);
+  renderOsce();
+}
+function fmtT(x){ if(x<0)x=0; var m=Math.floor(x/60),ss=x%60; return m+":"+(ss<10?"0":"")+ss; }
+
 function renderOsce(){
-  var b=document.getElementById("osceBody");b.innerHTML="";
+  var b=document.getElementById("osceBody"); if(!b) return; b.innerHTML="";
   if(!OSCE.length){
-    b.innerHTML="<div class='card'><h2>No stations for this semester</h2><p class='small' style='margin:0'>The timer above still works for practising against any case. Semester 2 has four written stations with mark schemes.</p></div>";
+    b.innerHTML="<div class='card'><h2>No stations for this semester</h2>"+
+      "<p class='small' style='margin:0'>Semester 2 has the written stations with mark schemes.</p></div>";
     return;
   }
+
+  /* ---- a station is running or being marked ---- */
+  if(OR){
+    var st=OSCE.filter(function(x){return x.id===OR.id})[0];
+    if(!st){ OR=null; return renderOsce(); }
+    var nm=CONDS.filter(function(x){return x.id===st.cond})[0];
+    var h="";
+
+    if(OR.phase==="run"){
+      h="<div class='card'><div class='stephead'><h2 style='margin:0'>"+esc(st.title)+"</h2>"+
+        "<span class='chip g' id='orClock' style='font-size:var(--fs-md)'>"+fmtT(OR.left)+"</span></div>"+
+        "<div class='box blu'><b>Candidate brief.</b> "+esc(st.brief)+"</div>"+
+        "<div class='box amb'>Work the station out loud as if the examiner were here. "+
+        "The mark scheme is deliberately hidden — you cannot practise against answers you have just read.</div>"+
+        "<div class='fcbar'><button class='btn pri' id='orDone'>Finished — mark me</button>"+
+        "<button class='btn' id='orAbort'>Abandon</button></div></div>";
+      b.innerHTML=h;
+      document.getElementById("orDone").addEventListener("click",function(){ osceStop(); OR.phase="mark"; renderOsce(); });
+      document.getElementById("orAbort").addEventListener("click",function(){ osceStop(); OR=null; renderOsce(); });
+      return;
+    }
+
+    /* ---- marking ---- */
+    var crit=critIdx(st);
+    h="<div class='card'><div class='stephead'><h2 style='margin:0'>"+esc(st.title)+"</h2>"+
+      "<span class='small'>"+(OR.left>0?"finished with "+fmtT(OR.left)+" left":"ran out of time")+"</span></div>"+
+      "<div class='box blu'><b>Candidate brief.</b> "+esc(st.brief)+"</div>"+
+      "<div class='small'>Tick only what you <b>actually said out loud</b>. Ticking what you "+
+      "meant to say, or knew, makes the score worthless.</div><div id='orMarks'></div>"+
+      "<div class='fcbar'><button class='btn pri' id='orScore'>Score it</button>"+
+      "<button class='btn' id='orAbort2'>Close</button></div></div>";
+    b.innerHTML=h;
+    var wrap=document.getElementById("orMarks");
+    st.marks.forEach(function(m,i){
+      var row=el("div","mark");
+      var cb=document.createElement("input"); cb.type="checkbox";
+      cb.checked=OR.ticks.indexOf(i)>=0;
+      cb.addEventListener("change",function(){
+        if(cb.checked){ if(OR.ticks.indexOf(i)<0) OR.ticks.push(i) }
+        else OR.ticks=OR.ticks.filter(function(x){return x!==i});
+      });
+      row.appendChild(cb);
+      row.appendChild(el("div",null,esc(m)+(crit.indexOf(i)>=0?" <span class='chip r'>safety</span>":"")));
+      wrap.appendChild(row);
+    });
+    document.getElementById("orAbort2").addEventListener("click",function(){ OR=null; renderOsce(); });
+    document.getElementById("orScore").addEventListener("click",function(){
+      var got=OR.ticks.length, tot=st.marks.length, pct=Math.round(got/tot*100);
+      var missedCrit=crit.filter(function(i){return OR.ticks.indexOf(i)<0});
+      var missed=st.marks.map(function(m,i){return i}).filter(function(i){return OR.ticks.indexOf(i)<0});
+      /* persist the best attempt so the station list shows progress */
+      var key=SEM+":"+st.id, prev=S.osce[key]||[];
+      if(OR.ticks.length>=prev.length) S.osce[key]=OR.ticks.slice();
+      S.osceRuns=S.osceRuns||{}; S.osceRuns[key]={pct:pct,crit:missedCrit.length,when:typeof todayISO==="function"?todayISO():""};
+      save(); if(typeof logAction==="function")logAction(2);
+
+      var out="<div class='card'><h2>"+esc(st.title)+" — result</h2>"+
+        "<div style='font-size:28px;font-weight:800;letter-spacing:-.02em'>"+pct+"%"+
+        " <span class='small' style='font-weight:400'>· "+got+" of "+tot+" marks</span></div>";
+      if(missedCrit.length){
+        out+="<div class='box red'><b>"+missedCrit.length+" safety-critical item"+(missedCrit.length>1?"s":"")+" missed.</b> "+
+          "These are the ones that matter most — eligibility, alarm features, referral, baseline checks, consent. "+
+          "A high percentage with any of these missed is still a poor station."+
+          "<ul style='margin:8px 0 0;padding-left:18px'>"+
+          missedCrit.map(function(i){return "<li>"+esc(st.marks[i])+"</li>"}).join("")+"</ul></div>";
+      } else {
+        out+="<div class='box grn'><b>No safety-critical items missed.</b> Eligibility, alarm features, referral and monitoring were all covered.</div>";
+      }
+      var other=missed.filter(function(i){return missedCrit.indexOf(i)<0});
+      if(other.length){
+        out+="<div class='box amb'><b>Also missed</b><ul style='margin:8px 0 0;padding-left:18px'>"+
+          other.map(function(i){return "<li>"+esc(st.marks[i])+"</li>"}).join("")+"</ul></div>";
+      }
+      out+="<p class='small' style='margin:10px 0 0'>Your course materials do not publish a numeric pass mark for this "+
+        "station, so none is asserted here. Treat any missed safety item as the thing to fix first, whatever the percentage.</p>"+
+        "<div class='fcbar'><button class='btn pri' id='orAgain'>Run it again</button>"+
+        "<button class='btn' id='orBack'>Back to stations</button></div></div>";
+      b.innerHTML=out;
+      document.getElementById("orAgain").addEventListener("click",function(){ osceStart(st) });
+      document.getElementById("orBack").addEventListener("click",function(){ OR=null; renderOsce() });
+    });
+    return;
+  }
+
+  /* ---- station list ---- */
+  var intro=el("div","card");
+  intro.innerHTML="<h2>OSCE stations</h2><div class='box blu' style='margin-top:0'>"+
+    "Pick a station, read only the brief, and talk through it against the clock. "+
+    "The mark scheme stays hidden until you finish — otherwise you are reading answers, not practising.</div>";
+  b.appendChild(intro);
+
   OSCE.forEach(function(st){
     var nm=CONDS.filter(function(x){return x.id===st.cond})[0];
     var d=el("div","station");
-    var done=(S.osce[SEM+":"+st.id]||[]).length;
+    var last=(S.osceRuns||{})[SEM+":"+st.id];
+    var crit=critIdx(st);
     d.innerHTML="<div class='stephead'><h3 style='margin:0'>"+esc(st.title)+"</h3>"+
-      "<span class='small'><span class='chip g'>"+esc(nm?nm.name:st.cond)+"</span> "+st.time+" · "+done+"/"+st.marks.length+"</span></div>"+
-      "<div class='box blu' style='margin:9px 0'><b>Candidate brief.</b> "+esc(st.brief)+"</div>";
+      "<span class='small'><span class='chip g'>"+esc(nm?nm.name:st.cond)+"</span> "+esc(st.time)+
+      " · "+st.marks.length+" marks · "+crit.length+" safety</span></div>"+
+      (last?"<div class='small'>Last attempt "+last.pct+"%"+
+        (last.crit?" · <span class='chip r'>"+last.crit+" safety missed</span>":" · <span class='chip g'>no safety misses</span>")+"</div>":"");
+    var bar=el("div","fcbar");
+    var go=el("button","btn pri",null); go.textContent="Run this station ("+esc(st.time)+")";
+    go.addEventListener("click",function(){ osceStart(st) });
+    bar.appendChild(go);
     var det=el("details");
-    det.appendChild(el("summary",null,"<span class='small' style='cursor:pointer'>Show mark scheme</span>"));
+    det.appendChild(el("summary",null,"<span class='small' style='cursor:pointer'>Study the mark scheme instead</span>"));
     var list=el("div");
     st.marks.forEach(function(m,i){
       var row=el("div","mark");
-      var cb=document.createElement("input");cb.type="checkbox";
-      cb.checked=(S.osce[SEM+":"+st.id]||[]).indexOf(i)>=0;
-      cb.addEventListener("change",function(){
-        var a=S.osce[SEM+":"+st.id]||[];
-        if(cb.checked){if(a.indexOf(i)<0)a.push(i)}else{a=a.filter(function(x){return x!==i})}
-        S.osce[SEM+":"+st.id]=a;save();renderOsce();
-      });
-      row.appendChild(cb);row.appendChild(el("div",null,esc(m)));
+      row.appendChild(el("div",null,"• "+esc(m)+(crit.indexOf(i)>=0?" <span class='chip r'>safety</span>":"")));
       list.appendChild(row);
     });
-    det.appendChild(list);d.appendChild(det);b.appendChild(d);
+    det.appendChild(list);
+    d.appendChild(bar); d.appendChild(det); b.appendChild(d);
   });
 }
+
 var tRem=480,tInt=null;
 function showT(){var m=Math.floor(tRem/60),s=tRem%60;
   document.getElementById("timer").textContent=(m<10?"0":"")+m+":"+(s<10?"0":"")+s;
@@ -2937,7 +3063,7 @@ function renderLearn(){
     st.b = known ? Math.min(5,st.b+1) : 1;
     st.due = Date.now() + INTERVAL[st.b]*86400000;
     st.seen = (st.seen||0)+1;
-    S.box[k]=st; save(); logAction&&logAction(1);
+    S.box[k]=st; save(); if(typeof logAction==="function")logAction(1);
     LS.ci++; LS.shown=false;
     if(LS.ci>=LS.cards.length){ LS.phase="test"; LS.qi=0; }
     renderLearn();
@@ -2963,7 +3089,7 @@ function renderLearn(){
         S.mcq[pk(qi)]=oi;
         if(oi===q[3]) S.right[pk(qi)]=true;
         else if(LS.phase==="test" && LS.wrong.indexOf(qi)<0) LS.wrong.push(qi);
-        save(); logAction&&logAction(1); renderLearn(); renderProg&&renderProg();
+        save(); if(typeof logAction==="function")logAction(1); renderLearn(); renderProg&&renderProg();
       });
       ow.appendChild(btn);
     });
@@ -3233,7 +3359,7 @@ function renderViva(){
   if(sk) sk.addEventListener("click",function(){ vvI++; vvShown=false; renderViva(); });
   Array.prototype.forEach.call(box.querySelectorAll("[data-vv]"),function(b){
     b.addEventListener("click",function(){
-      S.viva[key]=+b.getAttribute("data-vv"); save(); logAction&&logAction(1);
+      S.viva[key]=+b.getAttribute("data-vv"); save(); if(typeof logAction==="function")logAction(1);
       vvI++; vvShown=false; renderViva();
     });
   });
@@ -3826,7 +3952,7 @@ document.getElementById("imp").addEventListener("click",function(){
   catch(e){document.getElementById("io").value="That didn't parse."}
 });
 document.getElementById("rst").addEventListener("click",function(){
-  S={box:{},mcq:{},osce:{},exams:[],days:{},sem:SEM,steps:{},right:{},read:{},viva:{}};LS=null;save();mcqI=0;pickCard();renderFc();renderMcq();renderOsce();renderProg();
+  S={box:{},mcq:{},osce:{},osceRuns:{},exams:[],days:{},sem:SEM,steps:{},right:{},read:{},viva:{}};LS=null;save();mcqI=0;pickCard();renderFc();renderMcq();renderOsce();renderProg();
 });
 
 /* ============ ASK THE HUB ============ */
