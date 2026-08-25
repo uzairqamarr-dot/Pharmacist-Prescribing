@@ -2255,24 +2255,36 @@ function applySem(){
 }
 
 /* ============ RENDER ============ */
-var tabs=document.querySelectorAll(".tab");
-Array.prototype.forEach.call(tabs,function(t){t.addEventListener("click",function(){
-  Array.prototype.forEach.call(tabs,function(x){x.classList.remove("on")});t.classList.add("on");
-  Array.prototype.forEach.call(document.querySelectorAll(".pane"),function(p){p.classList.remove("on")});
-  document.getElementById("p-"+t.getAttribute("data-p")).classList.add("on");
-  var p=t.getAttribute("data-p");
+/* One dispatcher, used by BOTH the tab clicks and the semester switch.
+   Keeping two hand-written lists of renderers in sync failed repeatedly —
+   panes kept showing the previous semester's content until a manual reload. */
+function renderPane(p){
   if(p==="prog") renderProg();
   if(p==="exam"){ if(!EX) renderExamSetup(); }
   if(p==="today") renderToday();
   if(p==="plan") renderPlan();
   if(p==="learn") renderLearn();
   if(p==="exams") renderExams();
+  if(p==="vitals") renderVitals&&renderVitals();
   if(p==="cram") renderCram();
   if(p==="viva") renderViva();
   if(p==="cards"){ pickCard(); renderFc(); }
   if(p==="mcq") renderMcq();
+  if(p==="osce") renderOsce();
   if(p==="course") renderCourse();
+  if(p==="cond") renderCond();
   if(p==="anat"){ if(!anatState.order.length) anatStart(); }
+}
+function activePane(){
+  var on=document.querySelector(".tab.on");
+  return on?on.getAttribute("data-p"):"today";
+}
+var tabs=document.querySelectorAll(".tab");
+Array.prototype.forEach.call(tabs,function(t){t.addEventListener("click",function(){
+  Array.prototype.forEach.call(tabs,function(x){x.classList.remove("on")});t.classList.add("on");
+  Array.prototype.forEach.call(document.querySelectorAll(".pane"),function(p){p.classList.remove("on")});
+  document.getElementById("p-"+t.getAttribute("data-p")).classList.add("on");
+  renderPane(t.getAttribute("data-p"));
 })});
 
 Array.prototype.forEach.call(document.querySelectorAll(".sem"),function(b){
@@ -2287,7 +2299,12 @@ Array.prototype.forEach.call(document.querySelectorAll(".sem"),function(b){
     var d=DATA[s];
     document.getElementById("semNote").textContent=
       d.conds.length+" topics · "+d.cards.length+" cards · "+d.mcq.length+" questions";
-    renderCond();pickCard();renderFc();renderMcq();renderOsce();renderProg();renderExamSetup();renderCourse();renderToday();
+    /* Re-render the pane you are actually looking at. Previously this list was
+       written by hand and omitted exams/vitals, so switching semester left the
+       old semester's examinations on screen until you reloaded. */
+    renderCond();pickCard();renderFc();renderMcq();renderOsce();renderProg();
+    renderExamSetup();renderCourse();renderToday();
+    renderPane(activePane());
   });
 });
 
