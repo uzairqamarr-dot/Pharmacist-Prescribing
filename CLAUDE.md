@@ -11,8 +11,8 @@ home screen, used often with no signal.
 
 ## Session handover — read this first
 
-**Last worked: 25 August 2026.** Live version v2026.08.25d; there may be uncommitted
-work in `study.html` beyond that — check `git status` before doing anything.
+**Last worked: 26 August 2026.** Version v2026.08.26j; there may be uncommitted
+work in `study.html` — check `git status` before doing anything.
 
 ### What exists now, beyond the original four-file layout
 
@@ -24,10 +24,16 @@ work in `study.html` beyond that — check `git status` before doing anything.
 | `PACKS` | `study.html` | Per-condition prescribing pack: eligibility, referral, prescribable medicines, clinical checks, non-pharm, self-care |
 | Learn tab | `renderLearn()` | Guided Read → Recall → Test → Fix session. `LS` holds the live session, not persisted |
 | Mastery | `S.right{}` | A question is learned once answered correctly. Wrong ones repeat until right |
+| `VIVA` | `study.html` | 26 spoken prompts, `[topicId, prompt, modelAnswerHTML]`. Model answer is **HTML, not escaped** |
+| Say it out loud | `renderViva()` | Prompt → say it aloud → reveal model answer → self-rate 0/1/2 |
+| OSCE run mode | `renderOsce()` | Brief only → wall-clock timer → scheme revealed **after** → scored, safety misses listed separately |
+| `renderPane(p)` | `study.html` | **One** dispatcher, used by tab clicks *and* the semester switch |
 
-New state keys: `S.steps` (plan), `S.right` (mastery), `S.read` (briefs seen).
+New state keys: `S.steps` (plan), `S.right` (mastery), `S.read` (briefs seen),
+`S.viva` (self-ratings, keyed `vv:<index>`), `S.osceRuns` (last attempt per station).
 **Any code that rebuilds `S` from scratch must include all of them** — omitting them
-previously bricked three tabs.
+previously bricked three tabs. `S.viva` is keyed by index into `VIVA`, so **`VIVA` is
+append-only too**, same rule as `cards` and `mcq`.
 
 ### Hard-won lessons — do not relearn these
 
@@ -38,6 +44,26 @@ previously bricked three tabs.
   intermediate treat at ≥160/100 target 140/90; high treat at ≥130/85 target SBP 120.
   Heart Foundation 2016: low ≥160/100, moderate ≥140/90, target <140/90. Never state
   one as if it were the other.
+- **Do not carry a band label between the two frameworks.** This produced a real
+  error that shipped: AusCVDRisk **intermediate** (5–<10%) is Heart Foundation
+  **low** (<10%), so both use ≥160/100 and they *agree* at 148/92. Calling the same
+  patient "Heart Foundation moderate" invents a disagreement. They genuinely
+  separate in the **high** band — QLD treats from ≥130/85 to target SBP 120, the
+  Heart Foundation from ≥140/90 to <140/90.
+- **Write thresholds as the protocol writes them.** "≥180/110" reads as requiring
+  both; the protocol is "≥180 systolic **and/or** ≥110 diastolic", so 168/114
+  qualifies. Same care for ≥ vs > (HbA1c ≥10%, BGL ≥20.0 mmol/L — exactly 10.0 is
+  ineligible).
+- **COPD prednisolone IS prescribable** — up to 5 days, no repeats, via the action
+  plan. Only antibiotics require referral. This has been got wrong once already.
+- **Timers must read wall-clock**, not decrement a counter. A locked phone freezes
+  `setInterval`, which silently gifts extra minutes on a timed station or paper.
+- **Never let a scoring panel assert a clean bill of health it hasn't checked.** A
+  station whose marks match no safety keywords printed "No safety-critical items
+  missed" on a 0% score. If there is nothing to check, say that instead.
+- **jsdom crawls of the viva pane**: after clicking `#vvShow` the Skip button is
+  gone, so a loop that only clicks `#vvSkip` silently stops advancing and every
+  content assertion fails. Grep the source instead, or click a `[data-vv]` rating.
 - **jsdom tests must scope queries to the pane under test.** Document-wide selectors
   hit other panes and give false passes.
 - **I cannot push to GitHub.** No credentials in the sandbox. Always hand the user:
@@ -160,12 +186,13 @@ revised (e.g. well-controlled asthma and mild COPD are now eligible). The
 changes summary is in the corpus under "Updates Apr 2026". Prefer current
 criteria over anything older.
 
-## Coverage as at v2026.08.26a
+## Coverage as at v2026.08.26j
 
 Semester 1 — 20 conditions, 143 cards, 91 MCQ, 8 OSCE stations.
 
-Semester 2 — 11 topics, **204 cards, 100 MCQ, 10 OSCE stations**, plus guided
-Learn sessions with must-know briefs and per-condition prescribing packs.
+Semester 2 — 11 topics, **204 cards, 100 MCQ, 10 OSCE stations, 26 spoken viva
+prompts**, plus guided Learn sessions with must-know briefs and per-condition
+prescribing packs.
 
 | Topic | Cards | MCQ | Brief | Pack |
 |---|---|---|---|---|
@@ -183,7 +210,6 @@ Learn sessions with must-know briefs and per-condition prescribing packs.
 - COPD is by far the weakest at 7 cards / 4 questions, against 54 / 27 for
   hypertension — despite having 55 corpus chunks of source material sitting
   there unused. This is the obvious next thing to fix.
-- Semester 1 has no OSCE entries (`osce: []`), while Semester 2 has 4.
 - The MCQ pane walks in fixed order and shows previous answers on a second
   pass rather than re-testing. Options are not shuffled.
 - Sem 1 topic notes are indexed for search but the Sem 1 source documents
