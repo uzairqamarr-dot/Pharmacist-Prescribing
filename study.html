@@ -290,7 +290,7 @@ body{padding:0}
     <button class="tab" data-p="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><span>Plan</span></button>
     <button class="tab" data-p="course"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg><span>Course</span></button>
     <button class="tab" data-p="exams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 2.3A.3.3 0 004.5 2H3a1 1 0 00-1 1v6a6 6 0 006 6 6 6 0 006-6V3a1 1 0 00-1-1h-1.5a.3.3 0 00-.3.3v1.4a.3.3 0 00.3.3H12v5a4 4 0 01-8 0V4h1.5a.3.3 0 00.3-.3z"/><circle cx="20" cy="10" r="2"/></svg><span>Exams &amp; Vitals</span></button>
-    <button class="tab" data-p="cond"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 00-7.8 7.8l1.1 1.1L12 21.2l7.8-7.7 1.1-1.1a5.5 5.5 0 000-7.8z"/></svg><span>Conditions</span></button>
+    <button class="tab" data-p="cond"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 00-7.8 7.8l1.1 1.1L12 21.2l7.8-7.7 1.1-1.1a5.5 5.5 0 000-7.8z"/></svg><span>Topics</span></button>
     <button class="tab" data-p="cards"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7l10-4 10 4-10 4-10-4zM2 12l10 4 10-4M2 17l10 4 10-4"/></svg><span>Flashcards</span></button>
     <button class="tab" data-p="mcq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3M12 17h.01"/></svg><span>MCQs</span></button>
     <button class="tab" data-p="exam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM14 2v6h6M9 13h6M9 17h4"/></svg><span>Exam</span></button>
@@ -985,6 +985,14 @@ var CVD_SHARED = "<b>Shared CVD eligibility.</b> Hypertension, lipids and blood 
 "<li>TC ≥7.5 mmol/L, LDL-C ≥5.0 mmol/L or triglycerides ≥6 mmol/L</li>"+
 "<li>HbA1c ≥10% or BGL ≥20.0 mmol/L, or hypoglycaemia BGL &lt;4.0 mmol/L</li>"+
 "</ul>";
+
+/* Which course a topic belongs to. 6302 topics are clinical conditions;
+   6202 topics are practice and reasoning — they are NOT conditions, and
+   grouping them apart is the whole point. */
+var TOPIC_CRS={htn:"6302",lipid:"6302",bgl:"6302",wt:"6302",smoke:"6302",asthma:"6302",copd:"6302",
+               eth:"6202",comm:"6202",reas:"6202",safe:"6202"};
+function crsOf(id){ return TOPIC_CRS[id]||"6302" }
+var CRS_LABEL={"6302":"Clinical conditions — PHAR6302","6202":"Practice & reasoning — PHAR6202"};
 
 var S2_CONDS = [
 {id:"asthma",name:"Asthma",tag:"Improved Asthma Symptom Control Program",body:
@@ -2265,10 +2273,22 @@ Array.prototype.forEach.call(document.querySelectorAll(".sem"),function(b){
 var curCond=null;   /* set by applySem() before any render */
 function renderCond(){
   var nav=document.getElementById("condNav");nav.innerHTML="";
-  CONDS.forEach(function(c){
-    var b=el("button","cbtn"+(c.id===curCond?" on":""),c.name);
-    b.addEventListener("click",function(){curCond=c.id;renderCond()});
-    nav.appendChild(b);
+  var groups={};
+  CONDS.forEach(function(c){ (groups[crsOf(c.id)]=groups[crsOf(c.id)]||[]).push(c) });
+  ["6302","6202"].forEach(function(k){
+    if(!groups[k]||!groups[k].length) return;
+    /* Only label the groups when there is more than one — Semester 1 is all
+       clinical, and a lone heading there would be noise. */
+    if(Object.keys(groups).length>1){
+      var h=el("div","small",esc(CRS_LABEL[k]));
+      h.style.cssText="flex-basis:100%;margin:4px 0 2px;text-transform:uppercase;letter-spacing:.9px;font-size:var(--fs-xs)";
+      nav.appendChild(h);
+    }
+    groups[k].forEach(function(c){
+      var b=el("button","cbtn"+(c.id===curCond?" on":""),c.name);
+      b.addEventListener("click",function(){curCond=c.id;renderCond()});
+      nav.appendChild(b);
+    });
   });
   var c=CONDS.filter(function(x){return x.id===curCond})[0];
   document.getElementById("condBody").innerHTML=
@@ -2292,10 +2312,18 @@ function fillTopicSelect(el, items, current, onchange){
   var all=document.createElement("option");
   all.value="__all__"; all.textContent="All topics ("+items.length+")";
   el.appendChild(all);
-  ids.forEach(function(id){
-    var o=document.createElement("option");
-    o.value=id; o.textContent=condName(id)+" ("+counts[id]+")";
-    el.appendChild(o);
+  var byCrs={};
+  ids.forEach(function(id){ (byCrs[crsOf(id)]=byCrs[crsOf(id)]||[]).push(id) });
+  var multi=Object.keys(byCrs).length>1;
+  ["6302","6202"].forEach(function(k){
+    if(!byCrs[k]) return;
+    var parent=el;
+    if(multi){ parent=document.createElement("optgroup"); parent.label=CRS_LABEL[k]; el.appendChild(parent); }
+    byCrs[k].forEach(function(id){
+      var o=document.createElement("option");
+      o.value=id; o.textContent=condName(id)+" ("+counts[id]+")";
+      parent.appendChild(o);
+    });
   });
   el.value = counts[current]||current==="__all__" ? current : "__all__";
   el.onchange=function(){onchange(el.value)};
@@ -2669,7 +2697,7 @@ function renderToday(){
   /* ---- jump in ---- */
   var JI=[["learn","Learn","Guided sessions — read the brief, then cards and questions."],
           ["exams","Exams & Vitals","Step-by-step walkthroughs — what to do and what to say."],
-          ["cond","Conditions","Prescribing packs: eligibility, referral, medicines, checks."],
+          ["cond","Topics","Clinical conditions with prescribing packs, plus the 6202 practice topics."],
           ["cards","Flashcards","Spaced repetition across every topic."],
           ["mcq","Questions","Exam-style, shuffled, with explanations."],
           ["osce","OSCE stations","Practice circuits with the marking points."],
@@ -2907,8 +2935,19 @@ function renderLearnHome(box){
   }
   html+="<div class='card'><h2>Every topic</h2><div class='small' style='margin-bottom:12px'>"+
     "Mastery counts a question as learned once you've answered it correctly. Missed ones come back.</div>";
-  ids.sort(function(a,b){var x=masteryOf(a),y=masteryOf(b);return (x.pct===null?101:x.pct)-(y.pct===null?101:y.pct)});
+  ids.sort(function(a,b){
+    var ca=crsOf(a), cb=crsOf(b);
+    if(ca!==cb) return ca==="6302"?-1:1;            /* clinical first */
+    var x=masteryOf(a),y=masteryOf(b);
+    return (x.pct===null?101:x.pct)-(y.pct===null?101:y.pct);   /* then weakest first */
+  });
+  var lastCrs=null;
   ids.forEach(function(id){
+    if(crsOf(id)!==lastCrs){
+      lastCrs=crsOf(id);
+      html+="<div class='small' style='text-transform:uppercase;letter-spacing:.9px;margin:16px 0 8px'>"+
+        esc(CRS_LABEL[lastCrs])+"</div>";
+    }
     var m=masteryOf(id), b=BRIEFS[id];
     html+="<div style='margin-bottom:14px'>"+
       "<div class='stat'><span><b>"+esc(topicName(id))+"</b>"+(S.read[id]?" <span class='chip g'>brief read</span>":"")+"</span>"+
