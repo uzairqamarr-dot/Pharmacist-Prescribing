@@ -2685,22 +2685,6 @@ function renderOsce(){
   });
 }
 
-var tRem=480,tInt=null;
-function showT(){var m=Math.floor(tRem/60),s=tRem%60;
-  document.getElementById("timer").textContent=(m<10?"0":"")+m+":"+(s<10?"0":"")+s;
-  document.getElementById("timer").style.color = tRem<=60 ? "var(--red)" : "";}
-document.getElementById("tStart").addEventListener("click",function(){
-  var b=this;
-  if(tInt){clearInterval(tInt);tInt=null;b.textContent="Start";return}
-  b.textContent="Pause";
-  tInt=setInterval(function(){if(tRem>0){tRem--;showT()}else{clearInterval(tInt);tInt=null;b.textContent="Start"}},1000);
-});
-document.getElementById("tReset").addEventListener("click",function(){
-  if(tInt){clearInterval(tInt);tInt=null;document.getElementById("tStart").textContent="Start"}
-  tRem=+document.getElementById("tLen").value;showT();
-});
-document.getElementById("tLen").addEventListener("change",function(){tRem=+this.value;showT()});
-showT();
 
 /* ============ TODAY: NEXT ACTION + HEAT MAPS ============ */
 function dayKey(d){ d=d||new Date(); return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2); }
@@ -3740,8 +3724,9 @@ function startExam(mode){
   document.getElementById("examRun").style.display="";
   if(exTimerId) clearInterval(exTimerId);
   if(mode==="exam"){
+    EX.end=Date.now()+EX.left*1000;   /* wall-clock: a locked phone freezes setInterval */
     exTimerId=setInterval(function(){
-      EX.left--;
+      EX.left=Math.max(0,Math.round((EX.end-Date.now())/1000));
       if(EX.left<=0){ clearInterval(exTimerId); exTimerId=null; finishExam(true); }
       else paintTimer();
     },1000);
@@ -3856,7 +3841,9 @@ function finishExam(auto){
     document.getElementById("examRun").style.display="";
     if(mode==="exam"){
       if(exTimerId)clearInterval(exTimerId);
-      exTimerId=setInterval(function(){EX.left--;if(EX.left<=0){clearInterval(exTimerId);exTimerId=null;finishExam(true)}else paintTimer()},1000);
+      EX.end=Date.now()+EX.left*1000;
+      exTimerId=setInterval(function(){EX.left=Math.max(0,Math.round((EX.end-Date.now())/1000));
+        if(EX.left<=0){clearInterval(exTimerId);exTimerId=null;finishExam(true)}else paintTimer()},1000);
     }
     renderExamQ();
   });
