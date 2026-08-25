@@ -2219,7 +2219,7 @@ var SEM=(S.sem==="s1"||S.sem==="s2")?S.sem:"s2";
 var CONDS,CARDS,MCQ,OSCE;
 function pk(i){return SEM+":"+i}          /* progress keys are namespaced per semester */
 function applySem(){
-  LS=null;                 /* a live session's indices belong to the old semester */
+  LS=null; curExam=null;                 /* a live session's indices belong to the old semester */
   window.__perm={};        /* option shuffles are keyed by bare index too */
   var d=DATA[SEM];
   CONDS=d.conds; CARDS=d.cards; MCQ=d.mcq; OSCE=d.osce;
@@ -2538,7 +2538,7 @@ function renderToday(){
     "<div class='stat-c'><b>"+CARDS.length+"</b><span>Flashcards</span></div>"+
     "<div class='stat-c'><b>"+MCQ.length+"</b><span>Questions</span></div>"+
     "<div class='stat-c'><b>"+nOsce+"</b><span>OSCE stations</span></div>"+
-    "<div class='stat-c'><b>"+EXAMS.length+"</b><span>Examinations</span></div>"+
+    "<div class='stat-c'><b>"+examsForSem().length+"</b><span>Examinations</span></div>"+
     "<div class='stat-c'><b>"+learned+"</b><span>Mastered</span></div>"+
   "</div>";
   if(att){
@@ -2926,11 +2926,16 @@ function renderLearnHome(box){
 
 
 var curExam=null;
+/* Exams belong to a semester. Vitals is tagged "both" because ranges and
+   technique do not change between acute and chronic. */
+function examsForSem(){ return EXAMS.filter(function(e){ return e.sem===SEM || e.sem==="both" }) }
 function renderExams(){
   var nav=document.getElementById("exNav"), body=document.getElementById("exBody");
   if(!nav||!body) return;
   nav.innerHTML="";
-  EXAMS.forEach(function(e){
+  var mine=examsForSem();
+  if(curExam && !mine.filter(function(e){return e.slug===curExam}).length) curExam=null;
+  mine.forEach(function(e){
     var b=el("button","cbtn"+(e.slug===curExam?" on":""),esc(e.shortTitle||e.title));
     b.addEventListener("click",function(){curExam=e.slug;renderExams();window.scrollTo(0,0)});
     nav.appendChild(b);
@@ -2938,8 +2943,12 @@ function renderExams(){
   if(!curExam){
     body.innerHTML="<div class='card'><h2>Physical examination walkthroughs</h2>"+
       "<div class='small' style='margin-bottom:12px'>Every step pairs <b>what you do</b> with <b>what you say</b>. "+
-      "The OSCE marks both — silent correct technique scores badly.</div><div class='jump'>"+
-      EXAMS.map(function(e){
+      "The OSCE marks both — silent correct technique scores badly.</div>"+
+      "<div class='box' style='margin-top:0'>Showing the <b>"+(SEM==="s2"?"Semester 2 — chronic":"Semester 1 — acute")+
+      "</b> examinations. Switch semester in the sidebar for the other "+
+      (EXAMS.length-examsForSem().length)+". Vitals appears in both.</div>"+
+      "<div class='jump'>"+
+      mine.map(function(e){
         var n=e.phases.reduce(function(a,p){return a+p.steps.length},0);
         return "<button data-ex='"+esc(e.slug)+"'><span class='ic'>"+
           "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.7' stroke-linecap='round' "+
@@ -2953,7 +2962,7 @@ function renderExams(){
     });
     return;
   }
-  var e=EXAMS.filter(function(x){return x.slug===curExam})[0];
+  var e=examsForSem().filter(function(x){return x.slug===curExam})[0];
   if(!e){curExam=null;return renderExams();}
   function ul(a,cls){return a&&a.length?"<ul class='"+(cls||"")+"'>"+a.map(function(x){return "<li>"+esc(x)+"</li>"}).join("")+"</ul>":""}
   var h="<div class='card'><h2>"+esc(e.title)+"</h2>"+
