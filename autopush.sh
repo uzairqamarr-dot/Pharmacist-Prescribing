@@ -44,8 +44,12 @@ if [ -z "$(git status --porcelain)" ]; then
   exit 0
 fi
 
-# Name the commit after the version in index.html, so history stays readable.
-VER=$(grep -o 'class="ver">[^<]*' index.html 2>/dev/null | sed 's/.*>//')
+# Name the commit after the version, so history stays readable.
+#
+# Read it from sw.js, not index.html. The VERSION constant is a stable, machine
+# readable line; the header markup is presentation and has already changed shape
+# once (span -> button), which silently broke this grep and misnamed two commits.
+VER=$(sed -n 's/.*VERSION[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' sw.js 2>/dev/null | head -1)
 [ -z "$VER" ] && VER=$(date '+v%Y.%m.%d')
 FILES=$(git status --porcelain | awk '{print $2}' | tr '\n' ' ')
 
