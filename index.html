@@ -45,7 +45,7 @@ iframe.on{display:block}
 <div id="top">
   <h1>Pharmacist Prescribing</h1>
   <span class="sub">Grad Cert &middot; UoN &middot; Semester 2 2026</span>
-  <span class="ver">v2026.08.26d</span>
+  <span class="ver">v2026.08.26e</span>
   <div id="seg">
     <button data-v="study" class="on">Study</button>
     <button data-v="sem">Semester</button>
@@ -89,12 +89,23 @@ iframe.on{display:block}
   if("serviceWorker" in navigator){
     window.addEventListener("load", function(){
       navigator.serviceWorker.register("sw.js").then(function(reg){
+        /* Cold launch = the first 20 seconds, before any interaction. A new
+           build found in that window applies itself silently. After that the
+           button appears instead, so nothing reloads mid-question. */
+        var fresh = true;
+        setTimeout(function(){ fresh = false; }, 20000);
+        ["pointerdown","keydown"].forEach(function(ev){
+          window.addEventListener(ev, function(){ fresh = false; }, {once:true});
+        });
+        function apply(w){
+          if(fresh){ w.postMessage("skip-waiting"); }
+          else { document.getElementById("upd").classList.add("on"); }
+        }
         function watch(w){
           if(!w) return;
+          if(w.state === "installed" && navigator.serviceWorker.controller) return apply(w);
           w.addEventListener("statechange", function(){
-            if(w.state === "installed" && navigator.serviceWorker.controller){
-              document.getElementById("upd").classList.add("on");
-            }
+            if(w.state === "installed" && navigator.serviceWorker.controller) apply(w);
           });
         }
         watch(reg.waiting);

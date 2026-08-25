@@ -1,0 +1,5 @@
+# Auto-push working files — local only, never committed
+.autopush.log
+.autopush.err
+.autopush.lockdir/
+.DS_Store
