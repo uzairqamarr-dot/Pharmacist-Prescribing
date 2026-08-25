@@ -399,6 +399,7 @@ body{padding:0}
   <div class="pane" id="p-mcq">
     <div class="card">
       <h2>Practice questions <span style="float:right;text-transform:none;letter-spacing:0" class="small" id="mcqProg"></span></h2>
+      <select id="mcqTheme" style="width:100%;margin-bottom:8px"></select>
       <select id="mcqTopic" style="width:100%;margin-bottom:12px"></select>
       <div id="mcqBody"></div>
     </div>
@@ -2414,14 +2415,33 @@ function renderMcq(){
   fillTopicSelect(document.getElementById("mcqTopic"), MCQ, mcqFilter, function(v){
     mcqFilter=v; mcqI=0; renderMcq();
   });
+  var tsel=document.getElementById("mcqTheme");
+  if(tsel){
+    var counts={}, base=filteredMcq();
+    base.forEach(function(o){ var k=themeOf(o.q); counts[k]=(counts[k]||0)+1 });
+    tsel.innerHTML="";
+    var a=document.createElement("option"); a.value="__all__";
+    a.textContent="Every theme ("+base.length+")"; tsel.appendChild(a);
+    THEMES.forEach(function(th){
+      if(!counts[th[0]]) return;
+      var o=document.createElement("option"); o.value=th[0];
+      o.textContent=th[1]+" ("+counts[th[0]]+")"; tsel.appendChild(o);
+    });
+    tsel.value = counts[themeFilter] ? themeFilter : "__all__";
+    if(tsel.value==="__all__") themeFilter="__all__";
+    tsel.onchange=function(){ themeFilter=tsel.value; mcqI=0; renderMcq(); };
+  }
   var list=filteredMcq();
-  if(!list.length){ b.innerHTML="<p class='small'>No questions for that topic.</p>"; document.getElementById("mcqProg").textContent=""; return; }
+  if(themeFilter!=="__all__") list=list.filter(function(o){ return themeOf(o.q)===themeFilter });
+  if(!list.length){ b.innerHTML="<p class='small'>No questions match that combination. Widen the topic or the theme.</p>"; document.getElementById("mcqProg").textContent=""; return; }
   if(mcqI>=list.length) mcqI=0;
   var realI=list[mcqI].i, q=list[mcqI].q;
   document.getElementById("mcqProg").textContent=(mcqI+1)+" of "+list.length;
   var nm=CONDS.filter(function(x){return x.id===q[0]})[0];
   var ans=S.mcq[pk(realI)];
-  b.innerHTML="<div style='margin-bottom:8px'><span class='chip g'>"+esc(nm?nm.name:q[0])+"</span></div>"+
+  var th=THEMES.filter(function(x){return x[0]===themeOf(q)})[0];
+  b.innerHTML="<div style='margin-bottom:8px'><span class='chip g'>"+esc(nm?nm.name:q[0])+"</span>"+
+    (th?" <span class='chip b'>"+esc(th[1])+"</span>":"")+"</div>"+
     "<div style='font-size:14.5px;margin-bottom:12px'>"+q[1]+"</div>";
   var wrap=el("div");
   /* Shuffle display order so the POSITION of the answer is never the thing
@@ -3081,6 +3101,24 @@ var VITALS=[
   paeds:"—",
   concern:"<b>≥20.0 mmol/L or HbA1c ≥10% → urgent referral.</b> Kussmaul breathing → ketoacidosis"}
 ];
+
+
+/* ============ THEME TAGS ============
+   Questions get a theme by inspecting their own text, so nothing is stored and
+   no saved index can shift. Lets you drill "every eligibility question across
+   every condition", which is how the traps actually get learned. */
+var THEMES=[["elig","Eligibility & scope"],["refer","Referral & red flags"],["rx","Drug choice & first-line"],
+            ["mon","Monitoring, bloods & targets"],["couns","Counselling & safety netting"],["reason","Reasoning & communication"]];
+function themeOf(q){
+  var t=((q[1]||"")+" "+(q[4]||"")).toLowerCase();
+  if(/inelig|eligib|out of scope|exclu|scope of practice|program|maximum two|not in scope/.test(t)) return "elig";
+  if(/refer|red flag|urgent|emergency|ambulance|escalat|danger/.test(t))                            return "refer";
+  if(/first-line|first line|prescrib|which (medicine|agent|drug|class)|contraindicat|dose/.test(t)) return "rx";
+  if(/target|monitor|hba1c|egfr|ldl|review|weeks|months|baseline|pathology|bloods|interval/.test(t))return "mon";
+  if(/counsel|cmi|advise|teach-back|action plan|self-care|sick day|technique|apolog/.test(t))       return "couns";
+  return "reason";
+}
+var themeFilter="__all__";
 
 /* ============ CRAM SHEET ============
    Generated from BRIEFS and PACKS, so it can never drift out of step with the
