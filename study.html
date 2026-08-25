@@ -3286,6 +3286,14 @@ var VIVA=[
  "Scope of practice, professional accountability, regulatory requirements, organisational policy, collaborative care and patient preferences. And say plainly: NSW expanded scope does not include routine pharmacist prescribing for hypertension — knowing a QLD protocol is not the same as being authorised to use it."],
 ["wt","How would you open a conversation about weight?",
  "Open with the 5As ‘Ask’ step — seek their agreement to discuss weight at all. Use neutral, non-judgemental language. Establish what THEY want before offering a plan. Set a realistic target — 5–10% initially, or 10–15% and above where there are significant obesity-related complications — and name non-weight outcomes as success. Check what their glucose-lowering medicines do before changing anything."],
+["asthma","Where do the Australian Asthma Handbook and Therapeutic Guidelines disagree, and which do you follow?",
+ "Say the rule plainly: follow the <b>Australian Asthma Handbook</b> over Therapeutic Guidelines where they differ. Then give the worked example — Level 4 is medium-dose ICS-formoterol maintenance-and-reliever therapy, and a patient requiring it is outside the Program."],
+["asthma","Can you prescribe montelukast under the Program?",
+ "Not as an initiation. You may continue maintenance therapy started by a respiratory specialist, and if you do, you must counsel on the neuropsychiatric adverse effects — cite the TGA Safety Update of January 2025. Say the entry point to the treatment levels is individualised, not automatic."],
+["bgl","Their HbA1c is exactly 10.0% — are they eligible?",
+ "No. The criterion is <b>≥10%</b>, not above 10%, so exactly 10.0% is ineligible. Same trap on blood glucose: <b>≥20.0 mmol/L</b>. Say the inequality out loud rather than paraphrasing it — this is the most common way to lose the mark."],
+["htn","Run me through the exclusions that apply across all the cardiovascular conditions.",
+ "Give the shared list rather than a condition-specific one: established or complex cardiovascular disease, prior acute coronary syndrome or stroke, CKD stage 3–5, type 1 diabetes, pregnancy or planning pregnancy, current anticoagulant therapy, and specialist care for the condition in the past 12 months without a written referral. Then add the condition-specific ones on top."],
 ["smoke","This patient has tried to quit twice and failed. What do you offer?",
  "Explore what happened, not just what they took. Assess dependence — time to first cigarette. Combination NRT, varenicline or bupropion, matched to previous response, contraindications and preference — and be ready to name bupropion's contraindications if asked. Behavioural support alongside, and follow-up scheduled rather than offered."]
 ];
@@ -3325,7 +3333,7 @@ function renderViva(){
        "<div class='fcbar'><button class='btn pri' id='vvShow'>I've said it — show me a good answer</button>"+
        "<button class='btn' id='vvSkip'>Skip</button></div>";
   } else {
-    h+="<div class='box grn'><b>A good answer covers:</b><div style='margin-top:6px'>"+esc(v[2])+"</div></div>"+
+    h+="<div class='box grn'><b>A good answer covers:</b><div style='margin-top:6px'>"+v[2]+"</div></div>"+
        "<div class='small'>How close were you? Be honest — this only works if you are.</div>"+
        "<div class='fcbar'>"+
        "<button class='btn' data-vv='0'>Not really</button>"+
