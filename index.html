@@ -22,7 +22,14 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
  display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 #top h1{font-size:15px;margin:0;letter-spacing:-.2px;white-space:nowrap}
 #top .sub{font-size:11.5px;color:var(--mute);white-space:nowrap}
-#top .ver{font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* The version is a button: tap it to force an update check and get a straight
+   answer about whether this phone is running the latest build. */
+#top .ver{font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums;white-space:nowrap;
+ border:1px solid var(--line);background:none;border-radius:7px;padding:5px 8px;min-height:28px;
+ cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
+#top .ver:active{background:var(--chip)}
+#top .ver.chk{color:var(--mute)}
+#top .ver.okv{color:var(--accent);border-color:var(--accent)}
 #seg{display:flex;background:var(--chip);border-radius:9px;padding:2px;margin-left:auto}
 #seg button{border:none;background:none;padding:0 16px;min-height:40px;border-radius:7px;cursor:pointer;
  font:600 13px inherit;color:var(--mute);white-space:nowrap}
@@ -36,7 +43,11 @@ iframe.on{display:block}
 #upd.on{display:block}
 @media(max-width:520px){
   #top{gap:8px;padding-left:11px;padding-right:11px}
-  #top .sub,#top .ver{display:none}
+  /* Hide the subtitle on a narrow screen, but NEVER the version — checking what
+     build the phone is actually running is the whole reason it exists, and the
+     phone is where you need to check it. */
+  #top .sub{display:none}
+  #top .ver{font-size:10.5px}
   #seg button{padding:7px 12px;font-size:12.5px}
 }
 </style>
@@ -45,7 +56,7 @@ iframe.on{display:block}
 <div id="top">
   <h1>Pharmacist Prescribing</h1>
   <span class="sub">Grad Cert &middot; UoN &middot; Semester 2 2026</span>
-  <span class="ver">v2026.08.26j</span>
+  <button class="ver" id="verBtn" type="button" title="Tap to check for updates">v2026.08.26j</button>
   <div id="seg">
     <button data-v="study" class="on">Study</button>
     <button data-v="sem">Semester</button>
