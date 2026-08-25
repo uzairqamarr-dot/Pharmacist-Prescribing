@@ -10,7 +10,7 @@
  * with cache:"no-store". Without that, a push can take ten minutes to be
  * noticed even on a good connection.
  */
-var VERSION = "v2026.08.26g";
+var VERSION = "v2026.08.26h";
 var CACHE = "phar-" + VERSION;
 
 /* Relative so this keeps working if the repo or Pages path is ever renamed. */

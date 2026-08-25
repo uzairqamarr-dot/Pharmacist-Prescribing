@@ -272,6 +272,16 @@ body{padding:0}
 .jump b{display:block;font-size:var(--fs-sm);margin-bottom:2px}
 .jump p{margin:0;font-size:var(--fs-xs);color:var(--mute);line-height:1.45}
 
+@media print{
+  #side,.tabs,.semrow,.fcbar,.chatin{display:none !important}
+  .pane{display:none !important}
+  .pane.on{display:block !important}
+  #main{padding:0;max-width:none}
+  .card{border:none;box-shadow:none;padding:0 0 12px;break-inside:avoid}
+  body{background:#fff;color:#000;font-size:10.5pt}
+  table{page-break-inside:auto} tr{break-inside:avoid}
+  .box{border-left:2px solid #999;background:none}
+}
 @media (prefers-reduced-motion:reduce){
  *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
 }
@@ -289,6 +299,7 @@ body{padding:0}
     <button class="tab" data-p="learn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 8l10 5 10-5-10-5zM6 11v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg><span>Learn</span></button>
     <button class="tab" data-p="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><span>Plan</span></button>
     <button class="tab" data-p="course"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg><span>Course</span></button>
+    <button class="tab" data-p="cram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9zM13 2v7h7M8 13h8M8 17h5"/></svg><span>Cram sheet</span></button>
     <button class="tab" data-p="exams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 2.3A.3.3 0 004.5 2H3a1 1 0 00-1 1v6a6 6 0 006 6 6 6 0 006-6V3a1 1 0 00-1-1h-1.5a.3.3 0 00-.3.3v1.4a.3.3 0 00.3.3H12v5a4 4 0 01-8 0V4h1.5a.3.3 0 00.3-.3z"/><circle cx="20" cy="10" r="2"/></svg><span>Exams &amp; Vitals</span></button>
     <button class="tab" data-p="cond"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 00-7.8 7.8l1.1 1.1L12 21.2l7.8-7.7 1.1-1.1a5.5 5.5 0 000-7.8z"/></svg><span>Topics</span></button>
     <button class="tab" data-p="cards"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7l10-4 10 4-10 4-10-4zM2 12l10 4 10-4M2 17l10 4 10-4"/></svg><span>Flashcards</span></button>
@@ -353,6 +364,9 @@ body{padding:0}
     <div class="condnav" id="wkNav"></div>
     <div id="wkBody"></div>
   </div>
+
+  <!-- CRAM -->
+  <div class="pane" id="p-cram"><div id="cramBody"></div></div>
 
   <!-- EXAMS -->
   <div class="pane" id="p-exams">
@@ -2248,6 +2262,7 @@ Array.prototype.forEach.call(tabs,function(t){t.addEventListener("click",functio
   if(p==="plan") renderPlan();
   if(p==="learn") renderLearn();
   if(p==="exams") renderExams();
+  if(p==="cram") renderCram();
   if(p==="cards"){ pickCard(); renderFc(); }
   if(p==="mcq") renderMcq();
   if(p==="course") renderCourse();
@@ -3033,6 +3048,113 @@ function renderExams(){
   body.innerHTML=h;
   var bk=document.getElementById("exBack");
   if(bk) bk.addEventListener("click",function(){curExam=null;renderExams();window.scrollTo(0,0)});
+}
+
+
+
+/* Scannable vitals table. The walkthrough in Exams teaches technique; this is
+   the thing you check a number against. Paediatric ranges included because the
+   Semester 1 conditions include children. */
+var VITALS=[
+ {name:"Heart rate",adult:"60–100 bpm at rest",
+  paeds:"Neonate 100–160 &middot; infant 100–150 &middot; toddler 90–150 &middot; child 70–120 &middot; adolescent 60–100",
+  concern:"&gt;100 tachycardia — exercise, anxiety, pathology, hypoxia, infection. <b>Irregular → consider AF.</b> Count a FULL 60 seconds"},
+ {name:"Blood pressure",adult:"Clinic diagnostic threshold <b>≥140/90</b>. Home and daytime ABPM ≥135/85. 24h ABPM ≥130/80. Night ABPM ≥120/70",
+  paeds:"Age-dependent — roughly child 90/60, adolescent &lt;120/80",
+  concern:"<b>≥180 systolic and/or ≥110 diastolic → refer.</b> ≥180/120 with symptoms → emergency. Arms differing &gt;20 mmHg → possible dissection"},
+ {name:"Respiratory rate",adult:"<b>12–16</b> breaths/min typical at rest",
+  paeds:"Infant 30–60 &middot; toddler 24–40 &middot; child 18–30 &middot; adolescent 12–20",
+  concern:"The <b>most useful sign</b> that breathing is compromised. Note: the NSW observation chart's 10–25 ‘normal zone’ exists for escalation, not physiology"},
+ {name:"Oxygen saturation",adult:"<b>95–100%</b> at sea level",
+  paeds:"≥96% on room air",
+  concern:"Persistent &lt;95% is potentially abnormal — <b>do not blame age</b>. In COPD, drifting <b>towards 92%</b> is urgent. Device variability ±2–4%"},
+ {name:"Temperature",adult:"36.0–37.5 °C",
+  paeds:"36.0–37.5 °C — rectal is most accurate in infants",
+  concern:"Fever with respiratory symptoms → consider infection and referral"},
+ {name:"Pulse pressure",adult:"The gap between systolic and diastolic",
+  paeds:"—",
+  concern:"<b>Narrow &lt;25 mmHg</b> — aortic stenosis, heart failure, tamponade. <b>Wide &gt;100 mmHg</b> — aortic regurgitation, dissection"},
+ {name:"Capillary refill",adult:"&lt;2 seconds",
+  paeds:"&lt;2 seconds — central (sternum) is more reliable in infants",
+  concern:"Prolonged → poor perfusion; also degrades pulse oximetry accuracy"},
+ {name:"Blood glucose",adult:"Hypoglycaemia <b>&lt;4.0 mmol/L</b>",
+  paeds:"—",
+  concern:"<b>≥20.0 mmol/L or HbA1c ≥10% → urgent referral.</b> Kussmaul breathing → ketoacidosis"}
+];
+
+/* ============ CRAM SHEET ============
+   Generated from BRIEFS and PACKS, so it can never drift out of step with the
+   rest of the app. One scannable page: every number, threshold and red flag.
+   Built for the night before, and for Cmd-F. */
+function renderCram(){
+  var box=document.getElementById("cramBody"); if(!box) return;
+  var q=(document.getElementById("cramFind")||{}).value||"";
+  var ql=q.toLowerCase();
+  function hit(t){ return !ql || String(t).toLowerCase().indexOf(ql)>=0 }
+  function strip(h){ return String(h).replace(/<[^>]+>/g,"") }
+
+  var html="<div class='card'><h2>Cram sheet</h2>"+
+    "<div class='small'>Every number in one place, pulled straight from the briefs and prescribing packs "+
+    "— so it is never out of date. Type to filter, or just scroll.</div>"+
+    "<div class='chatin' style='margin-top:12px'><input id='cramFind' placeholder='Filter — try 140/90, eligibility, statin, refer' value='"+esc(q)+"'></div>"+
+    "<div class='fcbar'><button class='btn' id='cramPrint'>Print or save as PDF</button>"+
+    "<span class='small' id='cramCount'></span></div></div>";
+
+  var shown=0;
+  /* --- the numbers, by topic --- */
+  CONDS.forEach(function(c){
+    var b=BRIEFS[c.id], p=PACKS[c.id];
+    if(!b && !p) return;
+    var rows="";
+    if(b) b.pts.forEach(function(pt){
+      if(!hit(pt[0])&&!hit(strip(pt[1]))) return;
+      rows+="<tr><td style='width:34%'><b>"+esc(pt[0])+"</b></td><td>"+pt[1]+"</td></tr>"; shown++;
+    });
+    if(p){
+      function sect(label,arr,cls){
+        if(!arr||!arr.length) return;
+        var kept=arr.filter(function(x){return hit(strip(x))});
+        if(!kept.length) return;
+        shown+=kept.length;
+        rows+="<tr><td><b>"+label+"</b></td><td><ul style='margin:0'>"+
+          kept.map(function(x){return "<li>"+x+"</li>"}).join("")+"</ul></td></tr>";
+      }
+      sect("NOT eligible",p.out);
+      sect("Refer now",p.refer);
+      sect("May prescribe",p.rx);
+      sect("Clinical checks",p.checks);
+      sect("Safety netting",p.safety);
+      if(hit(strip(p.review))){ rows+="<tr><td><b>Review</b></td><td>"+p.review+"</td></tr>"; shown++; }
+    }
+    if(rows) html+="<div class='card'><h2>"+esc(c.name)+"</h2><table>"+rows+"</table></div>";
+  });
+
+  /* --- vitals, because they apply to everything --- */
+  var vrows=VITALS.filter(function(v){
+    return hit(v.name)||hit(v.adult)||hit(v.paeds)||hit(v.concern);
+  });
+  if(vrows.length){
+    shown+=vrows.length;
+    html+="<div class='card'><h2>Vital signs — normal ranges</h2><table>"+
+      "<tr><th>Sign</th><th>Adult</th><th>When it worries you</th></tr>"+
+      vrows.map(function(v){
+        return "<tr><td><b>"+esc(v.name)+"</b></td><td>"+v.adult+"</td><td>"+v.concern+"</td></tr>";
+      }).join("")+"</table></div>";
+  }
+
+  if(!shown) html+="<div class='card'><div class='box amb' style='margin-top:0'>Nothing matches “"+esc(q)+"”.</div></div>";
+  box.innerHTML=html;
+  var f=document.getElementById("cramFind");
+  if(f){
+    f.value=q;
+    f.addEventListener("input",function(){ var v=f.value; renderCram();
+      var n=document.getElementById("cramFind"); if(n){ n.value=v; n.focus();
+        n.setSelectionRange(v.length,v.length); } });
+  }
+  var cnt=document.getElementById("cramCount");
+  if(cnt) cnt.textContent = q ? shown+" matching" : "";
+  var pr=document.getElementById("cramPrint");
+  if(pr) pr.addEventListener("click",function(){ window.print&&window.print() });
 }
 
 function renderPlan(){
