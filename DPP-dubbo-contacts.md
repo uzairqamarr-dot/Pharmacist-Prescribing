@@ -1,11 +1,12 @@
-# Dubbo DPP outreach — contacts and reception-proof approach
+# Dubbo DPP outreach — email-only contacts and approach
 
 Compiled 26 Aug 2026. Every email address and phone number below was taken from
 the practice's **own website** on that date — no guessing. Still worth a 5-second
 check against the site before you send, in case something has changed.
 
 **No individual doctor email addresses are listed, because practices don't publish
-them.** That's normal and it isn't the obstacle — see "Getting past reception".
+them.** That's normal and it isn't the obstacle — see "Getting your email past the
+front desk" below. **Everything here works by email; no phone calls required.**
 
 ---
 
@@ -27,90 +28,99 @@ looks more organised.
 
 ---
 
-## Getting past reception
+## Getting your email past the front desk — without ringing
 
-Reception isn't trying to block you. They're triaging a busy inbox against a list of
-things they know how to action. Your job is to make yours obviously actionable.
+A practice inbox is triaged fast against a list of things admin knows how to action.
+Your job is to make yours obviously actionable in the first two lines.
 
-**1. Ring first. Always.** One 90-second call beats ten emails. You are not asking
-reception to make a decision — you're asking for two facts: the practice manager's
-name, and the best email address. Then your email opens with *"As discussed with
-[name] this morning…"*, which converts a cold email into an expected one.
+**1. Say what it isn't, immediately.** The single most common failure is your email
+being read as a patient enquiry and routed to the appointments queue. Open by ruling
+that out.
 
-**2. Never send to `reception@` with no name in it.** Address a human, or at minimum
-put "for the attention of the Practice Manager" in the subject.
+**2. Put the routing instruction in the subject.** "FAO Practice Manager" tells admin
+exactly what to do before they open it.
 
-**3. Make the forward easy.** Reception's job is to route, not to evaluate. Give them
-an explicit instruction and an escape hatch — *"if this isn't yours to action, could
-you point me to who handles student placements?"* People will answer that when they
-won't answer an open-ended ask.
+**3. Give them an escape hatch.** *"If placements aren't handled through this address,
+could you point me to who does?"* People answer that when they won't answer an
+open-ended ask — it costs them one line.
 
-**4. No attachments on first contact.** They get stripped, flagged, or ignored. Offer
-the handbook, don't attach it.
+**4. No attachments.** They get stripped, flagged, or ignored. Offer the handbook,
+don't attach it.
 
-**5. Legitimacy markers, briefly.** Your AHPRA registration number, the course name,
-and the placement team's address as something they can independently verify. Three
-short lines, not a paragraph.
+**5. Send from `@uon.edu.au`.** Doing the credibility work your voice would have done
+on a call. This matters more when you're not ringing, not less.
 
-**6. Say the honorarium.** $200, University-funded. It signals a funded program with
-administration behind it, not a favour being asked by a stranger.
+**6. Legitimacy markers, briefly.** AHPRA number and the University placement team's
+address, so anyone doubting you can verify in one click.
 
----
+**7. Send individually.** One email per practice, no CC, no BCC list. A visible
+multi-recipient header is the fastest way to get deleted.
 
-## Phone script (90 seconds)
-
-> "Hi, my name's [name], I'm a pharmacist here in Dubbo. I'm not a patient — this
-> isn't a clinical call. I'm doing the prescribing course through the University of
-> Newcastle and I need a GP or nurse practitioner to supervise 30 hours of placement.
-> The University pays a $200 honorarium and handles the paperwork.
->
-> I don't need an answer now — could I just get the practice manager's name and the
-> best email to send a short outline to?"
-
-Then: *"And is there a doctor there who's taken students before?"* — practices that
-already supervise registrars are far more likely to say yes, and reception knows
-exactly who they are.
+**8. Name your pharmacy.** *"a pharmacist at Orana Mall Pharmacy, working with Lisa
+Gibson"* does more work in Dubbo than any credential. Those practices send scripts to
+that pharmacy — you stop being an unknown student and become someone they already deal
+with, with a named colleague who can vouch for you. Put it in the first line and in
+your sign-off.
 
 ---
 
-## EMAIL — to a practice (send after the call)
+## EMAIL — cold approach to a practice (no call needed)
 
-**From:** your `@uon.edu.au` address
-**Subject:** Student placement request for [Practice] — Univ. of Newcastle prescribing course (FAO Practice Manager)
+Send to each practice separately. Swap the practice name each time; everything else
+stays as is.
 
-Dear [Name],
+**From:** Uzair.Qamar@uon.edu.au
+**Subject:** FAO Practice Manager — student placement request, University of Newcastle prescribing course
 
-Thank you for taking my call this morning.
+Dear [Practice] team,
 
-I'm a pharmacist in Dubbo, currently studying the Graduate Certificate in Pharmacist
-Prescribing and Advanced Practice at the University of Newcastle. I need to complete
-30 hours of supervised placement with a GP or nurse practitioner, and I'm writing to
-ask whether any of your prescribers might be willing to supervise.
+This isn't a patient enquiry — could I ask that it be passed to your Practice Manager,
+or whoever looks after student placements?
+
+I'm a pharmacist at Orana Mall Pharmacy here in Dubbo, working with Lisa Gibson. I'm
+currently completing the Graduate Certificate in Pharmacist Prescribing and Advanced
+Practice at the University of Newcastle, and I need to complete 30 hours of supervised
+placement with a GP or nurse practitioner. I'm writing to ask whether any of your
+prescribers might be willing to supervise.
 
 What it involves:
 
 - 30 hours total, face to face, scheduled entirely around the supervisor's availability
 - Any time between now and 13 November
 - I observe and learn; they give feedback and sign off my hours at the end
-- The University approves the arrangement, provides a handbook, and pays a **$200 honorarium**
-- I handle all coordination and paperwork
+- The University approves the arrangement, provides a supervisor handbook, and pays a
+  **$200 honorarium**
+- I handle all the coordination and paperwork
 
-There's no cap on how many students one supervisor can take, so it needn't be a
-sole commitment.
+There is no cap on how many students one supervisor may take, so it needn't be a sole
+commitment.
 
-AHPRA registration: [YOUR AHPRA NUMBER]
+AHPRA registration: PHA0002799064
 University placement team: CHMW-AlliedHealthPlacements@newcastle.edu.au
 
-Would you be able to pass this to whoever is best placed to consider it? And if
-student placements aren't handled through your office, I'd be grateful if you could
-point me in the right direction.
-
-Happy to send the supervisor handbook or drop in at a quiet time.
+If student placements aren't handled through this address, I'd be grateful if you
+could point me in the right direction.
 
 Kind regards,
-[YOUR FULL NAME]
-[YOUR PHONE]
-[Firstname.Lastname@uon.edu.au]
+Uzair Qamar
+Pharmacist, Orana Mall Pharmacy, Dubbo · AHPRA PHA0002799064
+0422 754 711 · Uzair.Qamar@uon.edu.au
+
+### Send list — copy the addresses straight across
+
+| Send to | Address | Change "[Practice]" to |
+|---|---|---|
+| Dubbo Medical & Allied Health Group | contact@dmahg.com.au | DMAHG |
+| Dubbo Health Hub | reception@dubbohealthhub.com.au | Dubbo Health Hub |
+| Western Plains Medical & Dental | [website enquiry form](https://www.westernplainsmedicalcentre.com.au/contact-us/) — paste the body in | Western Plains |
+
+Dubbo Health Hub's only published address is `reception@`, so there it's unavoidable —
+which is exactly why the "this isn't a patient enquiry" opening line matters.
+
+**Dubbo Regional Aboriginal Medical Service** has two conflicting addresses online and
+I couldn't verify either. Since you're not ringing, leave it — a bounced email is worse
+than no email. Worth asking the University placement team to approach them for you;
+that's precisely what they're there for.
 
 ---
 
@@ -123,22 +133,25 @@ Kind regards,
 | **DMAHG** — Delroy Park | (02) 6815 9900 | contact@dmahg.com.au · reception@dmahg.com.au | Cnr Minore Rd & Baird Dr |
 | **Dubbo Health Hub** | (02) 6884 1804 | reception@dubbohealthhub.com.au | 183 Brisbane St |
 | **Western Plains Medical & Dental** | (02) 6841 9000 | *no address published* — enquiry form + "Opportunities" page | 62 Windsor Pde |
-| **Dubbo Regional Aboriginal Medical Service** | (02) 6884 7502 | **confirm by phone** — two different addresses appear online | 48–50 Wingewarra St |
+| **Dubbo Regional Aboriginal Medical Service** | (02) 6884 7502 | *unverified — two conflicting addresses online; ask the placement team to approach* | 48–50 Wingewarra St |
 | **South Dubbo Family Medical** | *check site* | — | Dubbo 2830 |
 
 **Start with Macquarie Health Collective** (see below) — you're already a patient and
 they already teach. **Then DMAHG:** largest multidisciplinary group in town, two sites,
 publishes a direct `contact@` address, specialists plus allied health — the widest pool
-of eligible prescribers in one call.
+of eligible prescribers behind a single email.
 
 **Western Plains** has ~12 GPs and an [Opportunities
 page](https://www.westernplainsmedicalcentre.com.au/opportunities/) — a practice
 already advertising for practitioners is one already thinking about teaching. No
-published email, so this one is a phone call.
+published email address, so use their [enquiry
+form](https://www.westernplainsmedicalcentre.com.au/contact-us/) and paste the email
+body straight in.
 
-**Dubbo Regional AMS** — I found two conflicting email addresses online, so **do not
-email blind**. Ring and confirm. AMSs often have nurse practitioners on staff, who
-are explicitly eligible DPPs under the handbook.
+**Dubbo Regional AMS** — two conflicting email addresses online and I could verify
+neither, so don't email blind; a bounce is worse than nothing. Worth asking the
+University placement team to approach them on your behalf — AMSs often have nurse
+practitioners, who are explicitly eligible DPPs under the handbook.
 
 ### ⭐ Macquarie Health Collective — your own practice, and the best lead in town
 
@@ -254,11 +267,11 @@ Dear Tanya,
 Your *Train with Us* page invites enquiries to you directly, so I hope this is the
 right door.
 
-I'm a pharmacist here in Dubbo, and a patient of the Collective. I'm currently
-completing the Graduate Certificate in Pharmacist Prescribing and Advanced Practice at
-the University of Newcastle, and I need a Designated Prescribing Practitioner to
-supervise 30 hours of placement. I'm writing to ask whether the Collective would
-consider hosting me.
+I'm a pharmacist at Orana Mall Pharmacy here in Dubbo, working with Lisa Gibson, and a
+patient of the Collective. I'm currently completing the Graduate Certificate in
+Pharmacist Prescribing and Advanced Practice at the University of Newcastle, and I need
+a Designated Prescribing Practitioner to supervise 30 hours of placement. I'm writing
+to ask whether the Collective would consider hosting me.
 
 I emailed your general enquiries address on 26 August for Dr Shyam Sivarasa's
 attention — I'm writing to you as well in case this sits better with you.
@@ -275,7 +288,7 @@ Would the Collective be open to it?
 
 Kind regards,
 Uzair Qamar
-Pharmacist, Dubbo · AHPRA PHA0002799064
+Pharmacist, Orana Mall Pharmacy, Dubbo · AHPRA PHA0002799064
 0422 754 711 · Uzair.Qamar@uon.edu.au
 
 **Send it Monday 31 August** if Dr Sivarasa hasn't come back to you by then. Writing
@@ -344,11 +357,11 @@ Pharmacist, Dubbo · AHPRA [YOUR AHPRA NUMBER]
 
 ## Order of operations this week
 
-1. Chase the placement team if they haven't replied — that's the University's own
-   fallback and your highest-probability route.
-2. Ring DMAHG, Dubbo Health Hub, Western Plains, Dubbo AMS. Get names.
-3. Email each one from NUmail, addressed to the person you spoke to.
-4. Follow up once, after five working days. Once — then move on.
+1. **Chase the placement team** if they haven't replied — the University's own stated
+   fallback, and your highest-probability route.
+2. **Monday 31 Aug:** if Dr Sivarasa hasn't answered, send the Tanya Forster email.
+3. **Send the cold email above** to DMAHG and Dubbo Health Hub. Two emails, ten
+   minutes, and they run in parallel with everything else.
+4. **Follow up once**, five working days after each. Once — then let it go.
 
-Ten targeted approaches with a name attached will beat a hundred blind emails, and
-in a town this size, how you go about it gets remembered.
+Four irons in the fire beats one, and none of it requires picking up a phone.
