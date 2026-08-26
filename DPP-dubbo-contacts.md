@@ -147,8 +147,11 @@ read the homepage, which lists only the allied health disciplines, and didn't ch
 the team pages.)*
 
 - **165 Brisbane St, Dubbo NSW 2830** (suite 1b) · **(02) 6882 7113** · Mon–Fri 8:30–5
-- `enquiries@macquariehealthcollective.com.au` — general enquiries ← **use this one**
-- `reception@macquariehealthcollective.com.au` — appointments only
+- `enquiries@macquariehealthcollective.com.au` — **general enquiries ← use this one**
+- `reception@macquariehealthcollective.com.au` — the practice labels this
+  *"appointment related enquiries"*. It's a real, monitored address, but it's the
+  bookings queue. A placement request landing there gets triaged as a misfiled
+  appointment and closed. Don't CC both either — that reads as a mailshot.
 
 Why they're the strongest prospect in Dubbo:
 
@@ -167,22 +170,48 @@ Why they're the strongest prospect in Dubbo:
 - Dr Sivarasa and Dr Fergus Duncan both joined in **February 2026**, reopening the
   practice's books.
 
-**One thing to sort out: he is your treating GP.** The Handbook (1.2.1) says a DPP
-"must not have any potential conflicts of interest **such as** being a relative, family
-member, close friend, or someone in relationship with the student." That list is
-explicitly non-exhaustive, and your own doctor assessing your competence — while
-holding your medical records — is the sort of dual relationship a placement office
-will want to rule on.
+### Two things to check — and the second matters more than the first
 
-Don't let it stop you asking. Do two things in parallel:
+**1. Conflict of interest — probably not an issue.** The Handbook (1.2.1) bars a DPP
+who is "a relative, family member, close friend, or someone in relationship with the
+student." A doctor who became your GP a few weeks ago on a six-month rotation is a
+thin, recent, professional relationship — nothing like the entrenched dual
+relationship that clause is aimed at. Worth a one-line check with the placement team,
+but don't lose sleep over it.
 
-1. Send the email below to Dr Sivarasa.
-2. Send one line to the placement team: *"Is a student's own treating GP considered a
-   conflict of interest for the DPP role?"*
+**2. "Independent authorised prescriber" — check this one properly.** Handbook 1.2.1
+requires the DPP to be an **independent** authorised prescriber holding **current,
+unconditional AHPRA registration with no conditions, undertakings, or restrictions**
+relating to prescribing or clinical supervision.
 
-If the answer is yes, the practice is still an excellent lead — another GP there could
-be the named DPP while Dr Sivarasa stays your doctor. The email below says this
-explicitly, which pre-empts the concern he may well raise himself.
+If Dr Sivarasa is **a GP registrar** — still in training, rotating through placements,
+working under his own supervisor — he may not meet "independent", and registrars
+sometimes carry conditions on registration tied to their training pathway. If he's a
+**fellowed GP** doing a six-month rural stint, there's no issue at all.
+
+"Rotating" can mean either. Find out which before you invest weeks in it, because
+**the University verifies registration status before approving any DPP** — so this
+will surface regardless. Far better it surfaces now than after he's said yes and
+you've booked hours around him.
+
+How to check, in two minutes and for free:
+
+- [AHPRA public register](https://www.ahpra.gov.au/registration/registers-of-practitioners.aspx)
+  — search his name. Look at registration type and whether any conditions or
+  undertakings are listed.
+- Or just ask him. "Are you fellowed, or still on the training pathway?" is an
+  ordinary, unloaded question between health professionals.
+
+**Either way, still send the email.** If he turns out to be a registrar, he is exactly
+the person who knows which of his colleagues is fellowed, supervises registrars
+already, and might say yes — and he'll likely offer. Being asked is not an imposition
+at a practice that already teaches.
+
+One line to the placement team covering both:
+
+> *Is a student's own treating GP a conflict of interest for the DPP role? And does a
+> GP registrar meet the "independent authorised prescriber" requirement, or must the
+> DPP be fellowed?*
 
 ---
 
