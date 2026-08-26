@@ -184,23 +184,30 @@ requires the DPP to be an **independent** authorised prescriber holding **curren
 unconditional AHPRA registration with no conditions, undertakings, or restrictions**
 relating to prescribing or clinical supervision.
 
-If Dr Sivarasa is **a GP registrar** — still in training, rotating through placements,
-working under his own supervisor — he may not meet "independent", and registrars
-sometimes carry conditions on registration tied to their training pathway. If he's a
-**fellowed GP** doing a six-month rural stint, there's no issue at all.
+**Important: seeing patients alone does not settle this.** GP registrars in Australia
+run their own consultations, make their own decisions and write their own scripts —
+solo practice is normal and expected on the training pathway. So "he consults
+independently" is true of a registrar and a fellow alike, and doesn't tell you which
+he is.
 
-"Rotating" can mean either. Find out which before you invest weeks in it, because
-**the University verifies registration status before approving any DPP** — so this
-will surface regardless. Far better it surfaces now than after he's said yes and
-you've booked hours around him.
+The thing that actually distinguishes them is **registration type on AHPRA**:
 
-How to check, in two minutes and for free:
+- **Specialist registration** in general practice (FRACGP or FACRRM) = fellowed.
+  Unambiguously an independent authorised prescriber. No issue.
+- **General registration** while enrolled on a training pathway = registrar. Still
+  a fully registered doctor, but whether the University counts that as "independent"
+  for the DPP role is *their* call, not yours or his.
+
+Two minutes to settle:
 
 - [AHPRA public register](https://www.ahpra.gov.au/registration/registers-of-practitioners.aspx)
-  — search his name. Look at registration type and whether any conditions or
-  undertakings are listed.
-- Or just ask him. "Are you fellowed, or still on the training pathway?" is an
-  ordinary, unloaded question between health professionals.
+  — search his name. Read the registration type, and check for any conditions or
+  undertakings.
+- Or ask him. *"Are you fellowed, or still on the training pathway?"* is an ordinary,
+  unloaded question between health professionals.
+
+**The University verifies registration before approving any DPP**, so this surfaces
+either way. Better now than after he's agreed and you've scheduled hours around him.
 
 **Either way, still send the email.** If he turns out to be a registrar, he is exactly
 the person who knows which of his colleagues is fellowed, supervises registrars
