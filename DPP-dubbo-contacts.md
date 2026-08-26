@@ -222,7 +222,69 @@ One line to the placement team covering both:
 
 ---
 
-## EMAIL — Dr Shyam Sivarasa (send this first)
+## EMAIL — Tanya Forster, CEO (the no-phone-call route) ⭐
+
+Sent 26 Aug to `enquiries@` and got only an auto-reply? Don't ring — go straight to
+the person their own website tells you to write to.
+
+**Found on their [Train with Us page](https://www.macquariehealthcollective.com.au/gpregistrartraining):**
+
+- **Tanya Forster — CEO**, founded the Collective in 2016. Her direct address,
+  **tanya@macquariehealthcollective.com.au**, is published there as a mailto link
+  under *"We would love to talk to you about the career opportunities…"*. That is an
+  open invitation, not a scraped address.
+- **Brooke Albert — Practice Operations Coordinator** (the ops/admin owner).
+- The practice is an **accredited training practice with both RACGP and ACRRM**.
+- **Dr Rebecca Criss** — accredited GP supervisor, University of Sydney School of
+  Rural Health lecturer, 10+ years educating medical students, RACGP examiner.
+- **Dr Jennifer Geraghty** — supervising registrars ~7 years, Senior Lecturer at
+  Sydney's School of Rural Health for 20+ years.
+
+**Why this is the better door:** Tanya can decide or delegate, and Dr Criss and
+Dr Geraghty are both experienced, fellowed supervisors who'd clear University
+approval without question — which quietly sidesteps the whole "is Dr Sivarasa a
+registrar or a fellow" issue.
+
+**To:** tanya@macquariehealthcollective.com.au
+**From:** Uzair.Qamar@uon.edu.au
+**Subject:** Pharmacist prescribing student seeking a placement supervisor — University of Newcastle
+
+Dear Tanya,
+
+Your *Train with Us* page invites enquiries to you directly, so I hope this is the
+right door.
+
+I'm a pharmacist here in Dubbo, and a patient of the Collective. I'm currently
+completing the Graduate Certificate in Pharmacist Prescribing and Advanced Practice at
+the University of Newcastle, and I need a Designated Prescribing Practitioner to
+supervise 30 hours of placement. I'm writing to ask whether the Collective would
+consider hosting me.
+
+I emailed your general enquiries address on 26 August for Dr Shyam Sivarasa's
+attention — I'm writing to you as well in case this sits better with you.
+
+Given the practice is RACGP and ACRRM accredited, and that Dr Criss and Dr Geraghty
+already supervise registrars and medical students, this may be well-trodden ground.
+
+What it involves: 30 hours face to face before 13 November, scheduled entirely around
+the supervisor's availability. I observe and learn; they give feedback and sign off my
+hours. The University approves the arrangement, provides a supervisor handbook, and
+pays a $200 honorarium. I handle all coordination and paperwork.
+
+Would the Collective be open to it?
+
+Kind regards,
+Uzair Qamar
+Pharmacist, Dubbo · AHPRA PHA0002799064
+0422 754 711 · Uzair.Qamar@uon.edu.au
+
+**Send it Monday 31 August** if Dr Sivarasa hasn't come back to you by then. Writing
+to the CEO after the general inbox has gone quiet is normal escalation, not pushiness
+— and you're referencing the earlier email, so it can't read as a duplicate.
+
+---
+
+## EMAIL — Dr Shyam Sivarasa (sent 26 Aug 2026)
 
 **From:** your `@uon.edu.au` address
 **To:** enquiries@macquariehealthcollective.com.au
