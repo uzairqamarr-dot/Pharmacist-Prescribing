@@ -56,11 +56,17 @@ address, so anyone doubting you can verify in one click.
 **7. Send individually.** One email per practice, no CC, no BCC list. A visible
 multi-recipient header is the fastest way to get deleted.
 
-**8. Name your pharmacy.** *"a pharmacist at Orana Mall Pharmacy, working with Lisa
-Gibson"* does more work in Dubbo than any credential. Those practices send scripts to
-that pharmacy — you stop being an unknown student and become someone they already deal
-with, with a named colleague who can vouch for you. Put it in the first line and in
-your sign-off.
+**8. Name your pharmacy, and the shared care.** *"a pharmacist at Orana Mall Pharmacy,
+working with Lisa Gibson"* does more work in Dubbo than any credential — those practices
+send scripts to that pharmacy, so you stop being an unknown student and become someone
+they already deal with, with a named colleague who can vouch for you.
+
+Then add the DAA and Webster-pak line. It reframes the whole request: you aren't an
+outsider asking for a favour, you're already part of the care team for some of their
+patients, asking to learn more about the prescribing end of it. That is a different
+conversation. Keep it conditional — *"we may already be involved in the care of some of
+yours"* — because you can't know which of their patients you dispense for, and
+overclaiming would be the one thing that undoes the credibility you just built.
 
 ---
 
@@ -77,11 +83,14 @@ Dear [Practice] team,
 This isn't a patient enquiry — could I ask that it be passed to your Practice Manager,
 or whoever looks after student placements?
 
-I'm a pharmacist at Orana Mall Pharmacy here in Dubbo, working with Lisa Gibson. I'm
-currently completing the Graduate Certificate in Pharmacist Prescribing and Advanced
-Practice at the University of Newcastle, and I need to complete 30 hours of supervised
-placement with a GP or nurse practitioner. I'm writing to ask whether any of your
-prescribers might be willing to supervise.
+I'm a pharmacist at Orana Mall Pharmacy here in Dubbo, working with Lisa Gibson. We
+look after dose administration aids and Webster-paks for a number of local patients, so
+we may already be involved in the care of some of yours.
+
+I'm currently completing the Graduate Certificate in Pharmacist Prescribing and
+Advanced Practice at the University of Newcastle, and I need to complete 30 hours of
+supervised placement with a GP or nurse practitioner. I'm writing to ask whether any of
+your prescribers might be willing to supervise.
 
 What it involves:
 
@@ -268,10 +277,14 @@ Your *Train with Us* page invites enquiries to you directly, so I hope this is t
 right door.
 
 I'm a pharmacist at Orana Mall Pharmacy here in Dubbo, working with Lisa Gibson, and a
-patient of the Collective. I'm currently completing the Graduate Certificate in
-Pharmacist Prescribing and Advanced Practice at the University of Newcastle, and I need
-a Designated Prescribing Practitioner to supervise 30 hours of placement. I'm writing
-to ask whether the Collective would consider hosting me.
+patient of the Collective myself. We look after dose administration aids and
+Webster-paks for a number of local patients, so we may already be involved in the care
+of some of yours.
+
+I'm currently completing the Graduate Certificate in Pharmacist Prescribing and
+Advanced Practice at the University of Newcastle, and I need a Designated Prescribing
+Practitioner to supervise 30 hours of placement. I'm writing to ask whether the
+Collective would consider hosting me.
 
 I emailed your general enquiries address on 26 August for Dr Shyam Sivarasa's
 attention — I'm writing to you as well in case this sits better with you.
