@@ -378,3 +378,73 @@ Pharmacist, Dubbo · AHPRA [YOUR AHPRA NUMBER]
 4. **Follow up once**, five working days after each. Once — then let it go.
 
 Four irons in the fire beats one, and none of it requires picking up a phone.
+
+---
+
+## What the Tutorial 2 cohort said actually worked (6202, transcript)
+
+Alison ran a DPP discussion in Tutorial 2. This is the class's own experience, not my
+guessing — worth more than anything else in this file.
+
+**From the teaching team**
+
+- The placement team **are liaising with the program team** to work out how to assist
+  students who are genuinely stuck. Alison: *"keep us informed if you're having
+  difficulties, so that we're aware of your circumstances."* Your escalation emails are
+  exactly right — being on that list is the point.
+- **It does not have to be a GP.** The cohort has DPPs who are dentists, nurse
+  practitioners and pharmacist prescribers. That widens your pool enormously.
+- Worried a non-GP won't generate relevant cases? Alison: OPU sign-off and the DPP's
+  **entrustment decision can be based on discussions and simulations**, not only real
+  patient encounters. Read the OPU diary section on entrustment discussions.
+
+**What worked for Nader** — the standout, and it took about two minutes
+
+> *"I just went to the doctor's surgery next door and said, here is the DPP handbook,
+> I'll come back tomorrow after you read it. And then came back, they asked me some
+> questions, and said yep, we're happy to do it."*
+
+He knew the surgery, but **not** the prescriber. She said she really likes teaching.
+No email, no phone call — he handed over the Handbook and left. If there's a practice
+near Orana Mall, that is a walk-in, not a cold call.
+
+**Kristin's "secret sauce" — target early-career prescribers**
+
+She sent 22–23 emails to dermatologists to find one guest speaker. The one who said yes
+was *"in the building phase of their career"* — someone actively looking for CV and
+portfolio opportunities. Supervising a student is a credential. Aim there, not at the
+most senior name on the website.
+
+**Dave Rees — go public**
+
+> *"People working in the public health system are happy to spend their salaried time
+> mentoring and training, more perhaps than people that aren't."*
+
+His own diabetes-education mentor is a nurse practitioner in the public system. Private
+practice bills by the consult; salaried clinicians don't. **Dubbo Health Service and
+Western NSW LHD go back on your list** — NSW Health verification takes weeks, so start
+it in parallel rather than treating it as a reason to skip them.
+
+**Teagan — ask your banner group**
+
+Terry White pharmacists in her network have already completed DPP training. Whatever
+banner Orana Mall sits under, ask head office whether any pharmacist prescriber in the
+group is a trained DPP. A pharmacist prescriber is explicitly eligible.
+
+**Nicholas — how to make yourself easy to sign off**
+
+He recorded a full consultation (contraception initiation, start to finish) and shared
+it with his DPP, who *"probably wasn't the greatest educator"*. It let her see his
+competence directly rather than having to construct assessments for him. You have to
+record a 12-minute simulated consultation for Assessment 2 anyway — offering it up front
+lowers the perceived workload of saying yes.
+
+### What this changes for you
+
+1. **Framing.** Lead with what you offer the practice and the ongoing relationship, not
+   with what you need. Several students said that's what got them a yes.
+2. **Widen the target.** Nurse practitioners, dentists, pharmacist prescribers, public
+   health clinicians — not just Dubbo GP practices.
+3. **Ask your banner group.** One email to head office, potentially a trained DPP.
+4. **Consider a walk-in with the Handbook.** Not a phone call — hand it over, leave,
+   come back. It's the single approach in that room that demonstrably worked.
