@@ -11,8 +11,7 @@ home screen, used often with no signal.
 
 ## Session handover — read this first
 
-**Last worked: 26 August 2026.** Version v2026.08.26j; there may be uncommitted
-work in `study.html` — check `git status` before doing anything.
+**Last worked: 3 September 2026.** Version v2026.09.03a.
 
 ### What exists now, beyond the original four-file layout
 
@@ -66,6 +65,24 @@ append-only too**, same rule as `cards` and `mcq`.
   content assertion fails. Grep the source instead, or click a `[data-vv]` rating.
 - **jsdom tests must scope queries to the pane under test.** Document-wide selectors
   hit other panes and give false passes.
+- **`renderPlan()` escapes `why`, `flag` and step text.** Putting HTML in a PLAN
+  string prints the tags literally. Card answers and MCQ explanations are the
+  opposite — raw HTML, not escaped. Check which context before writing markup.
+- **Never reuse a PLAN step id for a different task.** Rewriting the `genai` steps
+  while keeping ids g1–g5 would have shown "Record the 12-minute consultation"
+  already ticked for anyone who had done the old steps. Renamed to ga1–ga9;
+  orphaned ids are inert, which is the safe failure mode.
+- **An EVENTS entry with `cov:[]` must not be attached to a suggested topic** —
+  `suggestTopic()` used to say "Asthma — needed for Tutorial 5" when Tutorial 5
+  covers nothing in the app. It now nulls the event instead.
+- **Tutorial transcripts are teaching, not doctrine.** Content lifted from them must
+  say whose position it is. A clinician's aside on not counselling muscle symptoms,
+  and another's advice to match an aggressive patient's energy, both read as rules
+  until they were re-attributed — and the second contradicted the NSW Health
+  de-escalation guidance the course actually carries.
+- **Semester 2 material is NOT in the search corpus.** The indexing IIFE only pushes
+  Semester 1 cards, questions and topic bodies into `CORPUS`. Ask the Hub cannot find
+  any s2 content. Pre-existing; worth fixing.
 - **I cannot push to GitHub.** No credentials in the sandbox. Always hand the user:
   `cd ~/Pharmacist-Prescribing && git add -A && git commit -m "..." && git push`
 - Do not run git write commands from the sandbox — they leave `.git/index.lock`
@@ -186,13 +203,13 @@ revised (e.g. well-controlled asthma and mild COPD are now eligible). The
 changes summary is in the corpus under "Updates Apr 2026". Prefer current
 criteria over anything older.
 
-## Coverage as at v2026.08.26j
+## Coverage as at v2026.09.03a
 
 Semester 1 — 20 conditions, 143 cards, 91 MCQ, 8 OSCE stations.
 
-Semester 2 — 11 topics, **204 cards, 100 MCQ, 10 OSCE stations, 26 spoken viva
+Semester 2 — 11 topics, **244 cards, 120 MCQ, 10 OSCE stations, 26 spoken viva
 prompts**, plus guided Learn sessions with must-know briefs and per-condition
-prescribing packs.
+prescribing packs. Corpus 1208 chunks (ingested 3 Sep 2026).
 
 | Topic | Cards | MCQ | Brief | Pack |
 |---|---|---|---|---|
