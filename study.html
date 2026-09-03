@@ -2122,6 +2122,12 @@ var COURSE_CARDS=[["htn","State the Heart Foundation clinic BP classification th
 ,["htn","How much physical activity does the Heart Foundation recommend for cardiovascular risk reduction?",
   "<b>About 30 minutes of moderate activity on most days — roughly 150 minutes a week.</b> Note the same threshold appears in AUSDRisk as <b>2.5 hours per week</b>: falling short of it scores 2 points. Same number, two tools."]
 
+/* ---- Appended 4 Sep 2026 from the Week 1 quiz feedback. APPEND ONLY. ---- */
+,["htn","State the CVD risk reassessment interval for each risk band.",
+  "<b>Low (&lt;5%) — 5 years.</b> <b>Intermediate (5 to &lt;10%) — 2 years</b> if untreated. <b>High (≥10%) — no formal reassessment.</b> That last one catches people out: you do not put a high-risk patient on a review interval, because they move to active treatment and ongoing clinical management instead. All intervals shorten if risk factors or the clinical picture change. Do not confuse any of these with the <b>3-year</b> AUSDRisk reassessment — different tool, different clock."]
+,["bgl","Which extra variables does the AusCVDRisk calculator use for a person with diabetes?",
+  "<b>HbA1c, time since diagnosis (duration of diabetes), uACR, eGFR — and BMI.</b> Note that BMI is in the diabetes model but is not a variable in the general model. This is why a patient with diabetes cannot be risk-assessed properly without recent renal function and an HbA1c in front of you."]
+
 ];
 var COURSE_MCQ=[["htn","A patient's clinic BP is 152/104. Under the Heart Foundation classification, what grade is this?",
  ["High-normal","Grade 1 (mild) — the systolic sits in the 140–159 band","Grade 2 (moderate) — the higher of the two categories applies","Grade 3 (severe)","Isolated systolic hypertension"],2,
@@ -2353,6 +2359,14 @@ var COURSE_MCQ=[["htn","A patient's clinic BP is 152/104. Under the Heart Founda
 ,["htn","Which statement aligns with Heart Foundation messaging on smoking?",
   ["Only heavy smokers are at increased risk","Quitting smoking significantly reduces cardiovascular risk","Switching to cigars lowers cardiovascular risk","Smoking has minimal impact on cardiovascular risk"],1,
   "There is a dose-dependent association between smoking and cardiovascular events, but no safe level and no safer product — quitting is what reduces risk. The tutorial framing was that for a smoker it is usually the single biggest modifiable driver, so it is where the conversation goes first."]
+
+/* ---- Appended 4 Sep 2026 from the Week 1 quiz feedback. APPEND ONLY. ---- */
+,["htn","How often should a patient at high CVD risk (≥10% over 5 years) have a formal CVD risk reassessment?",
+  ["Every 12 months","Every 2 years","Every 5 years","No formal reassessment — they move to treatment and ongoing management"],3,
+  "Reassessment intervals exist to decide <i>when to look again</i> at someone you are not treating. A high-risk patient is already being treated, so formal reassessment is not usually required — ongoing clinical management replaces it. Low risk is 5 years, intermediate 2 years if untreated."]
+,["bgl","Which additional variables does the AusCVDRisk calculator include for people with diabetes?",
+  ["Waist circumference and triglycerides","HbA1c, duration of diabetes, uACR and eGFR","Coronary calcium score and family history","Physical activity level and BMI only"],1,
+  "The diabetes model adds HbA1c, time since diagnosis, uACR, eGFR and BMI. Coronary calcium score and family history are <i>reclassification</i> factors applied afterwards, not inputs to the diabetes model — which is exactly the confusion this question is built on."]
 
 ];
 

@@ -11,7 +11,7 @@ home screen, used often with no signal.
 
 ## Session handover — read this first
 
-**Last worked: 3 September 2026.** Version v2026.09.03b.
+**Last worked: 3 September 2026.** Version v2026.09.04a.
 
 ### What exists now, beyond the original four-file layout
 
@@ -203,11 +203,11 @@ revised (e.g. well-controlled asthma and mild COPD are now eligible). The
 changes summary is in the corpus under "Updates Apr 2026". Prefer current
 criteria over anything older.
 
-## Coverage as at v2026.09.03b
+## Coverage as at v2026.09.04a
 
 Semester 1 — 20 conditions, 143 cards, 91 MCQ, 8 OSCE stations.
 
-Semester 2 — 11 topics, **250 cards, 126 MCQ, 10 OSCE stations, 26 spoken viva
+Semester 2 — 11 topics, **252 cards, 128 MCQ, 10 OSCE stations, 26 spoken viva
 prompts**, plus guided Learn sessions with must-know briefs and per-condition
 prescribing packs. Corpus 1208 chunks (ingested 3 Sep 2026).
 
