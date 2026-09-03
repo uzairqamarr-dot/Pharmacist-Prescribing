@@ -2105,6 +2105,23 @@ var COURSE_CARDS=[["htn","State the Heart Foundation clinic BP classification th
 ,["lipid","A 52-year-old with type 2 diabetes, LDL-C 3.1 mmol/L, non-smoker, no CVD, father had an MI at 54. Her BP is 130 mmHg. What does the calculator say, and what does that teach?",
   "Around a <b>2% risk</b> — strikingly low against a worrying-sounding history, because <b>age dominates the calculation</b>. Her lifetime risk was about 37%. Two lessons: run the calculator rather than eyeballing the risk factors, and use lifetime risk when the short-term number understates the picture in a younger patient. <b>But do not stop at 2%.</b> Her father's MI at 54 is premature CVD in a first-degree male relative under 55 — a reclassification factor that moves risk <i>upward</i>. The calculated figure is the starting point, not the answer."]
 
+/* ---- Appended 3 Sep 2026 from the Week 1 CVD practice quiz.
+   AUSDRISK point bands verified against health.gov.au (the tool itself);
+   heart-healthy eating pattern verified against heartfoundation.org.au.
+   APPEND ONLY. ---- */
+,["htn","AUSDRisk: what are the waist circumference point bands?",
+  "Two sets, and the quiz will pick the one you might not check. <b>Not of Asian, Aboriginal or Torres Strait Islander descent</b> — men: &lt;102 cm = 0, 102–110 = 4, &gt;110 = 7. Women: &lt;88 = 0, 88–100 = 4, &gt;100 = 7. <b>Asian, Aboriginal or Torres Strait Islander descent</b> — men: &lt;90 = 0, 90–100 = 4, &gt;100 = 7. Women: &lt;80 = 0, 80–90 = 4, &gt;90 = 7. So a non-Asian man at 112 cm scores <b>7</b>, not 4 — read the boundary carefully."]
+,["htn","AUSDRisk: what are the three risk bands and what does each mean?",
+  "<b>≤5 low</b> — about 1 in 100 develop type 2 diabetes within 5 years. <b>6–11 intermediate</b> — 1 in 50 for 6–8, 1 in 30 for 9–11. <b>≥12 high</b> — 1 in 14 for 12–15, 1 in 7 for 16–19, 1 in 3 for 20 and above. At <b>≥12, ask about a fasting blood glucose test</b>. The QLD protocol adds that AUSDRisk is reassessed every 3 years."]
+,["htn","AUSDRisk: which items score, and what are they worth?",
+  "Age (0/2/4/6/8 by decade from under 35 to 65+) · sex (male 3) · Aboriginal, Torres Strait Islander, Pacific Islander or Māori descent (2) · born in Asia incl. the Indian subcontinent, Middle East, North Africa or Southern Europe (2) · family history of diabetes in a parent or sibling (3) · <b>ever had a high blood glucose (6 — the single biggest item)</b> · on antihypertensives (2) · daily smoker (2) · not eating vegetables or fruit every day (1) · under 2.5 h physical activity per week (2) · waist circumference (0/4/7)."]
+,["htn","A 46-year-old man scores 14 on AUSDRisk with no known diabetes. What next?",
+  "14 is <b>high risk</b> (≥12). The tool's own instruction is to <b>ask about a fasting blood glucose test</b> — roughly 1 in 14 at that score will develop diabetes within 5 years, and he may already have undiagnosed type 2 diabetes. Not metformin (no diagnosis), and not a 5-year wait."]
+,["htn","What does the Heart Foundation's heart-healthy eating pattern actually consist of?",
+  "Five steps. 1. Plenty of <b>vegetables, fruit and wholegrains</b>. 2. A variety of <b>healthy protein</b> — mostly legumes, nuts, seeds, fish and seafood; smaller amounts of eggs and lean poultry; lean red meat only 1–3 times a week. 3. <b>Unflavoured</b> milk, yoghurt and cheese (reduced-fat if they have heart disease or high cholesterol). 4. <b>Healthy fats and oils</b> — avocado, olives, nuts, seeds, olive/canola/sunflower oil; fish 2–3 times a week for omega-3. 5. <b>Herbs and spices instead of salt</b> — the maximum is 5 g of salt a day and Australians eat nearly double it. Not a restrictive diet, and not about good and bad foods."]
+,["htn","How much physical activity does the Heart Foundation recommend for cardiovascular risk reduction?",
+  "<b>About 30 minutes of moderate activity on most days — roughly 150 minutes a week.</b> Note the same threshold appears in AUSDRisk as <b>2.5 hours per week</b>: falling short of it scores 2 points. Same number, two tools."]
+
 ];
 var COURSE_MCQ=[["htn","A patient's clinic BP is 152/104. Under the Heart Foundation classification, what grade is this?",
  ["High-normal","Grade 1 (mild) — the systolic sits in the 140–159 band","Grade 2 (moderate) — the higher of the two categories applies","Grade 3 (severe)","Isolated systolic hypertension"],2,
@@ -2316,6 +2333,26 @@ var COURSE_MCQ=[["htn","A patient's clinic BP is 152/104. Under the Heart Founda
 ,["lipid","A 52-year-old with type 2 diabetes, LDL-C 3.1 mmol/L, BP 130, non-smoker, no CVD, father had an MI at 54. Her calculated five-year risk is about 2%. What does this illustrate?",
   ["The calculator is unreliable in diabetes","Age dominates the five-year calculation, so run it rather than eyeballing risk factors","Family history is not a risk factor","LDL-C below 3.5 always means low risk"],1,
   "The history sounds alarming but the five-year number is low because age drives it so strongly. Her lifetime risk was around 37% — which is the more useful framing for a younger patient whose short-term number understates the picture."]
+
+/* ---- Appended 3 Sep 2026 from the Week 1 CVD practice quiz. APPEND ONLY. ---- */
+,["htn","A 52-year-old man of non-Asian background has a waist circumference of 112 cm. How many AUSDRisk points does that contribute?",
+  ["0 points","2 points","4 points","7 points"],3,
+  "For men not of Asian, Aboriginal or Torres Strait Islander descent the bands are &lt;102 cm = 0, 102–110 cm = 4, and <b>more than 110 cm = 7</b>. At 112 cm he is above the top boundary, so 7. The 4-point answer is the trap — it is the band immediately below."]
+,["htn","A 46-year-old man scores 14 on AUSDRisk and has no known diabetes. What is the most appropriate next step?",
+  ["No action; repeat in 5 years","Repeat AUSDRisk in 12 months","Recommend fasting blood glucose testing","Start metformin immediately"],2,
+  "A score of 12 or more is high risk — roughly 1 in 14 at 12–15 will develop type 2 diabetes within 5 years, and he may already have it undiagnosed. The tool's own instruction at ≥12 is to arrange a fasting blood glucose test. Metformin without a diagnosis is wrong, and waiting wastes the finding."]
+,["htn","What are the AUSDRisk risk bands?",
+  ["≤5 low, 6–11 intermediate, ≥12 high","≤3 low, 4–9 intermediate, ≥10 high","≤8 low, 9–14 intermediate, ≥15 high","≤10 low, 11–19 intermediate, ≥20 high"],0,
+  "Five or less is low (about 1 in 100), 6–11 intermediate, and 12 or more high. Do not confuse the AUSDRisk cut-off of 12 with the AusCVDRisk high-risk threshold of 10% — two different tools, two different numbers."]
+,["htn","Which best reflects the Heart Foundation's heart-healthy eating pattern?",
+  ["High-protein with daily red meat","Low-carbohydrate with butter and cream","Rich in vegetables, wholegrains and healthy fats","High-salt and high-fat unless the patient is hypertensive"],2,
+  "The pattern is built on vegetables, fruit and wholegrains, mostly plant and seafood protein, unflavoured dairy, healthy fats and oils, and herbs instead of salt. Red meat is limited to 1–3 times a week. Salt restriction applies to everyone, not only people with hypertension."]
+,["htn","A 58-year-old woman with hypertension asks how much exercise would reduce her heart disease risk. What is the Heart Foundation target?",
+  ["10 minutes of walking once a week","30 minutes of activity on 3 days a week","30 minutes of moderate activity on most days, about 150 minutes a week","Strength training twice a week and nothing else"],2,
+  "Roughly 150 minutes a week of moderate activity, spread over most days. The same threshold shows up in AUSDRisk as 2.5 hours a week — under it scores 2 points. Strength training is a useful addition, not a substitute."]
+,["htn","Which statement aligns with Heart Foundation messaging on smoking?",
+  ["Only heavy smokers are at increased risk","Quitting smoking significantly reduces cardiovascular risk","Switching to cigars lowers cardiovascular risk","Smoking has minimal impact on cardiovascular risk"],1,
+  "There is a dose-dependent association between smoking and cardiovascular events, but no safe level and no safer product — quitting is what reduces risk. The tutorial framing was that for a smoker it is usually the single biggest modifiable driver, so it is where the conversation goes first."]
 
 ];
 
