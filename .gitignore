@@ -3,3 +3,6 @@
 .autopush.err
 .autopush.lockdir/
 .DS_Store
+
+# Content bundle for rebuilding elsewhere — not part of the deployed app
+prescribing-data.js
