@@ -3,7 +3,7 @@
    wait; the app shows an "Update ready" button and only activates when the
    user taps it (never auto-reloads mid-question). */
 "use strict";
-var VERSION = "v2026.09.07c";
+var VERSION = "v2026.09.07d";
 var CACHE = "phar-hub-" + VERSION;
 var ASSETS = [
   "./",
