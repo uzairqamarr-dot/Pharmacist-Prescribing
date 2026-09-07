@@ -1,0 +1,1573 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f3d3e">
+<title>Prescribing Study Hub</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+/* ============ Prescribing Study Hub — design system ============ */
+:root{
+  --ink:#12232b; --ink2:#3d5560; --ink3:#6b828c;
+  --teal:#0f6b66; --teal-d:#0a4f4b; --teal-t:#e2f0ee;
+  --accent:#c2571b; --accent-t:#fbeadd;
+  --bg:#f4f6f5; --surface:#ffffff; --surface2:#eef2f1;
+  --line:#dbe4e2; --ok:#1d7a4f; --warn:#9a6a12;
+  --radius:14px; --shadow:0 1px 3px rgba(18,35,43,.08),0 4px 14px rgba(18,35,43,.05);
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#e6efee; --ink2:#b3c6c4; --ink3:#8aa19f;
+    --teal:#4fb8b0; --teal-d:#2f8f88; --teal-t:#123736;
+    --accent:#e08a4e; --accent-t:#3a2417;
+    --bg:#0e1618; --surface:#162326; --surface2:#1c2c2f;
+    --line:#294045; --ok:#5cc491; --warn:#d9a94e;
+    --shadow:0 1px 3px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--font);background:var(--bg);color:var(--ink);
+  font-size:16px;line-height:1.55}
+h1,h2,h3,h4{line-height:1.25;margin:0 0 .5em;font-weight:650}
+h1{font-size:1.45rem} h2{font-size:1.2rem} h3{font-size:1.05rem}
+p{margin:0 0 .8em}
+a{color:var(--teal)}
+button{font-family:inherit;font-size:1rem;cursor:pointer;border:0;border-radius:12px;
+  min-height:44px;padding:10px 18px;background:var(--surface2);color:var(--ink);font-weight:600}
+button:active{transform:scale(.98)}
+.btn-p{background:var(--teal);color:#fff}
+.btn-p:hover{background:var(--teal-d)}
+.btn-a{background:var(--accent);color:#fff}
+.btn-g{background:transparent;border:1.5px solid var(--line);color:var(--ink2)}
+.btn-block{display:block;width:100%;margin:8px 0}
+.btn-sm{min-height:36px;padding:6px 12px;font-size:.9rem;border-radius:9px}
+input,select,textarea{font-family:inherit;font-size:1rem;color:var(--ink);
+  background:var(--surface);border:1.5px solid var(--line);border-radius:10px;
+  padding:10px 12px;min-height:44px;width:100%}
+textarea{min-height:120px;font-family:ui-monospace,Menlo,monospace;font-size:.85rem}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+
+/* ============ layout ============ */
+#app{display:flex;min-height:100vh}
+#side{width:230px;flex:0 0 230px;background:var(--surface);border-right:1px solid var(--line);
+  position:sticky;top:0;height:100vh;overflow-y:auto;padding:18px 12px;display:flex;flex-direction:column}
+#side .brand{font-weight:750;font-size:1.02rem;padding:6px 10px 14px;color:var(--teal);letter-spacing:.01em}
+#side .brand small{display:block;color:var(--ink3);font-weight:500;font-size:.72rem}
+.navitem{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:transparent;
+  border-radius:10px;min-height:44px;padding:10px 12px;margin:1px 0;color:var(--ink2);font-weight:550;font-size:.94rem}
+.navitem:hover{background:var(--surface2)}
+.navitem.on{background:var(--teal-t);color:var(--teal);font-weight:700}
+.navitem .dot{width:7px;height:7px;border-radius:50%;background:var(--line);flex:0 0 7px}
+.navitem.on .dot{background:var(--teal)}
+#main{flex:1;min-width:0;display:flex;flex-direction:column}
+#view{flex:1;width:100%;max-width:860px;margin:0 auto;padding:20px 16px 110px}
+#foot{max-width:860px;margin:0 auto;width:100%;padding:0 16px 90px;display:flex;justify-content:center}
+#verbadge{background:transparent;border:1px solid var(--line);color:var(--ink3);
+  font-size:.72rem;min-height:30px;padding:4px 12px;border-radius:20px;font-weight:500}
+#tabbar{display:none}
+@media (max-width:820px){
+  #side{display:none}
+  #tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;
+    background:var(--surface);border-top:1px solid var(--line);
+    padding:4px 4px calc(4px + env(safe-area-inset-bottom));}
+  #tabbar button{flex:1;background:transparent;border-radius:10px;min-height:52px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    font-size:.68rem;font-weight:600;color:var(--ink3);padding:4px 2px}
+  #tabbar button.on{color:var(--teal)}
+  #tabbar .ti{font-size:1.15rem;line-height:1}
+  #view{padding-bottom:150px}
+  #foot{padding-bottom:150px}
+}
+/* more-sheet (mobile) */
+#sheet{position:fixed;inset:0;z-index:60;display:none}
+#sheet.open{display:block}
+#sheet .scrim{position:absolute;inset:0;background:rgba(10,20,24,.45)}
+#sheet .panel{position:absolute;left:0;right:0;bottom:0;background:var(--surface);
+  border-radius:18px 18px 0 0;padding:14px 14px calc(18px + env(safe-area-inset-bottom));
+  max-height:78vh;overflow-y:auto;box-shadow:0 -8px 30px rgba(0,0,0,.25)}
+#sheet .grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
+#sheet .navitem{min-height:48px}
+
+/* ============ components ============ */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px;margin:0 0 14px;box-shadow:var(--shadow)}
+.card.flat{box-shadow:none}
+.hero{background:var(--teal);color:#fff;border:0}
+.hero .k{font-size:.75rem;text-transform:uppercase;letter-spacing:.09em;opacity:.85;font-weight:700}
+.hero h1{color:#fff;margin:.35em 0 .3em}
+.hero .mins{opacity:.9;font-weight:600;font-size:.9rem}
+.hero button{margin-top:12px;background:#fff;color:var(--teal-d);font-weight:700}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row.between{justify-content:space-between}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface2);
+  border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:.8rem;
+  font-weight:600;color:var(--ink2);min-height:32px}
+.chip.on{background:var(--teal-t);border-color:var(--teal);color:var(--teal)}
+button.chip{min-height:36px}
+.muted{color:var(--ink3)} .small{font-size:.85rem}
+.big-n{font-size:2rem;font-weight:750;color:var(--teal);line-height:1.1}
+.prog{height:8px;background:var(--surface2);border-radius:6px;overflow:hidden;margin:6px 0}
+.prog>i{display:block;height:100%;background:var(--teal);border-radius:6px;transition:width .3s}
+.pill{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:12px;background:var(--teal-t);color:var(--teal)}
+.pill.warn{background:var(--accent-t);color:var(--accent)}
+.divider{height:1px;background:var(--line);margin:16px 0}
+.seg{display:flex;background:var(--surface2);border-radius:12px;padding:3px;gap:3px;margin-bottom:14px}
+.seg button{flex:1;background:transparent;min-height:40px;border-radius:9px;font-size:.9rem}
+.seg button.on{background:var(--surface);box-shadow:var(--shadow);color:var(--teal);font-weight:700}
+.listrow{display:flex;align-items:center;gap:12px;padding:13px 4px;border-bottom:1px solid var(--line);
+  min-height:52px;cursor:pointer;background:transparent;border-left:0;border-right:0;border-top:0;
+  width:100%;text-align:left;border-radius:0;font-weight:550;color:var(--ink)}
+.listrow:last-child{border-bottom:0}
+.listrow .arrow{margin-left:auto;color:var(--ink3);font-weight:400}
+.steps-head{display:flex;gap:8px;margin:0 0 14px}
+.steps-head .st{flex:1;height:6px;border-radius:4px;background:var(--line)}
+.steps-head .st.done{background:var(--teal)}
+.steps-head .st.now{background:var(--accent)}
+.timer{font-variant-numeric:tabular-nums;font-size:2.2rem;font-weight:750;letter-spacing:.02em}
+.timer.low{color:var(--accent)}
+.qbox{font-size:1.12rem;font-weight:600;line-height:1.5;margin:10px 0 16px}
+.opt{display:block;width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--line);
+  border-radius:12px;padding:13px 15px;margin:8px 0;font-weight:550;min-height:48px}
+.opt.sel{border-color:var(--teal);background:var(--teal-t)}
+.opt.right{border-color:var(--ok);background:rgba(29,122,79,.1)}
+.opt.wrong{border-color:var(--accent);background:var(--accent-t)}
+.explain{background:var(--surface2);border-left:4px solid var(--teal);border-radius:0 12px 12px 0;
+  padding:14px 16px;margin:12px 0}
+.rate-row{display:flex;gap:10px}
+.rate-row button{flex:1;min-height:56px}
+.markrow{display:flex;gap:12px;align-items:flex-start;padding:11px 4px;border-bottom:1px solid var(--line);
+  cursor:pointer;width:100%;background:transparent;text-align:left;border-radius:0;border-left:0;border-right:0;border-top:0;
+  font-weight:500;color:var(--ink);min-height:48px}
+.markrow .cb{width:26px;height:26px;flex:0 0 26px;border:2px solid var(--line);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;margin-top:1px;color:#fff;font-weight:800}
+.markrow.tick .cb{background:var(--teal);border-color:var(--teal)}
+.markrow.tick .mt{color:var(--ink3);text-decoration:line-through}
+.safety{background:var(--accent-t);border:1px solid var(--accent);border-radius:12px;padding:14px 16px;margin:12px 0}
+.honest{background:var(--surface2);border:1px dashed var(--ink3);border-radius:12px;padding:14px 16px;margin:12px 0}
+/* content styles for injected course HTML */
+.body h3{margin-top:1.2em;color:var(--teal)}
+.body table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.92rem}
+.body th,.body td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+.body th{background:var(--surface2)}
+.body .box,.body .blu{background:var(--surface2);border-radius:10px;padding:12px 14px;margin:10px 0}
+.body .blu{border-left:4px solid var(--teal)}
+.body .red,.body .amb{border-left:4px solid var(--accent)}
+.body ul,.body ol{padding-left:1.3em}
+.hidden-a{position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;height:0;overflow:hidden}
+#updatebar{position:fixed;left:12px;right:12px;bottom:78px;z-index:70;display:none;
+  background:var(--ink);color:var(--bg);border-radius:14px;padding:12px 16px;
+  box-shadow:0 8px 26px rgba(0,0,0,.3);align-items:center;gap:12px;justify-content:space-between}
+#updatebar.show{display:flex}
+#updatebar button{background:var(--teal);color:#fff;min-height:40px}
+@media (min-width:821px){#updatebar{bottom:20px;left:auto;right:20px;max-width:420px}}
+/* anatomy */
+.anat-wrap{position:relative;width:100%;max-width:607px;margin:0 auto;user-select:none}
+.anat-wrap img{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line)}
+.spot{position:absolute;border:2px solid var(--teal);background:rgba(15,107,102,.18);
+  border-radius:8px;min-height:0;padding:0}
+.spot.hit{border-color:var(--ok);background:rgba(29,122,79,.25)}
+.spot.miss{border-color:var(--accent);background:var(--accent-t)}
+/* print (cram) */
+@media print{
+  #side,#tabbar,#foot,#updatebar,.noprint{display:none!important}
+  #view{padding:0;max-width:none}
+  body{background:#fff;color:#000;font-size:11px}
+  .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid;margin:0 0 8px;padding:10px}
+  h1{font-size:15px} h2{font-size:13px} h3{font-size:12px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="side">
+    <div class="brand">Prescribing<br>Study Hub<small>Grad Cert Pharmacist Prescribing</small></div>
+    <div id="semseg" class="seg" role="group" aria-label="Semester">
+      <button id="sem1" type="button">Sem 1</button>
+      <button id="sem2" type="button">Sem 2</button>
+    </div>
+    <nav id="sidenav" aria-label="Main"></nav>
+  </aside>
+  <div id="main">
+    <div id="view" role="main"></div>
+    <footer id="foot"><button id="verbadge" type="button" title="Tap to check for updates"></button></footer>
+  </div>
+  <nav id="tabbar" aria-label="Main"></nav>
+</div>
+<div id="sheet" aria-hidden="true">
+  <div class="scrim" id="sheetscrim"></div>
+  <div class="panel">
+    <div class="grab"></div>
+    <div class="seg" role="group" aria-label="Semester">
+      <button id="msem1" type="button">Semester 1</button>
+      <button id="msem2" type="button">Semester 2</button>
+    </div>
+    <nav id="morenav" aria-label="More"></nav>
+  </div>
+</div>
+<div id="updatebar" role="status">
+  <span><b>Update ready.</b> <span class="small">A new version of the app is downloaded.</span></span>
+  <button id="updatebtn" type="button">Update now</button>
+</div>
+<script src="prescribing-data.js"></script>
+<script src="prescribing-data-ext.js"></script>
+<script>
+/* ================================================================
+   Prescribing Study Hub — app script (ES5, no dependencies)
+   ================================================================ */
+"use strict";
+var VERSION = "v2026.09.07c";
+var LSKEY = "phar-hub-v1";
+var DAY = 86400000;
+var INT = [0, 0, 1, 3, 8, 21];          /* Leitner intervals (days), boxes 1..5 */
+var SAFETY_RE = /consent|eligib|ineligib|alarm|red flag|referr|referral|monitor|document/i;
+
+/* ---------- data assembly (verbatim from spec) ---------- */
+var DATA = {
+  s2: {conds: S2_CONDS, cards: S2_CARDS.concat(COURSE_CARDS),
+       mcq: S2_MCQ.concat(COURSE_MCQ), osce: S2_OSCE},
+  s1: {conds: window.__SEM1__.conds, cards: window.__SEM1__.cards,
+       mcq: window.__SEM1__.mcq, osce: S1_OSCE}
+};
+
+/* ---------- escaping ---------- */
+function esc(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+function raw(s){ return String(s == null ? "" : s); }   /* trusted course HTML */
+
+/* ---------- store: single localStorage key, repair-on-load ---------- */
+function blankStore(){
+  return {box:{}, mcq:{}, osce:{}, osceRuns:{}, exams:{}, days:{},
+          sem:"s2", steps:{}, right:{}, read:{}, viva:{}};
+}
+function repairBox(v){
+  var o = {};
+  if (v && typeof v === "object" && !Array.isArray(v)) o = v;
+  var out = {}, k, e;
+  for (k in o){
+    e = o[k];
+    if (typeof e === "number"){ out[k] = {b: e, due: 0, seen: 1}; continue; }
+    if (!e || typeof e !== "object") continue;
+    out[k] = {
+      b: (typeof e.b === "number" && e.b >= 1 && e.b <= 5) ? e.b : 1,
+      due: (typeof e.due === "number" && isFinite(e.due)) ? e.due : 0,
+      seen: (typeof e.seen === "number" && e.seen >= 0) ? e.seen : 0
+    };
+  }
+  return out;
+}
+function repairObj(v){ return (v && typeof v === "object" && !Array.isArray(v)) ? v : {}; }
+function loadStore(){
+  var s = blankStore(), rawS = null;
+  try { rawS = localStorage.getItem(LSKEY); } catch (e) {}
+  if (rawS){
+    try {
+      var p = JSON.parse(rawS);
+      if (p && typeof p === "object"){
+        s.box = repairBox(p.box);
+        s.mcq = repairObj(p.mcq); s.osce = repairObj(p.osce);
+        s.osceRuns = repairObj(p.osceRuns); s.exams = repairObj(p.exams);
+        s.days = repairObj(p.days); s.steps = repairObj(p.steps);
+        s.right = repairObj(p.right); s.read = repairObj(p.read);
+        s.viva = repairObj(p.viva);
+        s.sem = (p.sem === "s1" || p.sem === "s2") ? p.sem : "s2";
+      }
+    } catch (e) {}
+  }
+  return s;
+}
+var store = loadStore();
+function save(){
+  try { localStorage.setItem(LSKEY, JSON.stringify(store)); } catch (e) {}
+}
+function bumpDay(){
+  var d = new Date();
+  var k = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+  store.days[k] = (store.days[k] || 0) + 1;
+}
+
+/* ---------- helpers ---------- */
+function $(id){ return document.getElementById(id); }
+function el(html){ var d = document.createElement("div"); d.innerHTML = html; return d; }
+function condById(sem, id){
+  var cs = DATA[sem].conds, i;
+  for (i = 0; i < cs.length; i++) if (cs[i].id === id) return cs[i];
+  return null;
+}
+function condName(sem, id){ var c = condById(sem, id); return c ? c.name : id; }
+function fmtDate(iso){ /* DD/MM/YYYY */
+  if (!iso) return "";
+  var p = iso.split("-");
+  return p.length === 3 ? p[2] + "/" + p[1] + "/" + p[0] : iso;
+}
+function daysUntil(iso){
+  var now = new Date(); now.setHours(0, 0, 0, 0);
+  var p = iso.split("-");
+  var t = new Date(+p[0], +p[1] - 1, +p[2]);
+  return Math.round((t - now) / DAY);
+}
+function mins(n){ n = Math.max(1, Math.round(n)); return "~" + n + " min"; }
+function mmss(ms){
+  if (ms < 0) ms = 0;
+  var s = Math.floor(ms / 1000), m = Math.floor(s / 60);
+  return m + ":" + ("0" + (s % 60)).slice(-2);
+}
+function keyOf(sem, i){ return sem + ":" + i; }
+
+/* topic readiness: % of cards seen + mcqs answered for one topic */
+function topicReadiness(sem, condId){
+  var d = DATA[sem], cards = 0, cardsSeen = 0, qs = 0, qsDone = 0, i, k;
+  for (i = 0; i < d.cards.length; i++) if (d.cards[i][0] === condId){
+    cards++; k = keyOf(sem, i);
+    if (store.box[k] && store.box[k].seen > 0) cardsSeen++;
+  }
+  for (i = 0; i < d.mcq.length; i++) if (d.mcq[i][0] === condId){
+    qs++; k = keyOf(sem, i);
+    if (store.mcq[k] > 0) qsDone++;
+  }
+  var tot = cards + qs, done = cardsSeen + qsDone;
+  return tot ? Math.round(100 * done / tot) : 0;
+}
+function dueCards(sem){
+  var now = Date.now(), out = [], d = DATA[sem], i, k, e;
+  for (i = 0; i < d.cards.length; i++){
+    k = keyOf(sem, i); e = store.box[k];
+    if (!e) { out.push(i); continue; }              /* new cards are due */
+    if (e.due <= now) out.push(i);
+  }
+  return out;
+}
+/* MCQ theme classifier (keyword-based, THEMES ids) */
+function themeOf(qtext){
+  var t = String(qtext).toLowerCase();
+  if (/eligib|ineligib|age limit|scope of|criteria|inclusion/.test(t)) return "elig";
+  if (/refer|red flag|alarm|urgent|emergency|specialist/.test(t)) return "refer";
+  if (/monitor|target|hba1c|egfr|review|follow.?up|bloods|recheck/.test(t)) return "mon";
+  if (/counsel|advise|side effect|adverse|safety net|cmi|come back|expect/.test(t)) return "couns";
+  if (/first.?line|initiat|prescrib|statin|ace inhib|arb|ics|saba|bupropion|varenicline|metformin|agent|which (drug|medicin)|therapy/.test(t)) return "rx";
+  return "reason";
+}
+function themeLabel(id){
+  for (var i = 0; i < THEMES.length; i++) if (THEMES[i][0] === id) return THEMES[i][1];
+  return id;
+}
+
+/* ---------- navigation: ONE dispatcher ---------- */
+var NAV = [
+  ["home",     "Home",            "⌂"],
+  ["learn",    "Learn",           "▶"],
+  ["plan",     "Plan",            "✓"],
+  ["course",   "Course",          "≡"],
+  ["cram",     "Cram sheet",      "▤"],
+  ["exams",    "Exams & vitals",  "✚"],
+  ["topics",   "Topics",          "◉"],
+  ["cards",    "Flashcards",      "▦"],
+  ["mcq",      "MCQs",            "?"],
+  ["mock",     "Exam",            "⏱"],
+  ["anat",     "Anatomy",         "◎"],
+  ["viva",     "Say it out loud", "🎙"],
+  ["osce",     "OSCE",            "⏲"],
+  ["progress", "Progress",        "▥"],
+  ["search",   "Search",          "⌕"]
+];
+var MOBILE_MAIN = ["home", "learn", "cards", "viva"];
+var cur = {tab: "home"};
+
+function navButton(item, onMob){
+  var on = cur.tab === item[0] ? " on" : "";
+  if (onMob)
+    return '<button type="button" class="' + on.trim() + '" data-go="' + item[0] + '">' +
+           '<span class="ti">' + item[2] + '</span>' + esc(item[1]) + '</button>';
+  return '<button type="button" class="navitem' + on + '" data-go="' + item[0] + '">' +
+         '<span class="dot"></span>' + esc(item[1]) + '</button>';
+}
+function renderNav(){
+  var h = "", i;
+  for (i = 0; i < NAV.length; i++) h += navButton(NAV[i], false);
+  $("sidenav").innerHTML = h;
+  h = "";
+  for (i = 0; i < MOBILE_MAIN.length; i++){
+    var it = null, j;
+    for (j = 0; j < NAV.length; j++) if (NAV[j][0] === MOBILE_MAIN[i]) it = NAV[j];
+    h += navButton(it, true);
+  }
+  h += '<button type="button" class="' + (isMoreTab() ? "on" : "") + '" data-more="1">' +
+       '<span class="ti">⋯</span>More</button>';
+  $("tabbar").innerHTML = h;
+  h = "";
+  for (i = 0; i < NAV.length; i++) h += navButton(NAV[i], false);
+  $("morenav").innerHTML = h;
+  var s1 = cur.sem === "s1";
+  $("sem1").className = s1 ? "on" : ""; $("sem2").className = s1 ? "" : "on";
+  $("msem1").className = s1 ? "on" : ""; $("msem2").className = s1 ? "" : "on";
+}
+function isMoreTab(){
+  for (var i = 0; i < MOBILE_MAIN.length; i++) if (MOBILE_MAIN[i] === cur.tab) return false;
+  return true;
+}
+/* THE dispatcher: every tab change and semester change routes through go() */
+function go(tab){
+  cur.tab = tab;
+  closeSheet();
+  renderNav();
+  var fn = R[tab] || R.home;
+  var v = $("view");
+  v.scrollTop = 0;
+  try { window.scrollTo(0, 0); } catch (e) {}
+  fn(v);
+}
+function setSem(s){
+  if (s !== "s1" && s !== "s2") return;
+  store.sem = s; save();
+  cur.sem = s;
+  go(cur.tab);          /* re-render the pane we are on */
+}
+cur.sem = store.sem;
+function closeSheet(){ $("sheet").className = ""; $("sheet").setAttribute("aria-hidden", "true"); }
+function openSheet(){ $("sheet").className = "open"; $("sheet").setAttribute("aria-hidden", "false"); }
+
+/* nearest deadline across EVENTS + PLAN */
+function nearestDeadline(){
+  var best = null, i, e, d;
+  for (i = 0; i < EVENTS.length; i++){
+    e = EVENTS[i]; d = daysUntil(e.d);
+    if (d >= 0 && (!best || d < best.days))
+      best = {days: d, date: e.d, title: e.t, kind: "event", k: e.k, cov: e.cov || []};
+  }
+  for (i = 0; i < PLAN.length; i++){
+    e = PLAN[i]; d = daysUntil(e.due);
+    if (d >= 0 && (!best || d < best.days))
+      best = {days: d, date: e.due, title: e.t, kind: "plan", k: "as", cov: []};
+  }
+  return best;
+}
+
+/* ================================================================
+   Screens — registry
+   ================================================================ */
+var R = {};
+
+/* ---------- HOME: one next action ---------- */
+function nextAction(){
+  var sem = cur.sem, due = dueCards(sem), dl = nearestDeadline();
+  /* 1. due flashcards, when no deadline is imminent */
+  if (due.length && (!dl || dl.days > 2)){
+    var chunk = Math.min(due.length, 15);
+    return {tab: "cards", label: "Clear " + chunk + " due flashcards",
+            detail: due.length + " waiting — just a " + chunk + "-card chunk",
+            mins: Math.max(2, Math.ceil(chunk * 0.4))};
+  }
+  /* 2. weakest topic covered by the nearest deadline */
+  if (dl && dl.cov && dl.cov.length){
+    var weak = null, weakR = 101, i, r, ok;
+    for (i = 0; i < dl.cov.length; i++){
+      ok = condById(sem, dl.cov[i]) ? sem : (condById("s2", dl.cov[i]) ? "s2" : (condById("s1", dl.cov[i]) ? "s1" : null));
+      if (ok !== sem) continue;
+      r = topicReadiness(sem, dl.cov[i]);
+      if (r < weakR){ weakR = r; weak = dl.cov[i]; }
+    }
+    if (weak){
+      var b = BRIEFS[weak];
+      return {tab: "learn", arg: weak,
+              label: "Learn: " + condName(sem, weak),
+              detail: "Covered by " + dl.title + " in " + dl.days + " day" + (dl.days === 1 ? "" : "s"),
+              mins: b ? b.mins + 8 : 15};
+    }
+  }
+  /* 3. plan step due soonest that is unticked */
+  var bi = null, bd = 1e9, bi2 = null;
+  for (var i2 = 0; i2 < PLAN.length; i2++){
+    var dd = daysUntil(PLAN[i2].due);
+    if (dd >= 0 && dd < bd){
+      var allDone = true;
+      for (var j = 0; j < PLAN[i2].steps.length; j++)
+        if (!store.steps[PLAN[i2].steps[j][0]]) allDone = false;
+      if (!allDone){ bd = dd; bi = PLAN[i2]; }
+    }
+  }
+  if (bi) return {tab: "plan", label: "Work on: " + bi.t,
+                  detail: "Due " + fmtDate(bi.due) + " (" + bd + " days)", mins: 15};
+  /* 4. viva fallback */
+  return {tab: "viva", label: "Say one viva answer out loud",
+          detail: "Production beats recognition", mins: 3};
+}
+R.home = function(v){
+  var sem = cur.sem, na = nextAction(), dl = nearestDeadline();
+  var h = '<h1 class="hidden-a">Home</h1>';
+  h += '<div class="card hero"><div class="k">Next action</div>' +
+       '<h1>' + esc(na.label) + '</h1>' +
+       '<div class="mins">' + esc(na.detail) + ' · ' + mins(na.mins) + '</div>' +
+       '<button type="button" data-go="' + na.tab + '"' + (na.arg ? ' data-arg="' + esc(na.arg) + '"' : '') + '>Start now</button></div>';
+  if (dl){
+    h += '<div class="card"><div class="row between"><h2 style="margin:0">' + esc(dl.title) + '</h2>' +
+         '<span class="pill' + (dl.days <= 7 ? " warn" : "") + '">' + dl.days + ' day' + (dl.days === 1 ? "" : "s") + '</span></div>' +
+         '<div class="muted small">' + fmtDate(dl.date) + (dl.kind === "event" ? " · " + esc(dl.k) : " · assessment") + '</div>';
+    if (dl.cov && dl.cov.length){
+      h += '<div class="divider"></div><div class="small muted" style="margin-bottom:8px">Readiness for covered topics</div>';
+      for (var i = 0; i < dl.cov.length; i++){
+        var cid = dl.cov[i], c = condById(sem, cid) || condById(sem === "s2" ? "s1" : "s2", cid);
+        if (!c) continue;
+        var r = topicReadiness(condById(sem, cid) ? sem : (sem === "s2" ? "s1" : "s2"), cid);
+        h += '<div style="margin-bottom:10px"><div class="row between small"><span>' + esc(c.name) + '</span><span class="muted">' + r + '%</span></div>' +
+             '<div class="prog"><i style="width:' + r + '%"></i></div></div>';
+      }
+    }
+    h += '</div>';
+  }
+  v.innerHTML = h;
+};
+
+/* ---------- LEARN: Read → Recall → Test → Fix ---------- */
+var learn = {cond: null, stage: 0, missed: [], q: 0, fixQ: []};
+R.learn = function(v, arg){
+  var sem = cur.sem;
+  if (arg) { learn = {cond: arg, stage: 0, missed: [], q: 0, fixQ: []}; }
+  if (!learn.cond){
+    var h = '<h1>Learn</h1><p class="muted">Pick a topic. Each session: read the brief, recall cards, test with MCQs, then fix anything missed. About 15 minutes.</p>';
+    var dl = nearestDeadline(), cov = dl && dl.cov ? dl.cov : [];
+    for (var i = 0; i < DATA[sem].conds.length; i++){
+      var c = DATA[sem].conds[i], r = topicReadiness(sem, c.id);
+      var hot = cov.indexOf(c.id) >= 0;
+      h += '<button type="button" class="listrow" data-learn="' + esc(c.id) + '">' +
+           '<span>' + esc(c.name) + (hot ? ' <span class="pill warn">due soon</span>' : '') + '<br>' +
+           '<span class="small muted">' + esc(c.tag) + '</span></span>' +
+           '<span class="small muted">' + r + '%</span><span class="arrow">›</span></button>';
+    }
+    v.innerHTML = '<div class="card flat">' + h + '</div>';
+    return;
+  }
+  var c = condById(sem, learn.cond);
+  if (!c){ learn.cond = null; R.learn(v); return; }
+  var stages = ["Read the brief", "Recall cards", "Test MCQs", "Fix missed"];
+  var sh = '<div class="row between"><h1 style="margin:0">' + esc(c.name) + '</h1>' +
+           '<button type="button" class="btn-g btn-sm" data-learn="*exit">Change topic</button></div>' +
+           '<div class="steps-head">';
+  for (var s = 0; s < 4; s++)
+    sh += '<div class="st' + (s < learn.stage ? " done" : (s === learn.stage ? " now" : "")) + '"></div>';
+  sh += '</div><div class="small muted" style="margin-bottom:10px">Step ' + (learn.stage + 1) + ' of 4 — ' + stages[learn.stage] + '</div>';
+
+  if (learn.stage === 0){                     /* READ */
+    var b = BRIEFS[c.id];
+    sh += '<div class="card"><h2>Read the brief ' + (b ? '<span class="pill">' + b.mins + ' min</span>' : "") + '</h2>';
+    if (b){
+      sh += '<div class="small muted" style="margin-bottom:10px">' + esc(b.src) + '</div><div class="body">';
+      for (var p = 0; p < b.pts.length; p++)
+        sh += '<h3>' + esc(b.pts[p][0]) + '</h3>' + raw(b.pts[p][1]);
+      sh += '</div>';
+    } else {
+      sh += '<div class="body">' + raw(c.body) + '</div>';
+    }
+    sh += '<button type="button" class="btn-p btn-block" data-lstage="1">Done reading — start recall</button></div>';
+    v.innerHTML = sh;
+    store.read[keyOf(sem, c.id)] = 1; save();
+    return;
+  }
+  if (learn.stage === 1){                     /* RECALL */
+    var cards = [];
+    for (var i = 0; i < DATA[sem].cards.length; i++)
+      if (DATA[sem].cards[i][0] === c.id) cards.push(i);
+    if (!cards.length){ learn.stage = 2; R.learn(v); return; }
+    if (learn.q >= cards.length){
+      v.innerHTML = sh + '<div class="card"><h2>Recall done</h2><p class="muted">' + cards.length + ' cards.</p>' +
+        '<button type="button" class="btn-p btn-block" data-lstage="2">Start the MCQs</button></div>';
+      return;
+    }
+    var ci = cards[learn.q], card = DATA[sem].cards[ci];
+    v.innerHTML = sh + '<div class="card"><div class="small muted">Card ' + (learn.q + 1) + ' of ' + cards.length + '</div>' +
+      '<div class="qbox body">' + raw(card[1]) + '</div>' +
+      '<div id="lans" style="display:none"><div class="explain body">' + raw(card[2]) + '</div></div>' +
+      '<button type="button" class="btn-p btn-block" id="lrev">Show answer</button>' +
+      '<div class="rate-row" id="lrate" style="display:none">' +
+      '<button type="button" class="btn-g" data-lcard="0">Missed it</button>' +
+      '<button type="button" class="btn-p" data-lcard="1">Got it</button></div></div>';
+    $("lrev").onclick = function(){
+      $("lans").style.display = "block"; $("lrev").style.display = "none"; $("lrate").style.display = "flex";
+    };
+    return;
+  }
+  if (learn.stage === 2){                     /* TEST */
+    var qs = [];
+    for (var m = 0; m < DATA[sem].mcq.length; m++)
+      if (DATA[sem].mcq[m][0] === c.id) qs.push(m);
+    if (!qs.length){ learn.stage = 3; R.learn(v); return; }
+    if (learn.q >= qs.length){
+      var nm = learn.missed.length;
+      v.innerHTML = sh + '<div class="card"><h2>Test done</h2>' +
+        (nm ? '<p>' + nm + ' question' + (nm === 1 ? "" : "s") + ' to fix. They repeat until you get them right.</p>' +
+              '<button type="button" class="btn-p btn-block" data-lstage="3">Fix the missed ones</button>'
+           : '<p class="muted">Nothing missed. Solid.</p>' +
+              '<button type="button" class="btn-p btn-block" data-lstage="3">Finish session</button>') + '</div>';
+      learn.fixQ = learn.missed.slice();
+      return;
+    }
+    renderMcqQuestion(v, sh, qs[learn.q], sem, "learn");
+    return;
+  }
+  /* FIX stage */
+  if (!learn.fixQ.length){
+    v.innerHTML = sh + '<div class="card hero"><div class="k">Session complete</div>' +
+      '<h1>' + esc(c.name) + '</h1><div class="mins">Brief read · cards recalled · MCQs done · misses fixed</div>' +
+      '<button type="button" data-learn="*exit">Back to topics</button></div>';
+    learn = {cond: null, stage: 0, missed: [], q: 0, fixQ: []};
+    return;
+  }
+  renderMcqQuestion(v, sh, learn.fixQ[0], sem, "fix");
+};
+
+/* shared MCQ question renderer (Learn test/fix + MCQ screen + mock) */
+function renderMcqQuestion(v, headHtml, qi, sem, mode){
+  var q = DATA[sem].mcq[qi];
+  var h = headHtml + '<div class="card"><div class="qbox body">' + raw(q[1]) + '</div><div id="opts">';
+  for (var i = 0; i < q[2].length; i++)
+    h += '<button type="button" class="opt" data-opt="' + i + '">' + raw(q[2][i]) + '</button>';
+  h += '</div><div id="mexp"></div></div>';
+  v.innerHTML = h;
+  var done = false;
+  $("opts").addEventListener("click", function(ev){
+    var b = ev.target;
+    while (b && b.tagName !== "BUTTON") b = b.parentNode;
+    if (!b || done) return;
+    done = true;
+    var pick = +b.getAttribute("data-opt"), ok = pick === q[3];
+    var k = keyOf(sem, qi);
+    store.mcq[k] = (store.mcq[k] || 0) + 1;
+    if (ok) store.right[k] = (store.right[k] || 0) + 1;
+    bumpDay(); save();
+    var opts = $("opts").getElementsByTagName("button"), j;
+    for (j = 0; j < opts.length; j++){
+      if (j === q[3]) opts[j].className = "opt right";
+      else if (j === pick) opts[j].className = "opt wrong";
+      else opts[j].className = "opt";
+    }
+    var nxt;
+    if (mode === "learn"){
+      if (!ok) learn.missed.push(qi);
+      nxt = '<button type="button" class="btn-p btn-block" data-lnext="1">Next</button>';
+    } else if (mode === "fix"){
+      if (ok) learn.fixQ.shift();
+      else { learn.fixQ.push(learn.fixQ.shift()); }
+      nxt = '<button type="button" class="btn-p btn-block" data-lfix="1">' +
+            (ok ? "Next" : "It comes back later — next") + '</button>';
+    } else if (mode === "mcq"){
+      if (!ok) mcqSess.missed.push(qi);
+      nxt = '<button type="button" class="btn-p btn-block" data-mnext="1">Next</button>';
+    } else if (mode === "mock"){
+      mock.answers[mock.q] = pick;
+      nxt = '<button type="button" class="btn-p btn-block" data-knext="1">Next</button>';
+    }
+    $("mexp").innerHTML = '<div class="explain body"><b>' + (ok ? "Correct." : "Not quite.") + '</b> ' + raw(q[4]) + '</div>' + nxt;
+  });
+}
+
+/* ---------- PLAN ---------- */
+R.plan = function(v){
+  var h = '<h1>Plan</h1><p class="muted">Nine assessments, broken into dated steps. Tick a step when it is done — ticks survive reloads.</p>';
+  var i, j, p, st, done, due;
+  for (i = 0; i < PLAN.length; i++){
+    p = PLAN[i]; done = 0;
+    for (j = 0; j < p.steps.length; j++) if (store.steps[p.steps[j][0]]) done++;
+    due = daysUntil(p.due);
+    h += '<div class="card"><div class="row between"><h2 style="margin:0">' + esc(p.t) + '</h2>' +
+         '<span class="pill' + (due <= 7 && due >= 0 ? " warn" : "") + '">' + fmtDate(p.due) + '</span></div>' +
+         '<div class="small muted">' + esc(CRS_LABEL[p.crs] || p.crs) +
+         (p.w ? ' · ' + esc(p.w) : '') + (p.flag ? ' · <b>' + esc(p.flag) + '</b>' : '') + '</div>' +
+         '<div class="prog"><i style="width:' + Math.round(100 * done / p.steps.length) + '%"></i></div>' +
+         '<div class="small muted" style="margin-bottom:8px">' + done + ' of ' + p.steps.length + ' steps</div>' +
+         '<p class="small">' + esc(p.why) + '</p>';
+    for (j = 0; j < p.steps.length; j++){
+      st = p.steps[j];
+      var ticked = !!store.steps[st[0]];
+      h += '<button type="button" class="markrow' + (ticked ? " tick" : "") + '" data-step="' + esc(st[0]) + '">' +
+           '<span class="cb">' + (ticked ? "✓" : "") + '</span>' +
+           '<span class="mt"><b>' + esc(st[1]) + '</b> <span class="pill">' + st[4] + ' min</span><br>' +
+           '<span class="small muted">' + esc(st[2]) + ' · by ' + fmtDate(st[3]) + '</span></span></button>';
+    }
+    h += '</div>';
+  }
+  v.innerHTML = h;
+};
+
+/* ---------- COURSE ---------- */
+R.course = function(v){
+  var h = '<h1>Course</h1><p class="muted">Week by week, both courses.</p>';
+  var i, w;
+  for (i = 0; i < WEEKS.length; i++){
+    w = WEEKS[i];
+    h += '<div class="card"><div class="row between"><h2 style="margin:0">' + esc(w.name) + '</h2>' +
+         '<span class="pill">' + esc(w.crs) + '</span></div>' +
+         '<div class="small muted" style="margin-bottom:8px">' + esc(w.title) + '</div>' +
+         '<button type="button" class="btn-g btn-sm" data-week="' + i + '">Open week</button>' +
+         '<div class="body" id="wk' + i + '" style="display:none;margin-top:12px">' + raw(w.body) + '</div></div>';
+  }
+  v.innerHTML = h;
+};
+
+/* ---------- CRAM SHEET (printable) ---------- */
+R.cram = function(v){
+  var sem = cur.sem;
+  var h = '<div class="row between noprint"><h1 style="margin:0">Cram sheet</h1>' +
+          '<button type="button" class="btn-p" onclick="window.print()">Print</button></div>' +
+          '<p class="muted noprint">Dense revision for the ' + (sem === "s2" ? "Semester 2" : "Semester 1") +
+          ' topics, plus the vitals reference. Prints cleanly.</p>';
+  var i, c, b, p;
+  for (i = 0; i < DATA[sem].conds.length; i++){
+    c = DATA[sem].conds[i]; b = BRIEFS[c.id];
+    h += '<div class="card"><h2>' + esc(c.name) + '</h2>';
+    if (b){
+      for (p = 0; p < b.pts.length; p++)
+        h += '<div class="body"><h3>' + esc(b.pts[p][0]) + '</h3>' + raw(b.pts[p][1]) + '</div>';
+    } else {
+      h += '<div class="body">' + raw(c.body) + '</div>';
+    }
+    h += '</div>';
+  }
+  h += '<div class="card"><h2>Vital signs — reference</h2><div class="body"><table><tr><th>Sign</th><th>Adult</th><th>Paediatric</th><th>Concerning</th></tr>';
+  for (i = 0; i < VITALS.length; i++)
+    h += '<tr><td><b>' + raw(VITALS[i].name) + '</b></td><td>' + raw(VITALS[i].adult) + '</td><td>' +
+         raw(VITALS[i].paeds) + '</td><td>' + raw(VITALS[i].concern) + '</td></tr>';
+  h += '</table></div></div>';
+  v.innerHTML = h;
+};
+
+/* ---------- EXAMS & VITALS ---------- */
+var examOpen = null;
+R.exams = function(v){
+  var sem = cur.sem;
+  var h = '<h1>Exams &amp; vitals</h1><p class="muted">Physical examination walkthroughs. Each step pairs what you <b>do</b> with what you <b>say out loud</b> — OSCEs mark both. Filtered to ' +
+          (sem === "s2" ? "Semester 2" : "Semester 1") + ' (plus shared).</p>';
+  var i, e, shown = 0;
+  for (i = 0; i < EXAMS.length; i++){
+    e = EXAMS[i];
+    if (e.sem !== "both" && e.sem !== sem) continue;
+    shown++;
+    var total = 0, seen = 0, ph, st;
+    for (ph = 0; ph < e.phases.length; ph++) total += e.phases[ph].steps.length;
+    var ex = store.exams[e.slug] || {};
+    for (var k in ex) if (ex[k]) seen++;
+    h += '<div class="card"><div class="row between"><h2 style="margin:0">' + esc(e.title) + '</h2>' +
+         '<span class="pill">' + esc(e.sem === "both" ? "shared" : e.sem) + '</span></div>' +
+         '<div class="small muted">' + seen + ' of ' + total + ' steps reviewed</div>' +
+         '<button type="button" class="btn-g btn-sm" data-exam="' + esc(e.slug) + '">' +
+         (examOpen === e.slug ? "Close" : "Open walkthrough") + '</button>';
+    if (examOpen === e.slug){
+      h += '<div class="divider"></div><p class="small">' + esc(e.indication) + '</p>' +
+           '<div class="small muted" style="margin-bottom:8px"><b>Equipment:</b> ' + esc(e.equipment.join("; ")) + '</div>';
+      for (ph = 0; ph < e.phases.length; ph++){
+        h += '<h3>' + esc(e.phases[ph].phase) + '</h3>';
+        for (st = 0; st < e.phases[ph].steps.length; st++){
+          var step = e.phases[ph].steps[st], sk = ph + ":" + st, on = ex[sk];
+          h += '<button type="button" class="markrow' + (on ? " tick" : "") + '" data-exstep="' + esc(e.slug) + "|" + sk + '">' +
+               '<span class="cb">' + (on ? "✓" : "") + '</span><span class="mt">' +
+               '<b>Do:</b> ' + esc(step.action) + '<br><b>Say:</b> <i>' + esc(step.verbalise) + '</i>';
+          if (step.pearls && step.pearls.length)
+            h += '<br><span class="small muted">◆ ' + esc(step.pearls.join(" ◆ ")) + '</span>';
+          h += '</span></button>';
+        }
+      }
+    }
+    h += '</div>';
+  }
+  if (!shown) h += '<div class="card"><p class="muted">No examinations tagged for this semester yet.</p></div>';
+  h += '<div class="card"><h2>Vital signs — reference</h2><div class="body"><table><tr><th>Sign</th><th>Adult</th><th>Paediatric</th><th>Concerning</th></tr>';
+  for (i = 0; i < VITALS.length; i++)
+    h += '<tr><td><b>' + raw(VITALS[i].name) + '</b></td><td>' + raw(VITALS[i].adult) + '</td><td>' +
+         raw(VITALS[i].paeds) + '</td><td>' + raw(VITALS[i].concern) + '</td></tr>';
+  h += '</table></div></div>';
+  v.innerHTML = h;
+};
+
+/* ---------- TOPICS ---------- */
+var topicOpen = null;
+R.topics = function(v, arg){
+  var sem = cur.sem;
+  if (arg) topicOpen = arg;
+  if (!topicOpen){
+    var h = '<h1>Topics</h1><p class="muted">Full topic bodies plus the prescribing packs.</p>';
+    var i, c;
+    for (i = 0; i < DATA[sem].conds.length; i++){
+      c = DATA[sem].conds[i];
+      var read = store.read[keyOf(sem, c.id)];
+      h += '<button type="button" class="listrow" data-topic="' + esc(c.id) + '">' +
+           '<span>' + esc(c.name) + (read ? ' <span class="pill">read</span>' : '') + '<br>' +
+           '<span class="small muted">' + esc(c.tag) + (PACKS[c.id] ? ' · prescribing pack' : '') + '</span></span>' +
+           '<span class="arrow">›</span></button>';
+    }
+    v.innerHTML = '<div class="card flat">' + h + '</div>';
+    return;
+  }
+  var c2 = condById(sem, topicOpen);
+  if (!c2){ topicOpen = null; R.topics(v); return; }
+  var hh = '<button type="button" class="btn-g btn-sm" data-topic="*back">‹ All topics</button>' +
+           '<h1 style="margin-top:10px">' + esc(c2.name) + '</h1>' +
+           '<div class="small muted" style="margin-bottom:12px">' + esc(c2.tag) + '</div>' +
+           '<div class="card body">' + raw(c2.body) + '</div>';
+  var pk = PACKS[c2.id];
+  if (pk){
+    hh += '<div class="card"><h2>Prescribing pack</h2>' +
+          (pk.prog ? '<div class="pill" style="margin-bottom:10px">' + raw(pk.prog) + '</div>' : '');
+    var secs = [["out", "Who is out"], ["refer", "Refer when"], ["rx", "What you can prescribe"],
+                ["checks", "Checks before prescribing"], ["nonrx", "Non-drug management"],
+                ["self", "Self-care & devices"], ["counsel", "Counselling points"],
+                ["safety", "Safety netting"]];
+    var si;
+    for (si = 0; si < secs.length; si++){
+      var arr = pk[secs[si][0]];
+      if (!arr || !arr.length) continue;
+      hh += '<h3>' + secs[si][1] + '</h3><ul class="body">';
+      for (var ai = 0; ai < arr.length; ai++) hh += '<li>' + raw(arr[ai]) + '</li>';
+      hh += '</ul>';
+    }
+    if (pk.rxnote) hh += '<div class="explain body">' + raw(pk.rxnote) + '</div>';
+    if (pk.review) hh += '<h3>Review</h3><div class="body">' + raw(pk.review) + '</div>';
+    hh += '</div>';
+  }
+  v.innerHTML = hh;
+  store.read[keyOf(sem, c2.id)] = 1; save();
+};
+
+/* ---------- FLASHCARDS (Leitner, 5 boxes) ---------- */
+var cardSess = {queue: null, i: 0, filter: ""};
+function cardDueTs(sem, i){
+  var e = store.box[keyOf(sem, i)];
+  return e ? e.due : 0;
+}
+R.cards = function(v){
+  var sem = cur.sem;
+  if (!cardSess.queue){
+    var h = '<h1>Flashcards</h1><p class="muted">Leitner spaced repetition — five boxes, intervals 0, 0, 1, 3, 8, 21 days. New cards are due immediately.</p>';
+    var due = dueCards(sem);
+    var chunk = Math.min(due.length, 20);
+    h += '<div class="card"><div class="row between"><div><div class="big-n">' + due.length + '</div>' +
+         '<div class="small muted">cards due now — sessions run in chunks of ' + chunk + ' · ' + mins(Math.max(2, chunk * 0.4)) + '</div></div>' +
+         '<button type="button" class="btn-p" data-cstart="all"' + (due.length ? "" : " disabled") + '>Start a chunk</button></div></div>';
+    h += '<div class="card"><h2>By topic</h2>';
+    var i, c2, n;
+    for (i = 0; i < DATA[sem].conds.length; i++){
+      c2 = DATA[sem].conds[i]; n = 0;
+      for (var j = 0; j < DATA[sem].cards.length; j++)
+        if (DATA[sem].cards[j][0] === c2.id && cardDueTs(sem, j) <= Date.now()) n++;
+      h += '<button type="button" class="listrow" data-cstart="' + esc(c2.id) + '">' +
+           '<span>' + esc(c2.name) + '</span><span class="small muted">' + n + ' due</span><span class="arrow">›</span></button>';
+    }
+    h += '</div>';
+    /* box distribution */
+    var dist = [0, 0, 0, 0, 0, 0], k, e2;
+    for (i = 0; i < DATA[sem].cards.length; i++){
+      e2 = store.box[keyOf(sem, i)];
+      dist[e2 ? e2.b : 0]++;
+    }
+    h += '<div class="card"><h2>Boxes</h2><div class="row">';
+    for (i = 0; i <= 5; i++)
+      h += '<span class="chip">' + (i === 0 ? "new" : "box " + i) + ': ' + dist[i] + '</span>';
+    h += '</div></div>';
+    v.innerHTML = h;
+    return;
+  }
+  /* session */
+  var q = cardSess.queue;
+  if (cardSess.i >= q.length){
+    v.innerHTML = '<div class="card hero"><div class="k">Session done</div><h1>' + q.length + ' cards reviewed</h1>' +
+      '<div class="mins">Due dates updated</div><button type="button" data-cend="1">Back</button></div>';
+    return;
+  }
+  var ci = q[cardSess.i], card = DATA[sem].cards[ci];
+  v.innerHTML = '<div class="row between"><span class="small muted">Card ' + (cardSess.i + 1) + ' of ' + q.length +
+    ' · ' + esc(condName(sem, card[0])) + '</span>' +
+    '<button type="button" class="btn-g btn-sm" data-cend="1">End</button></div>' +
+    '<div class="card"><div class="qbox body">' + raw(card[1]) + '</div>' +
+    '<div id="cans" style="display:none"><div class="explain body">' + raw(card[2]) + '</div></div>' +
+    '<button type="button" class="btn-p btn-block" id="crev">Show answer</button>' +
+    '<div class="rate-row" id="crate" style="display:none">' +
+    '<button type="button" class="btn-g" data-cgot="0">Missed it</button>' +
+    '<button type="button" class="btn-p" data-cgot="1">Got it</button></div></div>';
+  $("crev").onclick = function(){
+    $("cans").style.display = "block"; $("crev").style.display = "none"; $("crate").style.display = "flex";
+  };
+};
+function gradeCard(sem, ci, got){
+  var k = keyOf(sem, ci), e = store.box[k] || {b: 1, due: 0, seen: 0};
+  e.seen++;
+  if (got){ e.b = Math.min(5, e.b + 1); }
+  else { e.b = 1; }
+  e.due = Date.now() + INT[e.b] * DAY;
+  store.box[k] = e;
+  bumpDay(); save();
+}
+
+/* ---------- MCQs ---------- */
+var mcqSess = {topic: "", theme: "", queue: null, i: 0, missed: []};
+R.mcq = function(v){
+  var sem = cur.sem;
+  if (!mcqSess.queue){
+    var h = '<h1>MCQs</h1><p class="muted">Filter by topic and theme, then answer. Explanations appear after you commit.</p>';
+    h += '<div class="card"><div class="small muted" style="margin-bottom:6px">Topic</div><div class="row" id="tchips">';
+    h += '<button type="button" class="chip' + (mcqSess.topic === "" ? " on" : "") + '" data-tpic="">All</button>';
+    var i;
+    for (i = 0; i < DATA[sem].conds.length; i++)
+      h += '<button type="button" class="chip' + (mcqSess.topic === DATA[sem].conds[i].id ? " on" : "") +
+           '" data-tpic="' + esc(DATA[sem].conds[i].id) + '">' + esc(DATA[sem].conds[i].name) + '</button>';
+    h += '</div><div class="small muted" style="margin:12px 0 6px">Theme</div><div class="row">';
+    h += '<button type="button" class="chip' + (mcqSess.theme === "" ? " on" : "") + '" data-ttheme="">All</button>';
+    for (i = 0; i < THEMES.length; i++)
+      h += '<button type="button" class="chip' + (mcqSess.theme === THEMES[i][0] ? " on" : "") +
+           '" data-ttheme="' + esc(THEMES[i][0]) + '">' + esc(THEMES[i][1]) + '</button>';
+    h += '</div>';
+    var n = mcqFilter(sem).length;
+    h += '<div class="divider"></div><div class="row between"><div><div class="big-n">' + n + '</div>' +
+         '<div class="small muted">questions match · ' + mins(n * 1.2) + '</div></div>' +
+         '<button type="button" class="btn-p" data-mstart="1"' + (n ? "" : " disabled") + '>Start</button></div></div>';
+    v.innerHTML = h;
+    return;
+  }
+  var q = mcqSess.queue;
+  if (mcqSess.i >= q.length){
+    var h2 = '<div class="card hero"><div class="k">Set complete</div><h1>' + q.length + ' questions</h1>' +
+      '<div class="mins">' + mcqSess.missed.length + ' missed this set</div>';
+    if (mcqSess.missed.length)
+      h2 += '<button type="button" data-mfix="1">Fix the missed now</button>';
+    h2 += '<button type="button" data-mend="1" style="margin-left:8px">Back to filters</button></div>';
+    v.innerHTML = h2;
+    return;
+  }
+  var head = '<div class="row between"><span class="small muted">Question ' + (mcqSess.i + 1) + ' of ' + q.length +
+    ' · ' + esc(condName(sem, DATA[sem].mcq[q[mcqSess.i]][0])) + ' · ' + esc(themeLabel(themeOf(DATA[sem].mcq[q[mcqSess.i]][1]))) + '</span>' +
+    '<button type="button" class="btn-g btn-sm" data-mend="1">End</button></div>';
+  renderMcqQuestion(v, head, q[mcqSess.i], sem, "mcq");
+};
+function mcqFilter(sem){
+  var out = [], i, q;
+  for (i = 0; i < DATA[sem].mcq.length; i++){
+    q = DATA[sem].mcq[i];
+    if (mcqSess.topic && q[0] !== mcqSess.topic) continue;
+    if (mcqSess.theme && themeOf(q[1]) !== mcqSess.theme) continue;
+    out.push(i);
+  }
+  return out;
+}
+
+/* ---------- MOCK EXAM (timed, self-scored, wall clock) ---------- */
+var mock = {queue: null, q: 0, answers: [], startTs: 0, limitMs: 0, MIN_PER_Q: 1.5};
+R.mock = function(v){
+  var sem = cur.sem;
+  if (!mock.queue){
+    var n = Math.min(20, DATA[sem].mcq.length);
+    v.innerHTML = '<h1>Exam</h1><div class="card"><h2>Timed mock paper</h2>' +
+      '<p class="muted">' + n + ' questions drawn from across the semester, ' + mock.MIN_PER_Q +
+      ' minutes each — ' + Math.round(n * mock.MIN_PER_Q) + ' minutes total. The clock runs on wall time: ' +
+      'locking your phone does not pause it. Answers are revealed as you go; you score yourself at the end.</p>' +
+      '<button type="button" class="btn-p btn-block" data-kstart="1">Start the clock</button></div>';
+    return;
+  }
+  var q = mock.queue;
+  if (mock.q >= q.length || Date.now() - mock.startTs >= mock.limitMs){
+    var right = 0, i;
+    for (i = 0; i < q.length; i++) if (mock.answers[i] === DATA[sem].mcq[q[i]][3]) right++;
+    var answered = 0;
+    for (i = 0; i < q.length; i++) if (typeof mock.answers[i] === "number") answered++;
+    var h = '<div class="card hero"><div class="k">Paper finished</div><h1>' + right + ' / ' + q.length + '</h1>' +
+      '<div class="mins">' + answered + ' answered · self-scored · no pass mark asserted</div>' +
+      '<button type="button" data-kend="1">Done</button></div><div class="card"><h2>Review</h2>';
+    for (i = 0; i < q.length; i++){
+      var qq = DATA[sem].mcq[q[i]], ok = mock.answers[i] === qq[3];
+      h += '<div style="padding:10px 0;border-bottom:1px solid var(--line)">' +
+           '<span class="pill' + (ok ? "" : " warn") + '">' + (ok ? "right" : (typeof mock.answers[i] === "number" ? "wrong" : "unanswered")) + '</span> ' +
+           '<span class="body" style="display:inline">' + raw(qq[1]) + '</span>' +
+           '<div class="explain body" style="margin-top:6px">' + raw(qq[4]) + '</div></div>';
+    }
+    h += '</div>';
+    v.innerHTML = h;
+    return;
+  }
+  var head = '<div class="row between"><span class="small muted">Question ' + (mock.q + 1) + ' of ' + q.length + '</span>' +
+    '<span class="timer" id="kclock" style="font-size:1.3rem">--:--</span></div>';
+  renderMcqQuestion(v, head, q[mock.q], sem, "mock");
+  startMockClock();
+};
+var mockTimer = null;
+function startMockClock(){
+  stopMockClock();
+  var tick = function(){
+    var c = $("kclock");
+    if (!c){ stopMockClock(); return; }
+    var left = mock.limitMs - (Date.now() - mock.startTs);
+    c.textContent = mmss(left);
+    if (left < 60000) c.className = "timer low";
+    if (left <= 0){ stopMockClock(); R.mock($("view")); }
+  };
+  tick();
+  mockTimer = setInterval(tick, 1000);
+}
+function stopMockClock(){ if (mockTimer){ clearInterval(mockTimer); mockTimer = null; } }
+
+/* ---------- ANATOMY drill ---------- */
+var anat = {spot: null, done: {}};
+R.anat = function(v){
+  var a = ANAT[0];
+  if (!a){ v.innerHTML = '<h1>Anatomy</h1><div class="card"><p class="muted">No anatomy items in the data.</p></div>'; return; }
+  var h = '<h1>Anatomy</h1><p class="muted">' + esc(a.title) + '. ' + esc(a.note) + '</p>';
+  h += '<div class="card"><div class="anat-wrap" id="awrap"><img src="' + a.img + '" alt="' + esc(a.title) + '">';
+  for (var i = 0; i < a.spots.length; i++){
+    var s = a.spots[i];
+    var cls = "spot" + (anat.done[i] === true ? " hit" : (anat.done[i] === false ? " miss" : ""));
+    h += '<button type="button" class="' + cls + '" data-spot="' + i + '" aria-label="marker ' + (i + 1) + '" style="left:' +
+         (100 * s.x / a.w) + '%;top:' + (100 * s.y / a.h) + '%;width:' + (100 * s.w / a.w) + '%;height:' + (100 * s.h / a.h) + '%"></button>';
+  }
+  h += '</div>';
+  if (anat.spot != null){
+    h += '<div class="divider"></div><div class="small muted" style="margin-bottom:8px">Marker selected — name the area:</div><div class="row">';
+    for (var o = 0; o < a.options.length; o++)
+      h += '<button type="button" class="chip" data-aopt="' + esc(a.options[o]) + '">' + esc(a.options[o]) + '</button>';
+    h += '</div>';
+  }
+  var doneN = 0, k;
+  for (k in anat.done) if (anat.done[k] === true) doneN++;
+  h += '<div class="small muted" style="margin-top:12px">' + doneN + ' of ' + a.spots.length + ' areas named correctly</div>';
+  /* reveal list of already-solved */
+  var any = false, rl = '';
+  for (k in anat.done) if (anat.done[k] === true){
+    any = true;
+    rl += '<div class="small" style="padding:6px 0;border-bottom:1px solid var(--line)"><b>' + esc(a.spots[k].label) + '</b> — ' + esc(a.spots[k].detail) + '</div>';
+  }
+  if (any) h += '<div class="divider"></div>' + rl;
+  h += '</div>';
+  v.innerHTML = h;
+};
+
+/* ---------- VIVA: say it out loud ---------- */
+var vivaSess = {i: null, topic: "", committed: false};
+R.viva = function(v){
+  var sem = cur.sem;
+  if (vivaSess.i == null){
+    var pool = vivaPool(sem);
+    var h = '<h1>Say it out loud</h1><p class="muted">Viva trainer. Read the prompt, answer <b>out loud</b> — actually out loud — then commit. ' +
+            'The model answer stays hidden until you do. Deliberately uncomfortable; that is the point.</p>';
+    h += '<div class="card"><div class="small muted" style="margin-bottom:6px">Topic</div><div class="row">';
+    h += '<button type="button" class="chip' + (vivaSess.topic === "" ? " on" : "") + '" data-vtopic="">All</button>';
+    var seen = {}, i;
+    for (i = 0; i < VIVA.length; i++) seen[VIVA[i][0]] = 1;
+    for (i = 0; i < DATA[sem].conds.length; i++)
+      if (seen[DATA[sem].conds[i].id])
+        h += '<button type="button" class="chip' + (vivaSess.topic === DATA[sem].conds[i].id ? " on" : "") +
+             '" data-vtopic="' + esc(DATA[sem].conds[i].id) + '">' + esc(DATA[sem].conds[i].name) + '</button>';
+    h += '</div><div class="divider"></div><div class="row between"><div><div class="big-n">' + pool.length + '</div>' +
+         '<div class="small muted">prompts · ' + mins(3) + ' each</div></div>' +
+         '<button type="button" class="btn-p" data-vstart="1"' + (pool.length ? "" : " disabled") + '>Draw a prompt</button></div></div>';
+    var rated = 0, k;
+    for (k in store.viva) if (k.indexOf(sem + ":") === 0) rated++;
+    h += '<div class="card flat"><p class="small muted">' + rated + ' of ' + pool.length + ' prompts self-rated this semester.</p></div>';
+    v.innerHTML = h;
+    return;
+  }
+  var pr = VIVA[vivaSess.i];
+  var hh = '<div class="row between"><span class="small muted">' + esc(condName(sem, pr[0])) + '</span>' +
+           '<button type="button" class="btn-g btn-sm" data-vend="1">End</button></div>' +
+           '<div class="card"><div class="k small muted" style="text-transform:uppercase;letter-spacing:.08em;font-weight:700">Examiner asks</div>' +
+           '<div class="qbox">' + esc(pr[1]) + '</div>';
+  if (!vivaSess.committed){
+    hh += '<p class="muted small">Answer aloud first. The model answer is hidden until you commit.</p>' +
+          '<button type="button" class="btn-a btn-block" data-vcommit="1">I have answered out loud — reveal</button>';
+  } else {
+    hh += '<div class="explain body"><b>Model answer.</b> ' + raw(pr[2]) + '</div>' +
+          '<div class="small muted" style="margin:10px 0 6px">How did that actually go?</div>' +
+          '<div class="rate-row">' +
+          '<button type="button" class="btn-g" data-vrate="0">Not really</button>' +
+          '<button type="button" class="btn-g" data-vrate="1">Partly</button>' +
+          '<button type="button" class="btn-p" data-vrate="2">Nailed it</button></div>';
+  }
+  hh += '</div>';
+  v.innerHTML = hh;
+};
+function vivaPool(sem){
+  var out = [], i;
+  for (i = 0; i < VIVA.length; i++){
+    if (vivaSess.topic && VIVA[i][0] !== vivaSess.topic) continue;
+    if (!condById(sem, VIVA[i][0]) && vivaSess.topic === "") {
+      /* keep prompts whose topic exists in either semester when "All" */
+    }
+    out.push(i);
+  }
+  return out;
+}
+
+/* ---------- OSCE ---------- */
+var osceSess = {id: null, startTs: 0, limitMs: 0, finished: false, ticks: {}};
+function osceMins(t){
+  var m = /(\d+)/.exec(t || "");
+  return m ? +m[1] : 8;
+}
+R.osce = function(v){
+  var sem = cur.sem;
+  if (!osceSess.id){
+    var h = '<h1>OSCE</h1><p class="muted">Station brief and a wall-clock timer only. The mark scheme stays hidden until you finish — ' +
+            'then you tick what you actually said. Safety-critical misses are listed separately from the percentage. ' +
+            'Your course does not publish a pass mark, so none is asserted here.</p>';
+    var i, st;
+    for (i = 0; i < DATA[sem].osce.length; i++){
+      st = DATA[sem].osce[i];
+      var prev = store.osce[keyOf(sem, st.id)];
+      h += '<button type="button" class="listrow" data-ostart="' + esc(st.id) + '">' +
+           '<span>' + esc(st.title) + '<br><span class="small muted">' + esc(st.time) + ' · ' + esc(condName(sem, st.cond)) +
+           (prev ? ' · last: ' + prev.got + '/' + prev.of : '') + '</span></span><span class="arrow">›</span></button>';
+    }
+    v.innerHTML = '<div class="card flat">' + h + '</div>';
+    return;
+  }
+  var stn = null, si;
+  for (si = 0; si < DATA[sem].osce.length; si++) if (DATA[sem].osce[si].id === osceSess.id) stn = DATA[sem].osce[si];
+  if (!stn){ osceSess.id = null; R.osce(v); return; }
+  if (!osceSess.finished){
+    var h2 = '<div class="row between"><h1 style="margin:0">' + esc(stn.title) + '</h1>' +
+             '<button type="button" class="btn-g btn-sm" data-oend="1">End</button></div>' +
+             '<div class="card" style="text-align:center"><div class="small muted">Time remaining (wall clock)</div>' +
+             '<div class="timer" id="oclock">--:--</div></div>' +
+             '<div class="card"><h2>Station brief</h2><p>' + esc(stn.brief) + '</p>' +
+             '<p class="small muted">Speak your reasoning aloud as you would to the patient and examiner. ' +
+             'The mark scheme appears only after you finish.</p>' +
+             '<button type="button" class="btn-a btn-block" data-ofinish="1">Finish station — show mark scheme</button></div>';
+    v.innerHTML = h2;
+    startOsceClock();
+    return;
+  }
+  /* scoring */
+  var got = 0, i2;
+  for (i2 = 0; i2 < stn.marks.length; i2++) if (osceSess.ticks[i2]) got++;
+  var pct = Math.round(100 * got / stn.marks.length);
+  var h3 = '<div class="row between"><h1 style="margin:0">Mark yourself</h1>' +
+           '<button type="button" class="btn-g btn-sm" data-oend="1">Done</button></div>' +
+           '<div class="card"><div class="row between"><div><div class="big-n">' + got + ' / ' + stn.marks.length + '</div>' +
+           '<div class="small muted">' + pct + '% of items ticked</div></div>' +
+           '<button type="button" class="btn-p" data-osave="1">Save score</button></div>' +
+           '<div class="small muted" style="margin-top:8px">Tick only what you actually said or did.</div></div>';
+  var misses = [];
+  for (i2 = 0; i2 < stn.marks.length; i2++)
+    if (!osceSess.ticks[i2] && SAFETY_RE.test(stn.marks[i2])) misses.push(stn.marks[i2]);
+  h3 += '<div class="safety"><b>Safety-critical items missed: ' + misses.length + '</b>' +
+        '<div class="small muted" style="margin:4px 0 8px">Eligibility, alarm features, referral, monitoring, consent, documentation. ' +
+        'A high percentage with a missed red flag is still a failed station.</div>';
+  if (misses.length){
+    h3 += '<ul class="body" style="margin:0">';
+    for (i2 = 0; i2 < misses.length; i2++) h3 += '<li>' + esc(misses[i2]) + '</li>';
+    h3 += '</ul>';
+  }
+  h3 += '</div><div class="card"><h2>Mark scheme</h2>';
+  for (i2 = 0; i2 < stn.marks.length; i2++){
+    var on = !!osceSess.ticks[i2];
+    h3 += '<button type="button" class="markrow' + (on ? " tick" : "") + '" data-omark="' + i2 + '">' +
+          '<span class="cb">' + (on ? "✓" : "") + '</span><span class="mt">' + esc(stn.marks[i2]) +
+          (SAFETY_RE.test(stn.marks[i2]) ? ' <span class="pill warn">safety</span>' : '') + '</span></button>';
+  }
+  h3 += '</div>';
+  v.innerHTML = h3;
+};
+var osceTimer = null;
+function startOsceClock(){
+  stopOsceClock();
+  var tick = function(){
+    var c = $("oclock");
+    if (!c){ stopOsceClock(); return; }
+    var left = osceSess.limitMs - (Date.now() - osceSess.startTs);
+    c.textContent = mmss(left);
+    if (left <= 60000) c.className = "timer low";
+    if (left <= 0) c.textContent = "0:00 — time";
+  };
+  tick();
+  osceTimer = setInterval(tick, 1000);
+}
+function stopOsceClock(){ if (osceTimer){ clearInterval(osceTimer); osceTimer = null; } }
+
+/* ---------- PROGRESS ---------- */
+R.progress = function(v){
+  var sem = cur.sem, i, k;
+  var dist = [0, 0, 0, 0, 0, 0], e;
+  for (i = 0; i < DATA[sem].cards.length; i++){
+    e = store.box[keyOf(sem, i)];
+    dist[e ? e.b : 0]++;
+  }
+  var att = 0, cor = 0;
+  for (i = 0; i < DATA[sem].mcq.length; i++){
+    k = keyOf(sem, i);
+    att += store.mcq[k] || 0; cor += store.right[k] || 0;
+  }
+  var vivaDone = 0;
+  for (k in store.viva) if (k.indexOf(sem + ":") === 0) vivaDone++;
+  var osceRuns = 0;
+  for (k in store.osceRuns) if (k.indexOf(sem + ":") === 0) osceRuns += store.osceRuns[k];
+  var h = '<h1>Progress</h1>';
+  h += '<div class="honest"><b>Honesty panel.</b> These numbers measure <b>recognition</b> — cards seen and questions answered. ' +
+       'They do not measure whether you can produce an answer aloud or under time. For that: ' +
+       '<b>' + vivaDone + '</b> viva prompt' + (vivaDone === 1 ? "" : "s") + ' self-rated and <b>' + osceRuns + '</b> timed OSCE station' +
+       (osceRuns === 1 ? "" : "s") + ' completed this semester.</div>';
+  h += '<div class="card"><h2>Flashcard boxes</h2><div class="row">';
+  for (i = 0; i <= 5; i++) h += '<span class="chip">' + (i === 0 ? "new" : "box " + i) + ': ' + dist[i] + '</span>';
+  h += '</div></div>';
+  h += '<div class="card"><h2>MCQ accuracy</h2><div class="big-n">' + (att ? Math.round(100 * cor / att) : 0) + '%</div>' +
+       '<div class="small muted">' + cor + ' correct of ' + att + ' attempts</div></div>';
+  h += '<div class="card"><h2>Coverage by topic</h2>';
+  for (i = 0; i < DATA[sem].conds.length; i++){
+    var c = DATA[sem].conds[i], r = topicReadiness(sem, c.id);
+    h += '<div style="margin-bottom:10px"><div class="row between small"><span>' + esc(c.name) + '</span><span class="muted">' + r + '%</span></div>' +
+         '<div class="prog"><i style="width:' + r + '%"></i></div></div>';
+  }
+  h += '</div>';
+  h += '<div class="card"><h2>Export / import</h2>' +
+       '<p class="small muted">Your progress as JSON. Copy it somewhere safe, or paste a backup to restore.</p>' +
+       '<button type="button" class="btn-g btn-block" data-export="1">Export to the box below</button>' +
+       '<textarea id="io" placeholder="Exported JSON appears here; paste a backup here to import"></textarea>' +
+       '<div class="row"><button type="button" class="btn-p" data-import="1">Import from the box</button>' +
+       '<button type="button" class="btn-g" data-reset="1">Reset all progress</button></div></div>';
+  v.innerHTML = h;
+};
+
+/* ---------- SEARCH (offline over __CORPUS__) ---------- */
+R.search = function(v){
+  var h = '<h1>Search</h1><div class="card"><input id="sq" type="search" placeholder="Search the whole course offline…" autocomplete="off">' +
+          '<div class="row" style="margin-top:10px">';
+  for (var i = 0; i < SUGS.length; i++)
+    h += '<button type="button" class="chip" data-sug="' + esc(SUGS[i]) + '">' + esc(SUGS[i]) + '</button>';
+  h += '</div></div><div id="sres"></div>';
+  v.innerHTML = h;
+  var inp = $("sq"), t = null;
+  inp.addEventListener("input", function(){
+    if (t) clearTimeout(t);
+    t = setTimeout(function(){ runSearch(inp.value); }, 180);
+  });
+  inp.focus();
+};
+function runSearch(q){
+  var box = $("sres");
+  if (!box) return;
+  q = (q || "").toLowerCase().trim();
+  if (q.length < 2){ box.innerHTML = ""; return; }
+  var terms = q.split(/[^a-z0-9]+/), words = [], i;
+  for (i = 0; i < terms.length; i++)
+    if (terms[i].length > 1 && !STOP[terms[i]]) words.push(terms[i]);
+  if (!words.length){ box.innerHTML = ""; return; }
+  var corpus = window.__CORPUS__, scored = [], j, c, txt, sc, w;
+  for (j = 0; j < corpus.length; j++){
+    c = corpus[j]; txt = (c.s + " " + c.t).toLowerCase(); sc = 0;
+    for (w = 0; w < words.length; w++){
+      var idx = txt.indexOf(words[w]);
+      if (idx >= 0) sc += 2 + (txt.split(words[w]).length - 1);
+    }
+    if (sc > 0) scored.push([sc, j]);
+  }
+  scored.sort(function(a, b){ return b[0] - a[0]; });
+  var h = '<div class="card"><div class="small muted" style="margin-bottom:8px">' + scored.length + ' chunk' +
+          (scored.length === 1 ? "" : "s") + ' · top ' + Math.min(15, scored.length) + ' shown</div>';
+  var lim = Math.min(15, scored.length);
+  for (i = 0; i < lim; i++){
+    c = corpus[scored[i][1]];
+    var snip = c.t.length > 260 ? c.t.slice(0, 260) + "…" : c.t;
+    h += '<div style="padding:10px 0;border-bottom:1px solid var(--line)">' +
+         '<span class="pill">' + esc(condName(cur.sem, c.c) || c.c) + '</span> <b class="small">' + esc(c.s) + '</b>' +
+         '<div class="small" style="margin-top:4px">' + esc(snip) + '</div></div>';
+  }
+  h += '</div>';
+  box.innerHTML = h;
+}
+
+/* ================================================================
+   Event delegation — one listener for the whole app
+   ================================================================ */
+document.addEventListener("click", function(ev){
+  var b = ev.target;
+  while (b && b !== document && !(b.tagName === "BUTTON" && hasData(b))) b = b.parentNode;
+  if (!b || b === document) return;
+  var sem = cur.sem, v = $("view");
+
+  function has(){ for (var i = 0; i < arguments.length; i++) if (b.getAttribute(arguments[i]) != null) return true; return false; }
+
+  if (b.getAttribute("data-more") != null){ openSheet(); return; }
+  if (b.getAttribute("data-go") != null){
+    var arg = b.getAttribute("data-arg");
+    if (arg && cur.tab !== b.getAttribute("data-go")){ /* carry arg into target screen */
+      if (b.getAttribute("data-go") === "learn") learn = {cond: arg, stage: 0, missed: [], q: 0, fixQ: []};
+      if (b.getAttribute("data-go") === "topics") topicOpen = arg;
+    }
+    go(b.getAttribute("data-go"));
+    return;
+  }
+  /* Learn */
+  if (b.getAttribute("data-learn") != null){
+    var lc = b.getAttribute("data-learn");
+    if (lc === "*exit") learn = {cond: null, stage: 0, missed: [], q: 0, fixQ: []};
+    else learn = {cond: lc, stage: 0, missed: [], q: 0, fixQ: []};
+    R.learn(v); return;
+  }
+  if (b.getAttribute("data-lstage") != null){ learn.stage = +b.getAttribute("data-lstage"); learn.q = 0; R.learn(v); return; }
+  if (b.getAttribute("data-lcard") != null){
+    var got = b.getAttribute("data-lcard") === "1";
+    var cards = [], i;
+    for (i = 0; i < DATA[sem].cards.length; i++) if (DATA[sem].cards[i][0] === learn.cond) cards.push(i);
+    gradeCard(sem, cards[learn.q], got);
+    learn.q++; R.learn(v); return;
+  }
+  if (b.getAttribute("data-lnext") != null){ learn.q++; R.learn(v); return; }
+  if (b.getAttribute("data-lfix") != null){ R.learn(v); return; }
+  /* Plan */
+  if (b.getAttribute("data-step") != null){
+    var sk = b.getAttribute("data-step");
+    if (store.steps[sk]) delete store.steps[sk]; else store.steps[sk] = 1;
+    bumpDay(); save(); R.plan(v); return;
+  }
+  /* Course */
+  if (b.getAttribute("data-week") != null){
+    var wk = $("wk" + b.getAttribute("data-week"));
+    if (wk){ var show = wk.style.display === "none"; wk.style.display = show ? "block" : "none";
+             b.textContent = show ? "Close week" : "Open week"; }
+    return;
+  }
+  /* Topics */
+  if (b.getAttribute("data-topic") != null){
+    var tp = b.getAttribute("data-topic");
+    topicOpen = (tp === "*back") ? null : tp;
+    R.topics(v); return;
+  }
+  /* Flashcards */
+  if (b.getAttribute("data-cstart") != null){
+    var f = b.getAttribute("data-cstart"), now = Date.now(), q = [];
+    for (var i = 0; i < DATA[sem].cards.length; i++){
+      if (f !== "all" && DATA[sem].cards[i][0] !== f) continue;
+      if (cardDueTs(sem, i) <= now) q.push(i);
+    }
+    if (!q.length) return;
+    if (q.length > 20) q = q.slice(0, 20);   /* small startable chunks */
+    cardSess = {queue: q, i: 0, filter: f};
+    R.cards(v); return;
+  }
+  if (b.getAttribute("data-cend") != null){ cardSess = {queue: null, i: 0, filter: ""}; R.cards(v); return; }
+  if (b.getAttribute("data-cgot") != null){
+    gradeCard(sem, cardSess.queue[cardSess.i], b.getAttribute("data-cgot") === "1");
+    cardSess.i++; R.cards(v); return;
+  }
+  /* MCQs */
+  if (b.getAttribute("data-tpic") != null){ mcqSess.topic = b.getAttribute("data-tpic"); R.mcq(v); return; }
+  if (b.getAttribute("data-ttheme") != null){ mcqSess.theme = b.getAttribute("data-ttheme"); R.mcq(v); return; }
+  if (b.getAttribute("data-mstart") != null){
+    mcqSess.queue = mcqFilter(sem); mcqSess.i = 0; mcqSess.missed = [];
+    R.mcq(v); return;
+  }
+  if (b.getAttribute("data-mnext") != null){ mcqSess.i++; R.mcq(v); return; }
+  if (b.getAttribute("data-mfix") != null){
+    mcqSess.queue = mcqSess.missed.slice(); mcqSess.i = 0; mcqSess.missed = [];
+    R.mcq(v); return;
+  }
+  if (b.getAttribute("data-mend") != null){ mcqSess.queue = null; R.mcq(v); return; }
+  /* Mock exam */
+  if (b.getAttribute("data-kstart") != null){
+    var pool = [], i2;
+    for (i2 = 0; i2 < DATA[sem].mcq.length; i2++) pool.push(i2);
+    /* deterministic-ish shuffle */
+    for (i2 = pool.length - 1; i2 > 0; i2--){
+      var r = Math.floor(Math.random() * (i2 + 1)), tmp = pool[i2]; pool[i2] = pool[r]; pool[r] = tmp;
+    }
+    pool = pool.slice(0, Math.min(20, pool.length));
+    mock = {queue: pool, q: 0, answers: [], startTs: Date.now(),
+            limitMs: Math.round(pool.length * mock.MIN_PER_Q * 60000), MIN_PER_Q: mock.MIN_PER_Q};
+    R.mock(v); return;
+  }
+  if (b.getAttribute("data-knext") != null){ mock.q++; R.mock(v); return; }
+  if (b.getAttribute("data-kend") != null){ stopMockClock(); mock.queue = null; R.mock(v); return; }
+  /* Exams */
+  if (b.getAttribute("data-exam") != null){
+    var es = b.getAttribute("data-exam");
+    examOpen = (examOpen === es) ? null : es;
+    R.exams(v); return;
+  }
+  if (b.getAttribute("data-exstep") != null){
+    var parts = b.getAttribute("data-exstep").split("|"), slug = parts[0], sk2 = parts[1];
+    if (!store.exams[slug]) store.exams[slug] = {};
+    if (store.exams[slug][sk2]) delete store.exams[slug][sk2]; else store.exams[slug][sk2] = 1;
+    save(); R.exams(v); return;
+  }
+  /* Anatomy */
+  if (b.getAttribute("data-spot") != null){ anat.spot = +b.getAttribute("data-spot"); R.anat(v); return; }
+  if (b.getAttribute("data-aopt") != null){
+    if (anat.spot != null){
+      var pick = b.getAttribute("data-aopt");
+      anat.done[anat.spot] = (pick === ANAT[0].spots[anat.spot].label);
+      if (anat.done[anat.spot]) bumpDay();
+      save(); anat.spot = null; R.anat(v);
+    }
+    return;
+  }
+  /* Viva */
+  if (b.getAttribute("data-vtopic") != null){ vivaSess.topic = b.getAttribute("data-vtopic"); vivaSess.i = null; R.viva(v); return; }
+  if (b.getAttribute("data-vstart") != null){
+    var vp = vivaPool(sem);
+    if (!vp.length) return;
+    /* prefer unrated prompts */
+    var unrated = [], i3;
+    for (i3 = 0; i3 < vp.length; i3++) if (store.viva[keyOf(sem, vp[i3])] == null) unrated.push(vp[i3]);
+    var src = unrated.length ? unrated : vp;
+    vivaSess.i = src[Math.floor(Math.random() * src.length)];
+    vivaSess.committed = false;
+    R.viva(v); return;
+  }
+  if (b.getAttribute("data-vcommit") != null){ vivaSess.committed = true; R.viva(v); return; }
+  if (b.getAttribute("data-vrate") != null){
+    store.viva[keyOf(sem, vivaSess.i)] = +b.getAttribute("data-vrate");
+    bumpDay(); save();
+    vivaSess.i = null; vivaSess.committed = false;
+    R.viva(v); return;
+  }
+  if (b.getAttribute("data-vend") != null){ vivaSess.i = null; vivaSess.committed = false; R.viva(v); return; }
+  /* OSCE */
+  if (b.getAttribute("data-ostart") != null){
+    var stn = null, i4;
+    for (i4 = 0; i4 < DATA[sem].osce.length; i4++) if (DATA[sem].osce[i4].id === b.getAttribute("data-ostart")) stn = DATA[sem].osce[i4];
+    if (!stn) return;
+    osceSess = {id: stn.id, startTs: Date.now(), limitMs: osceMins(stn.time) * 60000, finished: false, ticks: {}};
+    R.osce(v); return;
+  }
+  if (b.getAttribute("data-ofinish") != null){ osceSess.finished = true; stopOsceClock(); R.osce(v); return; }
+  if (b.getAttribute("data-omark") != null){
+    var mi = b.getAttribute("data-omark");
+    if (osceSess.ticks[mi]) delete osceSess.ticks[mi]; else osceSess.ticks[mi] = 1;
+    R.osce(v); return;
+  }
+  if (b.getAttribute("data-osave") != null){
+    var stn2 = null, i5;
+    for (i5 = 0; i5 < DATA[sem].osce.length; i5++) if (DATA[sem].osce[i5].id === osceSess.id) stn2 = DATA[sem].osce[i5];
+    if (stn2){
+      var g = 0, m2;
+      for (m2 = 0; m2 < stn2.marks.length; m2++) if (osceSess.ticks[m2]) g++;
+      var ok2 = keyOf(sem, stn2.id);
+      store.osce[ok2] = {got: g, of: stn2.marks.length, ts: Date.now()};
+      store.osceRuns[ok2] = (store.osceRuns[ok2] || 0) + 1;
+      bumpDay(); save();
+    }
+    osceSess = {id: null, startTs: 0, limitMs: 0, finished: false, ticks: {}};
+    R.osce(v); return;
+  }
+  if (b.getAttribute("data-oend") != null){
+    stopOsceClock();
+    osceSess = {id: null, startTs: 0, limitMs: 0, finished: false, ticks: {}};
+    R.osce(v); return;
+  }
+  /* Progress io */
+  if (b.getAttribute("data-export") != null){
+    var io = $("io"); if (io) io.value = JSON.stringify(store, null, 1);
+    return;
+  }
+  if (b.getAttribute("data-import") != null){
+    var io2 = $("io");
+    if (io2 && io2.value.trim()){
+      try {
+        var p = JSON.parse(io2.value);
+        if (p && typeof p === "object"){
+          var ns = blankStore();
+          ns.box = repairBox(p.box); ns.mcq = repairObj(p.mcq); ns.osce = repairObj(p.osce);
+          ns.osceRuns = repairObj(p.osceRuns); ns.exams = repairObj(p.exams); ns.days = repairObj(p.days);
+          ns.steps = repairObj(p.steps); ns.right = repairObj(p.right); ns.read = repairObj(p.read);
+          ns.viva = repairObj(p.viva);
+          ns.sem = (p.sem === "s1" || p.sem === "s2") ? p.sem : cur.sem;
+          store = ns; cur.sem = ns.sem; save();
+          io2.value = "";
+          go(cur.tab);
+        }
+      } catch (e) { io2.value = "Import failed: that was not valid JSON."; }
+    }
+    return;
+  }
+  if (b.getAttribute("data-reset") != null){
+    if (window.confirm("Reset ALL progress for both semesters? This cannot be undone.")){
+      store = blankStore(); store.sem = cur.sem; save();
+      go(cur.tab);
+    }
+    return;
+  }
+  /* Search suggestions */
+  if (b.getAttribute("data-sug") != null){
+    var sq = $("sq");
+    if (sq){ sq.value = b.getAttribute("data-sug"); runSearch(sq.value); }
+    return;
+  }
+  function hasData(el2){
+    return el2.getAttribute("data-go") != null || el2.getAttribute("data-more") != null ||
+      el2.getAttribute("data-learn") != null || el2.getAttribute("data-lstage") != null ||
+      el2.getAttribute("data-lcard") != null || el2.getAttribute("data-lnext") != null ||
+      el2.getAttribute("data-lfix") != null || el2.getAttribute("data-step") != null ||
+      el2.getAttribute("data-week") != null || el2.getAttribute("data-topic") != null ||
+      el2.getAttribute("data-cstart") != null || el2.getAttribute("data-cend") != null ||
+      el2.getAttribute("data-cgot") != null || el2.getAttribute("data-tpic") != null ||
+      el2.getAttribute("data-ttheme") != null || el2.getAttribute("data-mstart") != null ||
+      el2.getAttribute("data-mnext") != null || el2.getAttribute("data-mfix") != null ||
+      el2.getAttribute("data-mend") != null || el2.getAttribute("data-kstart") != null ||
+      el2.getAttribute("data-knext") != null || el2.getAttribute("data-kend") != null ||
+      el2.getAttribute("data-exam") != null || el2.getAttribute("data-exstep") != null ||
+      el2.getAttribute("data-spot") != null || el2.getAttribute("data-aopt") != null ||
+      el2.getAttribute("data-vtopic") != null || el2.getAttribute("data-vstart") != null ||
+      el2.getAttribute("data-vcommit") != null || el2.getAttribute("data-vrate") != null ||
+      el2.getAttribute("data-vend") != null || el2.getAttribute("data-ostart") != null ||
+      el2.getAttribute("data-ofinish") != null || el2.getAttribute("data-omark") != null ||
+      el2.getAttribute("data-osave") != null || el2.getAttribute("data-oend") != null ||
+      el2.getAttribute("data-export") != null || el2.getAttribute("data-import") != null ||
+      el2.getAttribute("data-reset") != null || el2.getAttribute("data-sug") != null;
+  }
+});
+
+/* sheet + semester buttons */
+$("sheetscrim").addEventListener("click", closeSheet);
+$("sem1").addEventListener("click", function(){ setSem("s1"); });
+$("sem2").addEventListener("click", function(){ setSem("s2"); });
+$("msem1").addEventListener("click", function(){ setSem("s1"); });
+$("msem2").addEventListener("click", function(){ setSem("s2"); });
+
+/* ================================================================
+   Service worker + version badge
+   ================================================================ */
+var swHasWaiting = false;
+function showUpdateBar(){ $("updatebar").className = "show"; }
+$("updatebtn").addEventListener("click", function(){
+  if (navigator.serviceWorker && navigator.serviceWorker.controller){
+    navigator.serviceWorker.getRegistration().then(function(reg){
+      if (reg && reg.waiting) reg.waiting.postMessage("skip");
+    });
+  }
+});
+if ("serviceWorker" in navigator){
+  navigator.serviceWorker.addEventListener("controllerchange", function(){
+    if (swHasWaiting) window.location.reload();
+  });
+  try {
+    navigator.serviceWorker.register("sw.js").then(function(reg){
+      if (reg.waiting){ swHasWaiting = true; showUpdateBar(); }
+      reg.addEventListener("updatefound", function(){
+        var nw = reg.installing;
+        if (!nw) return;
+        nw.addEventListener("statechange", function(){
+          if (nw.state === "installed" && navigator.serviceWorker.controller){
+            swHasWaiting = true; showUpdateBar();
+          }
+        });
+      });
+    }).catch(function(){});
+  } catch (e) {}
+}
+$("verbadge").textContent = VERSION;
+$("verbadge").addEventListener("click", function(){
+  if ("serviceWorker" in navigator){
+    navigator.serviceWorker.getRegistration().then(function(reg){
+      if (reg) reg.update();
+      $("verbadge").textContent = VERSION + " · checked";
+      setTimeout(function(){ $("verbadge").textContent = VERSION; }, 2000);
+    }).catch(function(){});
+  } else {
+    $("verbadge").textContent = VERSION + " · no SW";
+    setTimeout(function(){ $("verbadge").textContent = VERSION; }, 2000);
+  }
+});
+
+/* ================================================================
+   Boot
+   ================================================================ */
+go("home");
+</script>
+</body>
+</html>

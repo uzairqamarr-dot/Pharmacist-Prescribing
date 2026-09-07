@@ -1,0 +1,9 @@
+{
+  "name": "prescribing-study-hub",
+  "version": "2026.9.7",
+  "private": true,
+  "description": "Offline-first study app for the Grad Cert in Pharmacist Prescribing.",
+  "scripts": {
+    "dev": "node server.js"
+  }
+}
