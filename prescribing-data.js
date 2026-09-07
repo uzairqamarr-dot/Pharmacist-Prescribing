@@ -50,31 +50,9 @@
    must be defined before S2_CONDS.
    ============================================================================ */
 
-var CVD_SHARED = "<b>Shared CVD eligibility.</b> Hypertension, lipids and blood glucose run off almost the same ineligibility list. Learn it once and you have all three.<ul>"+
-"<li>Age &lt;18 or &gt;79 · planning pregnancy or pregnant</li>"+
-"<li>Stage 3–5 CKD · familial hypercholesterolaemia · type 1 diabetes</li>"+
-"<li>Retinopathy, neuropathy or nephropathy — persistent albuminuria (uACR ≥3 mg/mmol) or eGFR &lt;60 mL/min/1.73m²</li>"+
-"<li>Complex CVD: severe (Grade 3) hypertension ≥180/110, congenital or rheumatic heart disease, heart failure, arrhythmias, AF, PAD, heart block, pericarditis, valvular disease, pulmonary hypertension, angina, cardiomyopathy or cardiomegaly, aortic aneurysm</li>"+
-"<li>Poorly controlled asthma, moderate/severe COPD, severe OSA or other serious respiratory illness</li>"+
-"<li>History of cardiothoracic surgery, ACS, stroke/cerebrovascular disease, hypertensive urgency or emergency</li>"+
-"<li>Current DVT or PE (or any history of PE) · currently on anticoagulants</li>"+
-"<li>Specialist care from a cardiologist, endocrinologist or nephrologist now or in the past 12 months, without a written referral</li>"+
-"<li>Suspected secondary cause</li>"+
-"<li>TC ≥7.5 mmol/L, LDL-C ≥5.0 mmol/L or triglycerides ≥6 mmol/L</li>"+
-"<li>HbA1c ≥10% or BGL ≥20.0 mmol/L, or hypoglycaemia BGL &lt;4.0 mmol/L</li>"+
-"</ul>";
+var CVD_SHARED = "<b>Shared CVD eligibility.</b> Hypertension, lipids and blood glucose run off almost the same ineligibility list. Learn it once and you have all three.<ul>";
 
-var CVD_OUT = "<b>Shared CVD exclusions</b> (hypertension, lipids and blood glucose run off almost the same list): "+
- "age &lt;18 or &gt;79 · planning pregnancy or pregnant · stage 3–5 CKD · familial hypercholesterolaemia · type 1 diabetes · "+
- "retinopathy, neuropathy or nephropathy (persistent albuminuria uACR ≥3 mg/mmol, or eGFR &lt;60) · "+
- "complex CVD — severe (Grade 3) hypertension ≥180/110, congenital or rheumatic heart disease, heart failure, arrhythmias, "+
- "atrial fibrillation, PAD, heart block, pericarditis, valvular disease, angina, cardiomyopathy, cardiomegaly, "+
- "pulmonary hypertension, aortic aneurysm · <b>poorly controlled asthma, moderate or severe COPD, severe "+
- "obstructive sleep apnoea</b> or another serious respiratory illness · a history of <b>cardiothoracic surgery, "+
- "acute coronary syndrome, stroke or other cerebrovascular disease, or hypertensive urgency or emergency</b> · "+
- "current <b>DVT</b> · current or previous <b>pulmonary embolism</b> · currently prescribed "+
- "<b>anticoagulant therapy</b> · <b>unexplained fluctuations in blood pressure</b> · specialist care from a "+
- "cardiologist, endocrinologist or nephrologist in the past 12 months without a written referral.";
+var CVD_OUT = "<b>Shared CVD exclusions</b> (hypertension, lipids and blood glucose run off almost the same list): ";
 
 var CRS_LABEL={"6302":"Clinical conditions — PHAR6302","6202":"Practice & reasoning — PHAR6202"};
 
@@ -825,7 +803,14 @@ var COURSE_CARDS=[["htn","State the Heart Foundation clinic BP classification th
 ,["safe","Which material in this app is NOT checked against a primary source?",
   "Worth knowing before a viva. <b>Checked against the Queensland protocol text loaded in this app:</b> hypertension, lipid modification, blood glucose, asthma and COPD — eligibility, referral triggers, monitoring intervals, prescribable medicines. <b>Checked against health.gov.au or the Heart Foundation:</b> AUSDRisk scoring, the heart-healthy eating pattern, activity targets. <b>From a classmate's revision notes and NOT independently verifiable:</b> the statin intensity dose table, ALT/CK stop thresholds, simvastatin interaction caps, ezetimibe's added effect, metformin renal ceilings, GLP-1 renal floors, sick-day ketone thresholds, per-class HbA1c falls, the weight-drug BMI thresholds and stopping rules, all the trial percentages, NHMRC bariatric criteria, the QLD obesity protocol, and every renal-reasoning card (triple whammy, urea:creatinine, NSAID–methotrexate, clopidogrel–PPI). That last group is clinically orthodox and well argued, but it came from one pharmacist's notes, not from PHAR6302. <b>Check anything in it against AMH, Therapeutic Guidelines or Canvas before you rely on it in an assessment.</b>"]
 
-];
+/* ---- Appended 8 Sep 2026 from the PRIMARY source: National Heart Foundation
+   of Australia, Guideline for the Diagnosis and Management of Hypertension in
+   Adults 2016 (the actual PDF). Quoted thresholds verified against the
+   document text, not a secondary summary. APPEND ONLY. ---- */
+,["htn","Distinguish hypertensive urgency from emergency by the Heart Foundation's own numbers.",
+  "<b>Urgency</b> — severe elevation <b>&gt;180/110</b> that is <i>not</i> immediately life threatening but comes with symptoms (e.g. severe headache) or <b>moderate</b> target organ damage. Oral drugs, follow-up within <b>24–72 hours</b>. <b>Emergency</b> — blood pressure very high, <b>often &gt;220/140</b>, with <b>acute</b> target organ damage. Needs close monitoring and <b>parenteral</b> therapy, usually in intensive care. Learn the 220/140 figure: most summaries omit it and describe emergency only by organ damage."]
+,["htn","A patient's BP is 215/130 and they feel completely well. Is this an emergency?",
+  "<b>No — and the guideline says so explicitly.</b> \"Markedly elevated blood pressure by itself, <b>in the absence of symptoms of target organ damage, does not automatically require emergency therapy</b>. Treatment with oral agents and follow up care within a few days are recommended.\" The discriminator is <b>acute organ damage</b>, not the height of the number. This is the trap in any station built around a frightening reading."];
 
 var S2_MCQ=[
 ["asthma","A 34-year-old with asthma uses her SABA around three times a week and has no ICS. Under the current protocol, what is the most appropriate action?",
@@ -1210,7 +1195,695 @@ var COURSE_MCQ=[["htn","A patient's clinic BP is 152/104. Under the Heart Founda
   ["The NSAID directly damages the renal tubules","Loss of afferent dilation and efferent tone with reduced volume","The diuretic causes direct nephrotoxicity","Hyperkalaemia reduces glomerular filtration"],1,
   "The NSAID removes prostaglandin-mediated afferent dilation, the ACE inhibitor removes angiotensin-mediated efferent constriction, and the diuretic removes the volume covering for both. Vomiting removes what is left. Being able to explain the mechanism, not just name the triple whammy, is what a viva is testing."]
 
+,["htn","Under the Heart Foundation 2016 guideline, a hypertensive emergency is characterised by blood pressure that is:",
+  ["Above 180/110 with any symptom","Often above 220/140 with acute target organ damage","Above 160/100 in a patient over 75","Any reading above 200 systolic"],1,
+  "Emergency: very high, often >220/140, with ACUTE target organ damage — parenteral therapy, usually intensive care. Urgency: >180/110 with symptoms or moderate organ damage — oral therapy, review in 24–72 hours. The 220/140 figure is in the guideline and most summaries drop it."]
+,["htn","A patient's clinic BP is 218/128. They have no symptoms and no evidence of acute organ damage. What does the guideline advise?",
+  ["Immediate parenteral therapy in intensive care","Oral agents and follow-up within a few days","No treatment; repeat in 3 months","Emergency department referral regardless of symptoms"],1,
+  "The guideline states markedly elevated blood pressure by itself, without symptoms of target organ damage, does not automatically require emergency therapy — oral agents and follow-up within a few days are recommended. Acute organ damage is what makes it an emergency, not the number."]
+,["htn","Which blood pressure measurement should be entered into an absolute CVD risk calculator?",
+  ["Home monitoring average","Clinic measurement","24-hour ambulatory average","Whichever is lowest"],1,
+  "Clinic measures are recommended. Using home or ambulatory readings may inappropriately underestimate risk, because out-of-clinic readings run lower — which could place a patient below a treatment threshold they should be above."]
+
 ];
+
+/* ============ SEMESTER DATA ============ */
+var S1=window.__SEM1__||{conds:[],cards:[],mcq:[],osce:[]};
+var DATA={
+  s2:{label:"Semester 2 — Chronic & Complex", conds:S2_CONDS, cards:S2_CARDS.concat(COURSE_CARDS), mcq:S2_MCQ.concat(COURSE_MCQ), osce:S2_OSCE},
+  s1:{label:"Semester 1 — Acute",             conds:S1.conds, cards:S1.cards, mcq:S1.mcq, osce:S1_OSCE}
+};
+var SEM=(S.sem==="s1"||S.sem==="s2")?S.sem:"s2";
+var CONDS,CARDS,MCQ,OSCE;
+function pk(i){return SEM+":"+i}          /* progress keys are namespaced per semester */
+function applySem(){
+  LS=null; curExam=null;                 /* a live session's indices belong to the old semester */
+  if(typeof osceStop==="function") osceStop(); OR=null;
+  window.__perm={};        /* option shuffles are keyed by bare index too */
+  var d=DATA[SEM];
+  CONDS=d.conds; CARDS=d.cards; MCQ=d.mcq; OSCE=d.osce;
+  curCond=CONDS.length?CONDS[0].id:null; mcqI=0; fcCur=null; fcShown=false;
+  fcFilter="__all__"; mcqFilter="__all__"; examReset();
+  vvFilter="__all__"; vvI=0; vvShown=false;   /* viva prompts are semester-scoped too */
+}
+
+/* ============ RENDER ============ */
+/* One dispatcher, used by BOTH the tab clicks and the semester switch.
+   Keeping two hand-written lists of renderers in sync failed repeatedly —
+   panes kept showing the previous semester's content until a manual reload. */
+function renderPane(p){
+  if(p==="prog") renderProg();
+  if(p==="exam"){ if(!EX) renderExamSetup(); }
+  if(p==="today") renderToday();
+  if(p==="plan") renderPlan();
+  if(p==="learn") renderLearn();
+  if(p==="exams") renderExams();
+  if(p==="cram") renderCram();
+  if(p==="viva") renderViva();
+  if(p==="cards"){ pickCard(); renderFc(); }
+  if(p==="mcq") renderMcq();
+  if(p==="osce") renderOsce();
+  if(p==="course") renderCourse();
+  if(p==="cond") renderCond();
+  if(p==="anat"){ if(!anatState.order.length) anatStart(); }
+}
+function activePane(){
+  var on=document.querySelector(".tab.on");
+  return on?on.getAttribute("data-p"):"today";
+}
+var tabs=document.querySelectorAll(".tab");
+Array.prototype.forEach.call(tabs,function(t){t.addEventListener("click",function(){
+  Array.prototype.forEach.call(tabs,function(x){x.classList.remove("on")});t.classList.add("on");
+  Array.prototype.forEach.call(document.querySelectorAll(".pane"),function(p){p.classList.remove("on")});
+  document.getElementById("p-"+t.getAttribute("data-p")).classList.add("on");
+  renderPane(t.getAttribute("data-p"));
+})});
+
+Array.prototype.forEach.call(document.querySelectorAll(".sem"),function(b){
+  b.addEventListener("click",function(){
+    var s=b.getAttribute("data-sem");
+    if(!DATA[s]||!DATA[s].conds.length){
+      document.getElementById("semNote").textContent="Nothing loaded for that semester yet.";return;
+    }
+    SEM=s; S.sem=s; save(); applySem();
+    Array.prototype.forEach.call(document.querySelectorAll(".sem"),function(x){x.classList.remove("on")});
+    b.classList.add("on");
+    var d=DATA[s];
+    document.getElementById("semNote").textContent=
+      d.conds.length+" topics · "+d.cards.length+" cards · "+d.mcq.length+" questions";
+    /* Just the pane you are actually looking at. The hand-written list that used
+       to live here omitted exams, so switching semester left the old semester's
+       examinations on screen until you reloaded. renderPane is a superset. */
+    renderPane(activePane());
+  });
+});
+
+var curCond=null;   /* set by applySem() before any render */
+function renderCond(){
+  var nav=document.getElementById("condNav");nav.innerHTML="";
+  var groups={};
+  CONDS.forEach(function(c){ (groups[crsOf(c.id)]=groups[crsOf(c.id)]||[]).push(c) });
+  ["6302","6202"].forEach(function(k){
+    if(!groups[k]||!groups[k].length) return;
+    /* Only label the groups when there is more than one — Semester 1 is all
+       clinical, and a lone heading there would be noise. */
+    if(Object.keys(groups).length>1){
+      var h=el("div","small",esc(CRS_LABEL[k]));
+      h.style.cssText="flex-basis:100%;margin:4px 0 2px;text-transform:uppercase;letter-spacing:.9px;font-size:var(--fs-xs)";
+      nav.appendChild(h);
+    }
+    groups[k].forEach(function(c){
+      var b=el("button","cbtn"+(c.id===curCond?" on":""),c.name);
+      b.addEventListener("click",function(){curCond=c.id;renderCond()});
+      nav.appendChild(b);
+    });
+  });
+  var c=CONDS.filter(function(x){return x.id===curCond})[0];
+  document.getElementById("condBody").innerHTML=
+    packHTML(c.id)+
+    "<div class='card'><h2>"+esc(c.tag)+"</h2>"+c.body+"</div>";
+}
+
+/* flashcards with Leitner boxes */
+var fcCur=null,fcShown=false;
+var fcFilter="__all__", mcqFilter="__all__";
+function condName(id){
+  var c=CONDS.filter(function(x){return x.id===id})[0];
+  return c?c.name:id;
+}
+function fillTopicSelect(el, items, current, onchange){
+  if(!el) return;
+  var counts={};
+  items.forEach(function(x){counts[x[0]]=(counts[x[0]]||0)+1});
+  var ids=CONDS.map(function(c){return c.id}).filter(function(id){return counts[id]});
+  el.innerHTML="";
+  var all=document.createElement("option");
+  all.value="__all__"; all.textContent="All topics ("+items.length+")";
+  el.appendChild(all);
+  var byCrs={};
+  ids.forEach(function(id){ (byCrs[crsOf(id)]=byCrs[crsOf(id)]||[]).push(id) });
+  var multi=Object.keys(byCrs).length>1;
+  ["6302","6202"].forEach(function(k){
+    if(!byCrs[k]) return;
+    var parent=el;
+    if(multi){ parent=document.createElement("optgroup"); parent.label=CRS_LABEL[k]; el.appendChild(parent); }
+    byCrs[k].forEach(function(id){
+      var o=document.createElement("option");
+      o.value=id; o.textContent=condName(id)+" ("+counts[id]+")";
+      parent.appendChild(o);
+    });
+  });
+  el.value = counts[current]||current==="__all__" ? current : "__all__";
+  el.onchange=function(){onchange(el.value)};
+}
+function dueCards(){
+  var now=Date.now();
+  return CARDS.map(function(c,i){return {i:i,c:c}}).filter(function(o){
+    if(fcFilter!=="__all__" && o.c[0]!==fcFilter) return false;
+    var st=S.box[pk(o.i)]; if(!st) return true;
+    return now>=st.due;
+  });
+}
+function filteredMcq(){
+  return MCQ.map(function(q,i){return {q:q,i:i}}).filter(function(o){
+    return mcqFilter==="__all__" || o.q[0]===mcqFilter;
+  });
+}
+function pickCard(){
+  var d=dueCards();
+  if(!d.length){fcCur=null;return}
+  d.sort(function(a,b){
+    var ab=(S.box[pk(a.i)]||{b:1}).b, bb=(S.box[pk(b.i)]||{b:1}).b;
+    return ab-bb || Math.random()-0.5;
+  });
+  fcCur=d[Math.min(d.length-1,Math.floor(Math.random()*Math.min(4,d.length)))];
+  fcShown=false;
+}
+var INTERVAL=[0,0,1,3,8,21]; // days by box
+function renderFc(){
+  var card=document.getElementById("fcCard"),bar=document.getElementById("fcBar");
+  bar.innerHTML="";
+  var d=dueCards();
+  var pool=fcFilter==="__all__"?CARDS.length:CARDS.filter(function(c){return c[0]===fcFilter}).length;
+  document.getElementById("fcCount").textContent=d.length+" due of "+pool;
+  fillTopicSelect(document.getElementById("fcTopic"), CARDS, fcFilter, function(v){
+    fcFilter=v; pickCard(); renderFc();
+  });
+  if(!fcCur){
+    card.innerHTML="<div class='q'>Nothing due"+(fcFilter==="__all__"?"":" in "+esc(condName(fcFilter)))+" right now.</div><div class='hint'>Cards return on schedule. Switch topic above, come back later, or reset from Progress.</div>";
+    document.getElementById("fcStat").textContent="";
+    return;
+  }
+  var c=fcCur.c, box=(S.box[pk(fcCur.i)]||{b:1}).b;
+  card.innerHTML="<div class='q'>"+c[1]+"</div>"+
+    (fcShown?"<div class='a'>"+c[2]+"</div>":"<div class='hint'>click to reveal</div>");
+  card.onclick=function(){if(!fcShown){fcShown=true;renderFc()}};
+  var nm=CONDS.filter(function(x){return x.id===c[0]})[0];
+  document.getElementById("fcStat").innerHTML="<span class='chip g'>"+esc(nm?nm.name:c[0])+"</span> &nbsp;box "+box+" of 5";
+  if(fcShown){
+    var bad=el("button","btn","Missed it");
+    bad.addEventListener("click",function(){grade(1)});
+    var ok=el("button","btn pri","Got it");
+    ok.addEventListener("click",function(){grade(1,true)});
+    bar.appendChild(bad);bar.appendChild(ok);
+  } else {
+    var sh=el("button","btn pri","Reveal");
+    sh.addEventListener("click",function(){fcShown=true;renderFc()});
+    bar.appendChild(sh);
+  }
+}
+function grade(_,good){
+  var st=S.box[pk(fcCur.i)]||{b:1};
+  st.b = good ? Math.min(5,st.b+1) : 1;
+  st.due = Date.now() + INTERVAL[st.b]*86400000;
+  st.seen=(st.seen||0)+1;
+  S.box[pk(fcCur.i)]=st; save(); logAction(1); pickCard(); renderFc();
+}
+
+/* MCQs */
+var mcqI=0;
+function renderMcq(){
+  var b=document.getElementById("mcqBody");
+  fillTopicSelect(document.getElementById("mcqTopic"), MCQ, mcqFilter, function(v){
+    mcqFilter=v; mcqI=0; renderMcq();
+  });
+  var tsel=document.getElementById("mcqTheme");
+  if(tsel){
+    var counts={}, base=filteredMcq();
+    base.forEach(function(o){ var k=themeOf(o.q); counts[k]=(counts[k]||0)+1 });
+    tsel.innerHTML="";
+    var a=document.createElement("option"); a.value="__all__";
+    a.textContent="Every theme ("+base.length+")"; tsel.appendChild(a);
+    THEMES.forEach(function(th){
+      if(!counts[th[0]]) return;
+      var o=document.createElement("option"); o.value=th[0];
+      o.textContent=th[1]+" ("+counts[th[0]]+")"; tsel.appendChild(o);
+    });
+    tsel.value = counts[themeFilter] ? themeFilter : "__all__";
+    if(tsel.value==="__all__") themeFilter="__all__";
+    tsel.onchange=function(){ themeFilter=tsel.value; mcqI=0; renderMcq(); };
+  }
+  var list=filteredMcq();
+  if(themeFilter!=="__all__") list=list.filter(function(o){ return themeOf(o.q)===themeFilter });
+  if(!list.length){ b.innerHTML="<p class='small'>No questions match that combination. Widen the topic or the theme.</p>"; document.getElementById("mcqProg").textContent=""; return; }
+  if(mcqI>=list.length) mcqI=0;
+  var realI=list[mcqI].i, q=list[mcqI].q;
+  document.getElementById("mcqProg").textContent=(mcqI+1)+" of "+list.length;
+  var nm=CONDS.filter(function(x){return x.id===q[0]})[0];
+  var ans=S.mcq[pk(realI)];
+  var th=THEMES.filter(function(x){return x[0]===themeOf(q)})[0];
+  b.innerHTML="<div style='margin-bottom:8px'><span class='chip g'>"+esc(nm?nm.name:q[0])+"</span>"+
+    (th?" <span class='chip b'>"+esc(th[1])+"</span>":"")+"</div>"+
+    "<div style='font-size:14.5px;margin-bottom:12px'>"+q[1]+"</div>";
+  var wrap=el("div");
+  /* Shuffle display order so the POSITION of the answer is never the thing
+     learned. The stored answer remains the original index, so saved progress
+     is untouched. Stable per question within a session. */
+  if(!window.__perm) window.__perm={};
+  if(!window.__perm[realI]){
+    var idx=q[2].map(function(_,z){return z});
+    for(var z=idx.length-1;z>0;z--){var r=Math.floor(Math.random()*(z+1));var t=idx[z];idx[z]=idx[r];idx[r]=t;}
+    window.__perm[realI]=idx;
+  }
+  window.__perm[realI].forEach(function(i,pos){
+    var o=q[2][i];
+    var cls="opt";
+    if(ans!=null){
+      if(i===q[3]) cls+=" right";
+      else if(i===ans) cls+=" wrong";
+      else cls+=" dim";
+    }
+    var btn=el("button",cls,"<b>"+"ABCDEF"[pos]+"</b>"+o);
+    if(ans==null) btn.addEventListener("click",function(){S.mcq[pk(realI)]=i;save();logAction(1);renderMcq();renderProg()});
+    wrap.appendChild(btn);
+  });
+  b.appendChild(wrap);
+  if(ans!=null){
+    b.appendChild(el("div","box "+(ans===q[3]?"grn":"red"),
+      "<b>"+(ans===q[3]?"\u2713 Correct.":"\u2717 Not quite \u2014 the answer is "+
+        "ABCDEF"[window.__perm&&window.__perm[realI]?window.__perm[realI].indexOf(q[3]):q[3]]+".")+"</b> "+q[4]));
+  }
+  var nav=el("div","fcbar");
+  var pv=el("button","btn","Previous");pv.disabled=mcqI===0;
+  pv.addEventListener("click",function(){mcqI--;renderMcq()});
+  var nx=el("button","btn pri","Next");nx.disabled=mcqI>=list.length-1;
+  nx.addEventListener("click",function(){mcqI++;renderMcq()});
+  var sk=el("button","btn","Jump to unanswered");
+  sk.addEventListener("click",function(){
+    for(var i=0;i<list.length;i++){var j=(mcqI+1+i)%list.length; if(S.mcq[pk(list[j].i)]==null){mcqI=j;break}}
+    renderMcq();
+  });
+  nav.appendChild(pv);nav.appendChild(nx);nav.appendChild(sk);
+  b.appendChild(nav);
+  renderWeak();
+}
+function renderWeak(){
+  var by={};
+  Object.keys(S.mcq).forEach(function(k){
+    if(k.indexOf(SEM+":")!==0) return;
+    var idx=+k.slice(SEM.length+1), q=MCQ[idx]; if(!q) return;
+    by[q[0]]=by[q[0]]||{n:0,w:0};
+    by[q[0]].n++; if(S.mcq[k]!==q[3]) by[q[0]].w++;
+  });
+  var ks=Object.keys(by).filter(function(k){return by[k].w>0});
+  var d=document.getElementById("weakBody");
+  if(!ks.length){d.textContent="Answer some questions and the topics you keep missing will show up here.";return}
+  ks.sort(function(a,b){return by[b].w-by[a].w});
+  d.innerHTML=ks.map(function(k){
+    var nm=CONDS.filter(function(x){return x.id===k})[0];
+    return "<div class='stat'><span>"+esc(nm?nm.name:k)+"</span><b>"+by[k].w+" missed of "+by[k].n+"</b></div>";
+  }).join("");
+}
+
+/* OSCE */
+/* ============ OSCE ============
+   Rebuilt 26 Aug. The old pane showed the mark scheme beside the brief, which
+   meant you were reading the answers while "practising". A station you have
+   already read the marking for tests nothing. Now: brief only, clock running,
+   scheme revealed after you finish.
+
+   Critical items are derived from the wording of each mark — eligibility
+   exclusions, alarm-feature screening, referral triggers, baseline monitoring
+   and consent/scope. These are the omissions that would harm a patient, so they
+   are reported separately from the percentage rather than averaged into it. */
+var OSC_CRIT=/exclud|ineligib|not eligible|alarm|red flag|refer|referral|baseline|consent|scope|contraindicat|safety net|urgent|emergenc|hand ?over|action plan/i;
+function critIdx(st){ var o=[]; st.marks.forEach(function(m,i){ if(OSC_CRIT.test(m)) o.push(i) }); return o; }
+
+var OR=null;            /* live run: {id, phase, left, iv, ticks[]} */
+
+function osceStop(){ if(OR&&OR.iv){clearInterval(OR.iv);OR.iv=null} }
+function osceMins(st){ var m=/(\d+)/.exec(st.time||""); return m?+m[1]:8; }
+
+function osceStart(st){
+  osceStop();
+  /* Wall-clock, not a counter. A phone throttles or freezes setInterval when the
+     screen locks or you switch apps, which would silently gift you extra minutes
+     on a timed station. */
+  OR={id:st.id, phase:"run", left:osceMins(st)*60, end:Date.now()+osceMins(st)*60000, iv:null, ticks:[], logged:false};
+  OR.iv=setInterval(function(){
+    if(!OR){return}
+    OR.left=Math.max(0,Math.round((OR.end-Date.now())/1000));
+    var c=document.getElementById("orClock");
+    if(c){ c.textContent=fmtT(OR.left); c.className=OR.left<=60?"chip r":(OR.left<=120?"chip a":"chip g"); }
+    if(OR.left<=0){ osceStop(); OR.phase="mark"; renderOsce(); }
+  },1000);
+  renderOsce();
+}
+function fmtT(x){ if(x<0)x=0; var m=Math.floor(x/60),ss=x%60; return m+":"+(ss<10?"0":"")+ss; }
+
+function renderOsce(){
+  var b=document.getElementById("osceBody"); if(!b) return; b.innerHTML="";
+  if(!OSCE.length){
+    b.innerHTML="<div class='card'><h2>No stations for this semester</h2>"+
+      "<p class='small' style='margin:0'>Semester 2 has the written stations with mark schemes.</p></div>";
+    return;
+  }
+
+  /* ---- a station is running or being marked ---- */
+  if(OR){
+    var st=OSCE.filter(function(x){return x.id===OR.id})[0];
+    if(!st){ OR=null; return renderOsce(); }
+    var nm=CONDS.filter(function(x){return x.id===st.cond})[0];
+    var h="";
+
+    if(OR.phase==="run"){
+      h="<div class='card'><div class='stephead'><h2 style='margin:0'>"+esc(st.title)+"</h2>"+
+        "<span class='chip g' id='orClock' style='font-size:var(--fs-md)'>"+fmtT(OR.left)+"</span></div>"+
+        "<div class='box blu'><b>Candidate brief.</b> "+esc(st.brief)+"</div>"+
+        "<div class='box amb'>Work the station out loud as if the examiner were here. "+
+        "The mark scheme is deliberately hidden — you cannot practise against answers you have just read.</div>"+
+        "<div class='fcbar'><button class='btn pri' id='orDone'>Finished — mark me</button>"+
+        "<button class='btn' id='orAbort'>Abandon</button></div></div>";
+      b.innerHTML=h;
+      document.getElementById("orDone").addEventListener("click",function(){ osceStop(); OR.phase="mark"; renderOsce(); });
+      document.getElementById("orAbort").addEventListener("click",function(){ osceStop(); OR=null; renderOsce(); });
+      return;
+    }
+
+    /* ---- marking ---- */
+    var crit=critIdx(st);
+    h="<div class='card'><div class='stephead'><h2 style='margin:0'>"+esc(st.title)+"</h2>"+
+      "<span class='small'>"+(OR.left>0?"finished with "+fmtT(OR.left)+" left":"ran out of time")+"</span></div>"+
+      "<div class='box blu'><b>Candidate brief.</b> "+esc(st.brief)+"</div>"+
+      "<div class='small'>Tick only what you <b>actually said out loud</b>. Ticking what you "+
+      "meant to say, or knew, makes the score worthless.</div><div id='orMarks'></div>"+
+      "<div class='fcbar'><button class='btn pri' id='orScore'>Score it</button>"+
+      "<button class='btn' id='orAbort2'>Close</button></div></div>";
+    b.innerHTML=h;
+    var wrap=document.getElementById("orMarks");
+    st.marks.forEach(function(m,i){
+      var row=el("div","mark");
+      var cb=document.createElement("input"); cb.type="checkbox";
+      cb.checked=OR.ticks.indexOf(i)>=0;
+      cb.addEventListener("change",function(){
+        if(cb.checked){ if(OR.ticks.indexOf(i)<0) OR.ticks.push(i) }
+        else OR.ticks=OR.ticks.filter(function(x){return x!==i});
+      });
+      row.appendChild(cb);
+      row.appendChild(el("div",null,esc(m)+(crit.indexOf(i)>=0?" <span class='chip r'>safety</span>":"")));
+      wrap.appendChild(row);
+    });
+    document.getElementById("orAbort2").addEventListener("click",function(){ OR=null; renderOsce(); });
+    document.getElementById("orScore").addEventListener("click",function(){
+      var got=OR.ticks.length, tot=st.marks.length, pct=Math.round(got/tot*100);
+      var missedCrit=crit.filter(function(i){return OR.ticks.indexOf(i)<0});
+      var missed=st.marks.map(function(m,i){return i}).filter(function(i){return OR.ticks.indexOf(i)<0});
+      /* persist the best attempt so the station list shows progress */
+      var key=SEM+":"+st.id;
+      S.osce[key]=OR.ticks.slice();                 /* single source of truth: this attempt */
+      S.osceRuns=S.osceRuns||{}; S.osceRuns[key]={pct:pct,crit:missedCrit.length,marks:tot};
+      if(!OR.logged){ if(typeof logAction==="function")logAction(2); OR.logged=true; }
+      save();
+
+      var out="<div class='card'><h2>"+esc(st.title)+" — result</h2>"+
+        "<div style='font-size:28px;font-weight:800;letter-spacing:-.02em'>"+pct+"%"+
+        " <span class='small' style='font-weight:400'>· "+got+" of "+tot+" marks</span></div>";
+      if(missedCrit.length){
+        out+="<div class='box red'><b>"+missedCrit.length+" safety-critical item"+(missedCrit.length>1?"s":"")+" missed.</b> "+
+          "These are the ones that matter most — eligibility, alarm features, referral, baseline checks, consent. "+
+          "A high percentage with any of these missed is still a poor station."+
+          "<ul style='margin:8px 0 0;padding-left:18px'>"+
+          missedCrit.map(function(i){return "<li>"+esc(st.marks[i])+"</li>"}).join("")+"</ul></div>";
+      } else if(!crit.length){
+        out+="<div class='box blu'><b>This station has no safety-critical items.</b> Nothing in its mark scheme "+
+          "matches the eligibility / alarm / referral / monitoring wording, so there is no safety verdict to give — "+
+          "judge it on the list below.</div>";
+      } else {
+        out+="<div class='box grn'><b>No safety-critical items missed.</b> All "+crit.length+
+          " eligibility, alarm-feature, referral and monitoring marks were covered.</div>";
+      }
+      var other=missed.filter(function(i){return missedCrit.indexOf(i)<0});
+      if(other.length){
+        out+="<div class='box amb'><b>Also missed</b><ul style='margin:8px 0 0;padding-left:18px'>"+
+          other.map(function(i){return "<li>"+esc(st.marks[i])+"</li>"}).join("")+"</ul></div>";
+      }
+      out+="<p class='small' style='margin:10px 0 0'>Your course materials do not publish a numeric pass mark for this "+
+        "station, so none is asserted here. Treat any missed safety item as the thing to fix first, whatever the percentage.</p>"+
+        "<div class='fcbar'><button class='btn pri' id='orAgain'>Run it again</button>"+
+        "<button class='btn' id='orBack'>Back to stations</button></div></div>";
+      b.innerHTML=out;
+      document.getElementById("orAgain").addEventListener("click",function(){ osceStart(st) });
+      document.getElementById("orBack").addEventListener("click",function(){ OR=null; renderOsce() });
+    });
+    return;
+  }
+
+  /* ---- station list ---- */
+  var intro=el("div","card");
+  intro.innerHTML="<h2>OSCE stations</h2><div class='box blu' style='margin-top:0'>"+
+    "Pick a station, read only the brief, and talk through it against the clock. "+
+    "The mark scheme stays hidden until you finish — otherwise you are reading answers, not practising.</div>";
+  b.appendChild(intro);
+
+  OSCE.forEach(function(st){
+    var nm=CONDS.filter(function(x){return x.id===st.cond})[0];
+    var d=el("div","station");
+    var last=(S.osceRuns||{})[SEM+":"+st.id];
+    var crit=critIdx(st);
+    d.innerHTML="<div class='stephead'><h3 style='margin:0'>"+esc(st.title)+"</h3>"+
+      "<span class='small'><span class='chip g'>"+esc(nm?nm.name:st.cond)+"</span> "+esc(st.time)+
+      " · "+st.marks.length+" marks · "+crit.length+" safety</span></div>"+
+      (last?"<div class='small'>Last attempt "+last.pct+"%"+
+        (last.crit?" · <span class='chip r'>"+last.crit+" safety missed</span>":" · <span class='chip g'>no safety misses</span>")+"</div>":"");
+    var bar=el("div","fcbar");
+    var go=el("button","btn pri",null); go.textContent="Run this station ("+st.time+")";
+    go.addEventListener("click",function(){ osceStart(st) });
+    bar.appendChild(go);
+    var det=el("details");
+    det.appendChild(el("summary",null,"<span class='small' style='cursor:pointer'>Study the mark scheme instead</span>"));
+    var list=el("div");
+    st.marks.forEach(function(m,i){
+      var row=el("div","mark");
+      row.appendChild(el("div",null,"• "+esc(m)+(crit.indexOf(i)>=0?" <span class='chip r'>safety</span>":"")));
+      list.appendChild(row);
+    });
+    det.appendChild(list);
+    d.appendChild(bar); d.appendChild(det); b.appendChild(d);
+  });
+}
+
+
+/* ============ TODAY: NEXT ACTION + HEAT MAPS ============ */
+function dayKey(d){ d=d||new Date(); return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2); }
+function logAction(n){
+  S.days=S.days||{};
+  var k=dayKey(); S.days[k]=(S.days[k]||0)+(n||1); save();
+}
+function streakDays(){
+  var days=S.days||{}, n=0, d=new Date();
+  if(!days[dayKey(d)]) d.setDate(d.getDate()-1);        /* today not started yet is fine */
+  while(days[dayKey(d)]){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+function goTab(p){
+  var t=document.querySelector('.tab[data-p="'+p+'"]');
+  if(t) t.click();
+}
+function renderToday(){
+  var box=document.getElementById("todayNext");
+  var due=dueCards().length;
+  var unanswered=MCQ.filter(function(_,i){return S.mcq[pk(i)]==null}).length;
+
+  /* weakest topic by MCQ accuracy, needs at least 2 attempts to mean anything */
+  var by={};
+  Object.keys(S.mcq).forEach(function(k){
+    if(k.indexOf(SEM+":")!==0) return;
+    var q=MCQ[+k.slice(SEM.length+1)]; if(!q) return;
+    by[q[0]]=by[q[0]]||{n:0,r:0}; by[q[0]].n++; if(S.mcq[k]===q[3]) by[q[0]].r++;
+  });
+  var weak=Object.keys(by).filter(function(k){return by[k].n>=2})
+    .sort(function(a,b){return by[a].r/by[a].n - by[b].r/by[b].n})[0];
+  var weakPct = weak ? Math.round(by[weak].r/by[weak].n*100) : null;
+
+  var html="";
+
+  /* ---- what this hub contains, and how you are doing in it ---- */
+  var nTop=CONDS.length, nOsce=OSCE.length;
+  var att=0,cor=0;
+  Object.keys(S.mcq).forEach(function(k){
+    if(k.indexOf(SEM+":")!==0) return;
+    var q=MCQ[+k.slice(SEM.length+1)]; if(!q) return;
+    att++; if(S.mcq[k]===q[3]) cor++;
+  });
+  var acc=att?Math.round(100*cor/att):null;
+  var learned=0; MCQ.forEach(function(_,i){ if(S.right[pk(i)]) learned++; });
+  html+="<div class='stats'>"+
+    "<div class='stat-c'><b>"+nTop+"</b><span>Topics</span></div>"+
+    "<div class='stat-c'><b>"+CARDS.length+"</b><span>Flashcards</span></div>"+
+    "<div class='stat-c'><b>"+MCQ.length+"</b><span>Questions</span></div>"+
+    "<div class='stat-c'><b>"+nOsce+"</b><span>OSCE stations</span></div>"+
+    "<div class='stat-c'><b>"+examsForSem().length+"</b><span>Examinations</span></div>"+
+    "<div class='stat-c'><b>"+learned+"</b><span>Mastered</span></div>"+
+  "</div>";
+  if(att){
+    html+="<div class='card'><div class='stat' style='align-items:baseline'>"+
+      "<span><span class='small' style='text-transform:uppercase;letter-spacing:.9px'>Your progress</span>"+
+      "<div style='margin-top:2px'><b class='big-n'>"+acc+"%</b> "+
+      "<span class='small'>accuracy across "+att+" attempt"+(att===1?"":"s")+"</span></div></span>"+
+      "<button class='btn' data-go='prog'>See breakdown &rarr;</button></div></div>";
+  }
+
+  /* ---- the one thing ---- */
+  var ns=nextStep();
+  if(!ns){
+    var anyUndone=allSteps().filter(function(x){return !x.done}).length;
+    var anyLive=PLAN.filter(function(a){return daysTo(a.due)>=0}).length;
+    var msg = anyLive===0
+      ? "<b>Every deadline this semester has passed.</b><div style='margin-top:6px'>Nothing left to plan for. The cards and stations are still here whenever you want them.</div>"
+      : (anyUndone===0
+        ? "<b>Every step on the plan is ticked.</b><div style='margin-top:6px'>Nothing is waiting on you. Study below if you want to, or don't.</div>"
+        : "<b>Nothing is due right now.</b><div style='margin-top:6px'>The remaining steps sit against deadlines that have already gone by. Have a look at the plan if you want to tidy it up.</div>");
+    html+="<div class='card'><h2>Start here</h2><div class='box grn' style='margin-top:0'>"+msg+"</div></div>";
+  }
+  if(ns){
+    var late=ns.d<0, soon=ns.d<=3;
+    var tone=late?"red":(soon?"amb":"blu");
+    html+="<div class='card'><h2>Start here</h2>"+
+      "<div class='box "+tone+"' style='margin-top:0'>"+
+        "<b>"+esc(ns.label)+"</b>"+
+        (ns.hint?"<div style='margin-top:6px'>"+esc(ns.hint)+"</div>":"")+
+        "<div class='small' style='margin-top:8px'>"+
+          esc(ns.a.t)+" &middot; "+esc(ns.a.crs)+
+          (ns.mins?" &middot; about "+ns.mins+" min":"")+
+          " &middot; "+esc(whenWord(ns.d))+
+        "</div>"+
+      "</div>"+
+      "<div class='fcbar'>"+
+        "<button class='btn pri' id='stepDone'>Mark this done</button>"+
+        "<button class='btn' id='stepPlan'>See the whole plan</button>"+
+      "</div></div>";
+  }
+
+  /* ---- what you are preparing FOR ---- */
+  var ups=nextEvents(1);
+  if(ups.length){
+    var ev=ups[0], dd=daysTo(ev.d), rd=eventReadiness(ev), wk=weakestFor(ev);
+    var inWindow = dd<=ev.lead;
+    var tone = !inWindow ? "" : (rd===null?"blu":(rd<50?"red":rd<75?"amb":"grn"));
+    html+="<div class='card'><h2>Preparing for</h2>"+
+      "<div class='stat'><span><b>"+esc(ev.t)+"</b> <span class='chip'>"+esc(EVK[ev.k]||"")+"</span>"+
+        (ev.w?" <span class='chip r'>"+esc(ev.w)+"</span>":"")+"</span>"+
+        "<b>"+(dd===0?"today":dd===1?"tomorrow":dd+" days")+"</b></div>"+
+      "<div class='small' style='margin-top:4px'>"+esc(ev.note)+"</div>";
+    if(!ev.cov.length){
+      html+="<div class='box amb'>The course has not published what this session covers. When it does, send me the export and I will wire the revision to it.</div>";
+    } else if(rd===null){
+      html+="<div class='box amb'>Nothing to test you on for these topics yet.</div>";
+    } else {
+      html+="<div class='bar' style='margin-top:10px'><i style='width:"+rd+"%"+
+            (rd<50?";background:var(--red)":rd<75?";background:var(--amber)":"")+"'></i></div>"+
+            "<div class='small'>"+rd+"% ready across "+ev.cov.length+" topic"+(ev.cov.length===1?"":"s")+
+            (inWindow?"":" &middot; not urgent yet")+"</div>";
+      ev.cov.forEach(function(t){
+        var r=topicReadiness(t); if(r.pct===null) return;
+        var nm=CONDS.filter(function(x){return x.id===t})[0];
+        html+="<div class='stat'><span class='small'>"+esc(nm?nm.name:t)+"</span><b class='small'>"+r.pct+"%</b></div>";
+      });
+      if(wk && wk.pct<85){
+        var wnm=CONDS.filter(function(x){return x.id===wk.id})[0];
+        html+="<button class='next' data-go='mcq' data-topic='"+esc(wk.id)+"' style='margin-top:10px'>"+
+          "<span class='lbl'><b>Drill "+esc(wnm?wnm.name:wk.id)+"</b>"+
+          "<span>Weakest topic for this one \u2014 "+wk.pct+"%. About five minutes.</span></span>"+
+          "<span class='go'>Start &rarr;</span></button>";
+      }
+    }
+    html+="</div>";
+  }
+
+  /* ---- study: lead with a guided session ---- */
+  var acts=[];
+  var sg=(typeof suggestTopic==="function")?suggestTopic():null;
+  if(sg && BRIEFS[sg.id]){
+    var sgm=masteryOf(sg.id);
+    acts.push({b:(S.read[sg.id]?"Continue ":"Learn ")+topicName(sg.id),
+      s:"Read the brief, then cards and questions. Anything you miss repeats until you get it. "+
+        (sgm.pct?"You're at "+sgm.pct+"%.":"About "+(BRIEFS[sg.id].mins+8)+" minutes."),
+      go:"learn", learn:sg.id});
+  }
+  if(due){
+    var bite=Math.min(due,8);
+    acts.push({b:"Review "+bite+" card"+(bite===1?"":"s"),
+      s:"About "+Math.max(2,Math.round(bite*0.75))+" minutes"+(due>bite?" — "+due+" are due, but start with "+bite:"")+". These are the ones you're closest to forgetting.",
+      go:"cards"});
+  }
+  if(weak && weakPct<70) acts.push({b:"Drill "+condName(weak),
+    s:"Your weakest topic — "+weakPct+"% across "+by[weak].n+" questions. Five questions is enough to move it.", go:"mcq", topic:weak});
+  if(!due && unanswered) acts.push({b:"Try five new questions",
+    s:unanswered+" you have not attempted yet. About four minutes.", go:"mcq"});
+  if(!acts.length) acts.push({b:"Read a course page",
+    s:"No cards due. Ten minutes on a week you have not opened yet is never wasted.", go:"course"});
+
+  html+="<div class='card'><h2>Or study</h2>";
+  acts.slice(0,3).forEach(function(a){
+    html+="<button class='next' data-go='"+a.go+"'"+(a.topic?" data-topic='"+a.topic+"'":"")+
+          (a.learn?" data-learn='"+a.learn+"'":"")+">"+
+          "<span class='lbl'><b>"+esc(a.b)+"</b><span>"+esc(a.s)+"</span></span>"+
+          "<span class='go'>Start &rarr;</span></button>";
+  });
+  html+="</div>";
+
+  /* ---- what's coming, stated as fact ---- */
+  var soonA=PLAN.map(function(a){var p=planProgress(a);return {a:a,d:daysTo(a.due),p:p};})
+                .filter(function(x){return x.p[0]<x.p[1]})
+                .sort(function(x,y){return x.d-y.d}).slice(0,3);
+  if(soonA.length){
+    html+="<div class='card'><h2>Coming up</h2>";
+    soonA.forEach(function(x){
+      var pct=Math.round(x.p[0]/x.p[1]*100);
+      html+="<div style='margin-bottom:12px'>"+
+        "<div class='stat'><span>"+esc(x.a.t)+" <span class='chip'>"+esc(x.a.crs)+"</span>"+
+          (x.a.flag?" <span class='chip r'>"+esc(x.a.flag)+"</span>":"")+"</span>"+
+          "<b>"+(x.d<0?"overdue":x.d===0?"today":x.d+"d")+"</b></div>"+
+        "<div class='bar'><i style='width:"+pct+"%'></i></div>"+
+        "<div class='small'>"+x.p[0]+" of "+x.p[1]+" steps done</div></div>";
+    });
+    html+="</div>";
+  }
+
+  /* ---- jump in ---- */
+  var JI=[["learn","Learn","Guided sessions — read the brief, then cards and questions."],
+          ["exams","Exams & Vitals","Step-by-step walkthroughs — what to do and what to say."],
+          ["cond","Topics","Clinical conditions with prescribing packs, plus the 6202 practice topics."],
+          ["cards","Flashcards","Spaced repetition across every topic."],
+          ["mcq","Questions","Exam-style, shuffled, with explanations."],
+          ["osce","OSCE stations","Practice circuits with the marking points."],
+          ["plan","Plan","Every deadline broken into dated steps."]];
+  var JIC={learn:"<path d='M12 3L2 8l10 5 10-5-10-5zM6 11v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5'/>",
+   cond:"<path d='M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 00-7.8 7.8l1.1 1.1L12 21.2l7.8-7.7 1.1-1.1a5.5 5.5 0 000-7.8z'/>",
+   cards:"<path d='M2 7l10-4 10 4-10 4-10-4zM2 12l10 4 10-4M2 17l10 4 10-4'/>",
+   mcq:"<circle cx='12' cy='12' r='10'/><path d='M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3M12 17h.01'/>",
+   osce:"<path d='M9 2h6v3H9zM8 5h8a2 2 0 012 2v13a2 2 0 01-2 2H8a2 2 0 01-2-2V7a2 2 0 012-2zM9 12h6M9 16h4'/>",
+   plan:"<path d='M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11'/>",
+   exams:"<path d='M4.8 2.3A.3.3 0 004.5 2H3a1 1 0 00-1 1v6a6 6 0 006 6 6 6 0 006-6V3a1 1 0 00-1-1h-1.5a.3.3 0 00-.3.3v1.4a.3.3 0 00.3.3H12v5a4 4 0 01-8 0V4h1.5a.3.3 0 00.3-.3z'/><circle cx='20' cy='10' r='2'/>"};
+  html+="<div class='card'><h2>Jump in</h2><div class='jump'>";
+  JI.forEach(function(j){
+    html+="<button data-go='"+j[0]+"'><span class='ic'><svg viewBox='0 0 24 24' fill='none' "+
+      "stroke='currentColor' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'>"+
+      JIC[j[0]]+"</svg></span><span><b>"+esc(j[1])+"</b><p>"+esc(j[2])+"</p></span></button>";
+  });
+  html+="</div></div>";
+
+  box.innerHTML=html;
+  Array.prototype.forEach.call(box.querySelectorAll("[data-go]"),function(b){
+    if(b.classList.contains("next")) return;
+    b.addEventListener("click",function(){ goTab(b.getAttribute("data-go")) });
+  });
+  Array.prototype.forEach.call(box.querySelectorAll(".next"),function(b){
+    b.addEventListener("click",function(){
+      var tp=b.getAttribute("data-topic"), lt=b.getAttribute("data-learn");
+      if(tp){ mcqFilter=tp; mcqI=0; }
+      if(lt){ goTab("learn"); startSession(lt); return; }
+      goTab(b.getAttribute("data-go"));
+    });
+  });
+  var sd=document.getElementById("stepDone");
+  if(sd) sd.addEventListener("click",function(){
+    S.steps[ns.id]=true; save(); renderToday(); if(typeof renderPlan==="function") renderPlan();
+  });
+  var sp=document.getElementById("stepPlan");
+  if(sp) sp.addEventListener("click",function(){ goTab("plan") });
+  renderHeat();
+};
 
 var S2_OSCE=[
 {id:"o1",title:"Newly elevated blood pressure in a 58-year-old",cond:"htn",time:"8 min",
