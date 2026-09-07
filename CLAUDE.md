@@ -11,7 +11,7 @@ home screen, used often with no signal.
 
 ## Session handover — read this first
 
-**Last worked: 3 September 2026.** Version v2026.09.04a.
+**Last worked: 7 September 2026.** Version v2026.09.07a.
 
 ### What exists now, beyond the original four-file layout
 
@@ -80,6 +80,13 @@ append-only too**, same rule as `cards` and `mcq`.
   and another's advice to match an aggressive patient's energy, both read as rules
   until they were re-attributed — and the second contradicted the NSW Health
   de-escalation guidance the course actually carries.
+- **Secondary sources must be labelled in the content itself.** A classmate's
+  revision notes were folded in on 7 Sep. Four cards contradicted the QLD
+  protocols already in the app — GLP-1RA on sick days (the protocol says
+  withhold, and said so as an April 2026 addition), the tighter HbA1c target
+  (≤6% on lifestyle+metformin, not ≤6.5%), the remission window (1–2 years, not
+  6), and the acceptable ACEi creatinine rise (25%, not 30%). A card now names
+  which material is protocol-checked and which rests on one student's notes.
 - **Semester 2 material is NOT in the search corpus.** The indexing IIFE only pushes
   Semester 1 cards, questions and topic bodies into `CORPUS`. Ask the Hub cannot find
   any s2 content. Pre-existing; worth fixing.
@@ -203,11 +210,11 @@ revised (e.g. well-controlled asthma and mild COPD are now eligible). The
 changes summary is in the corpus under "Updates Apr 2026". Prefer current
 criteria over anything older.
 
-## Coverage as at v2026.09.04a
+## Coverage as at v2026.09.07a
 
 Semester 1 — 20 conditions, 143 cards, 91 MCQ, 8 OSCE stations.
 
-Semester 2 — 11 topics, **252 cards, 128 MCQ, 10 OSCE stations, 26 spoken viva
+Semester 2 — 11 topics, **310 cards, 148 MCQ, 10 OSCE stations, 26 spoken viva
 prompts**, plus guided Learn sessions with must-know briefs and per-condition
 prescribing packs. Corpus 1208 chunks (ingested 3 Sep 2026).
 
