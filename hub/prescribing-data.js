@@ -1,6 +1,6 @@
 /* ============================================================================
    Pharmacist Prescribing — CONTENT BUNDLE
-   Extracted from study.html v2026.09.04a on 6 September 2026.
+   Extracted from study.html v2026.09.07a on 7 September 2026.
 
    This is the app's entire dataset, and it is the part that cannot be
    regenerated. It comes from University of Newcastle course materials, the
@@ -17,8 +17,8 @@
    material is APPENDED to the end of its array, never inserted.
 
    The two arrays the app actually uses are concatenations:
-     cards = S2_CARDS.concat(COURSE_CARDS)     // 252 entries
-     mcq   = S2_MCQ.concat(COURSE_MCQ)         // 128 entries
+     cards = S2_CARDS.concat(COURSE_CARDS)     // 310 entries
+     mcq   = S2_MCQ.concat(COURSE_MCQ)         // 148 entries
 
    SHAPES
      S2_CONDS   {id, name, tag, body}   body is a raw HTML string
@@ -50,9 +50,31 @@
    must be defined before S2_CONDS.
    ============================================================================ */
 
-var CVD_SHARED = "<b>Shared CVD eligibility.</b> Hypertension, lipids and blood glucose run off almost the same ineligibility list. Learn it once and you have all three.<ul>";
+var CVD_SHARED = "<b>Shared CVD eligibility.</b> Hypertension, lipids and blood glucose run off almost the same ineligibility list. Learn it once and you have all three.<ul>"+
+"<li>Age &lt;18 or &gt;79 · planning pregnancy or pregnant</li>"+
+"<li>Stage 3–5 CKD · familial hypercholesterolaemia · type 1 diabetes</li>"+
+"<li>Retinopathy, neuropathy or nephropathy — persistent albuminuria (uACR ≥3 mg/mmol) or eGFR &lt;60 mL/min/1.73m²</li>"+
+"<li>Complex CVD: severe (Grade 3) hypertension ≥180/110, congenital or rheumatic heart disease, heart failure, arrhythmias, AF, PAD, heart block, pericarditis, valvular disease, pulmonary hypertension, angina, cardiomyopathy or cardiomegaly, aortic aneurysm</li>"+
+"<li>Poorly controlled asthma, moderate/severe COPD, severe OSA or other serious respiratory illness</li>"+
+"<li>History of cardiothoracic surgery, ACS, stroke/cerebrovascular disease, hypertensive urgency or emergency</li>"+
+"<li>Current DVT or PE (or any history of PE) · currently on anticoagulants</li>"+
+"<li>Specialist care from a cardiologist, endocrinologist or nephrologist now or in the past 12 months, without a written referral</li>"+
+"<li>Suspected secondary cause</li>"+
+"<li>TC ≥7.5 mmol/L, LDL-C ≥5.0 mmol/L or triglycerides ≥6 mmol/L</li>"+
+"<li>HbA1c ≥10% or BGL ≥20.0 mmol/L, or hypoglycaemia BGL &lt;4.0 mmol/L</li>"+
+"</ul>";
 
-var CVD_OUT = "<b>Shared CVD exclusions</b> (hypertension, lipids and blood glucose run off almost the same list): ";
+var CVD_OUT = "<b>Shared CVD exclusions</b> (hypertension, lipids and blood glucose run off almost the same list): "+
+ "age &lt;18 or &gt;79 · planning pregnancy or pregnant · stage 3–5 CKD · familial hypercholesterolaemia · type 1 diabetes · "+
+ "retinopathy, neuropathy or nephropathy (persistent albuminuria uACR ≥3 mg/mmol, or eGFR &lt;60) · "+
+ "complex CVD — severe (Grade 3) hypertension ≥180/110, congenital or rheumatic heart disease, heart failure, arrhythmias, "+
+ "atrial fibrillation, PAD, heart block, pericarditis, valvular disease, angina, cardiomyopathy, cardiomegaly, "+
+ "pulmonary hypertension, aortic aneurysm · <b>poorly controlled asthma, moderate or severe COPD, severe "+
+ "obstructive sleep apnoea</b> or another serious respiratory illness · a history of <b>cardiothoracic surgery, "+
+ "acute coronary syndrome, stroke or other cerebrovascular disease, or hypertensive urgency or emergency</b> · "+
+ "current <b>DVT</b> · current or previous <b>pulmonary embolism</b> · currently prescribed "+
+ "<b>anticoagulant therapy</b> · <b>unexplained fluctuations in blood pressure</b> · specialist care from a "+
+ "cardiologist, endocrinologist or nephrologist in the past 12 months without a written referral.";
 
 var CRS_LABEL={"6302":"Clinical conditions — PHAR6302","6202":"Practice & reasoning — PHAR6202"};
 
@@ -665,6 +687,144 @@ var COURSE_CARDS=[["htn","State the Heart Foundation clinic BP classification th
 ,["bgl","Which extra variables does the AusCVDRisk calculator use for a person with diabetes?",
   "<b>HbA1c, time since diagnosis (duration of diabetes), uACR, eGFR — and BMI.</b> Note that BMI is in the diabetes model but is not a variable in the general model. This is why a patient with diabetes cannot be risk-assessed properly without recent renal function and an HbA1c in front of you."]
 
+/* ---- Appended 7 Sep 2026 from a colleague's revision notes (Nader Eltom,
+   PHAR6302 Weeks 1-4). His sources: 2023 Australian CVD Guideline, Heart
+   Foundation 2016, Therapeutic Guidelines, AMH, ADS glycaemic algorithm
+   (May 2026), Australian Obesity Management Algorithm, QLD protocols.
+   Cross-checked against the QLD protocol text in this app where possible.
+   These are SECONDARY notes, not official course material — verify anything
+   assessment-critical against Canvas. APPEND ONLY. ---- */
+
+/* ===== WEIGHT MANAGEMENT (Week 4) — the app's thinnest topic ===== */
+,["wt","Give the BMI classification bands, and the caveat that matters.",
+  "18.5–24.9 healthy · 25.0–29.9 overweight · 30.0–34.9 obesity class I · 35.0–39.9 class II · <b>≥40.0 class III (severe)</b>. The caveat: BMI distinguishes neither fat from lean mass nor fat distribution, so always read it with central adiposity and clinical risk. <b>Population-specific cut-offs are lower for Asian and Indigenous Australian populations</b> — the Australian Obesity Management Algorithm uses 27.5–37.5 rather than 30–40."]
+,["wt","State the waist circumference thresholds, and why waist-to-height ratio is useful.",
+  "<b>Men: ≥94 cm increased risk, ≥102 cm substantially increased. Women: ≥80 cm increased, ≥88 cm substantially increased.</b> Measure at the midpoint between the lowest rib margin and the iliac crest, after normal expiration, standing. Lower thresholds apply for some Asian populations. <b>Waist-to-height ratio ≥0.5</b> indicates increased risk and needs <i>no</i> ethnic adjustment — your waist should be less than half your height."]
+,["wt","Why is obesity framed as a chronic disease rather than a lifestyle choice?",
+  "Because the biology is dysregulated, not the willpower. Hypothalamic appetite and satiety pathways are disturbed; leptin, insulin, ghrelin and peptide YY signalling is impaired; leptin resistance persists despite high leptin; adipose tissue behaves as an endocrine organ releasing adipokines and inflammatory cytokines that drive insulin resistance; gut microbiota and brain reward pathways are altered; and energy expenditure falls adaptively. <b>That biology is why weight returns when treatment stops</b> — and why framing it as personal failure is both wrong and counterproductive."]
+,["wt","Which words do you use, and avoid, when discussing weight?",
+  "<b>Use:</b> person with obesity, person living with obesity, person with overweight, higher or excess body weight, healthier weight range. <b>Avoid:</b> obese person, overweight person, morbidly obese, weight problem, fat, heavy — and anything implying blame, laziness or lack of willpower. Weight stigma from past healthcare encounters drives lower self-esteem, anxiety, depression, disordered eating, <b>healthcare avoidance</b> and worse outcomes. Ask permission before starting, and respect a decline."]
+,["wt","Name the 5As framework for weight management and what each step covers.",
+  "<b>Ask</b> — permission, person-first language, concerns, readiness. <b>Assess</b> — BMI, waist, complications, medicines, psychosocial factors. <b>Advise</b> — evidence-based, health-focused, non-judgemental. <b>Agree</b> — collaborative, realistic, measurable goals. <b>Assist and Arrange</b> — referrals, resources, monitoring, follow-up. From the RACGP SNAP guide."]
+,["wt","Distinguish a reduced, low and very low energy diet.",
+  "<b>RED</b> — a deficit of roughly 2000–4000 kJ/day from usual intake, balanced nutrition, no meal replacements. Sustainable and appropriate first-line for many. <b>LED</b> — total intake around 4200–5000 kJ/day, structured plans or partial meal replacement; a step up when RED alone hasn't worked. <b>VLED</b> — under 3300 kJ/day total, using nutritionally complete formulated meal replacements. Reserved for failure of lifestyle alone, when rapid loss is clinically indicated, in severe obesity, or before bariatric surgery, and needs monitoring and multidisciplinary support."]
+,["wt","A patient on diabetes medicines is about to start a VLED. What must you do first?",
+  "This is a core pharmacist contribution, and it is a safety issue. <b>Insulin and sulfonylureas</b> risk hypoglycaemia when intake drops sharply. <b>SGLT2 inhibitors</b> risk euglycaemic ketoacidosis when carbohydrate intake falls markedly. Doses must be adjusted and glucose monitored closely <i>before</i> the diet starts, not after the first hypo."]
+,["wt","Which screening tools are used for obesity-related complications, and what are the referral triggers?",
+  "<b>Obstructive sleep apnoea</b> — STOP-BANG; refer if a risk factor plus multiple symptoms and/or score >3. <b>Mental health</b> — Kessler K10; refer if >20. <b>Eating disorders</b> — SCOFF or the InsideOut Screener; refer if suspected. <b>Diabetes</b> — AUSDRisk every 3 years if over 40. <b>Thyroid</b> — refer if TSH >4 mIU/L. <b>Dyslipidaemia</b> — AusCVDRisk plus a lipid panel; refer for FH signs (tendon xanthomata, arcus before 45, xanthelasma). The obesity guideline uses its own referral thresholds — <b>TC &gt;5.5, LDL-C &gt;2.0, HDL-C &lt;1.0, TG &gt;2.0 mmol/L</b> — which are <b>not</b> the risk-based treatment targets from Week 3. Use the numbers belonging to the document you are working in."]
+,["wt","List the red flags that stop routine pharmacist-led weight management.",
+  "Note the distinction that catches people: a <b>suspected eating disorder is a red flag that stops routine pharmacist-led weight management</b>, while the QLD obesity protocol lists a diagnosed or suspected eating disorder under <b>treat and refer concurrently</b>. Different documents, different postures — say which one you are working under. The red flags: suspected eating disorder · suicidal ideation or severe mental health concerns · pregnancy or lactation · severe or unexplained weight change · chest pain, significant breathlessness or persistent vomiting · possible undiagnosed endocrine disorder (unexplained fatigue, heat or cold intolerance, palpitations, menstrual irregularity, Cushing's features) · suspected untreated OSA · suspected MASLD or cardio-renal-metabolic disease."]
+,["wt","Give the TGA-approved weight-management drugs with their BMI thresholds and stopping rules.",
+  "<b>Orlistat</b> 120 mg up to three times daily with meals — BMI >30, or >27 with a CV risk factor. Skip the dose if a meal has no fat. <b>Phentermine</b> 15 mg at breakfast, max 40 mg — BMI >30, or >25 with a risk factor; <b>short term only, up to 12 weeks</b>. <b>Naltrexone/bupropion</b> titrated over 4 weeks to 2 tablets twice daily — <b>stop if &lt;5% loss at 16 weeks</b>. <b>Liraglutide</b> 0.6 mg daily increasing weekly to 3 mg — <b>stop if &lt;5% loss at 12 weeks on maintenance</b>. <b>Semaglutide</b> 0.25 → 2.4 mg weekly, 4 weeks per step. Only orlistat sits in pharmacist scope."]
+,["wt","Give the trial effect sizes for the weight-management drugs.",
+  "Not a clean ranking — the trials report different units over different durations, so quote them, don't order them. <b>Semaglutide 2.4 mg</b> — 14.9% loss, half achieve ≥15%; the only agent here with proven cardiovascular outcome benefit. <b>Liraglutide 3 mg</b> — 8% versus 2.6% on placebo at 56 weeks. <b>Naltrexone/bupropion</b> — 6.1% versus 1.3% at 56 weeks. <b>Phentermine</b> — 5–10% at 12 weeks, short term only. <b>Orlistat</b> — 10.6 kg at one year and prevents 37% of progression to diabetes, but that is an absolute weight from a different trial and is <i>not</i> comparable to the percentages above."]
+,["wt","What are the NHMRC eligibility criteria for bariatric surgery?",
+  "<b>BMI &gt;40 regardless of comorbidities</b>; <b>BMI 35–39.9 with obesity-related complications</b>; or <b>BMI 30–34.9 with poorly controlled type 2 diabetes and cardiovascular risk</b>. It is the most effective intervention for large sustained loss — 15–33% sustained at 10 years. All patients need specialised multidisciplinary follow-up including psychological review, because binge eating disorder is common in obesity and predicts poorer postoperative loss if unmanaged."]
+,["wt","What does the Queensland obesity protocol allow, and who is excluded?",
+  "<b>Source warning: the overweight/obesity protocol is not among the QLD protocol documents loaded in this app</b>, so unlike hypertension, lipids and blood glucose this card cannot be checked against primary text. Verify against Canvas before relying on it. <b>Eligible:</b> adults 18+, BMI ≥25. <b>Do not treat, refer:</b> pregnancy or lactation; BMI &gt;40; unmanaged comorbidities needing specialist care; previous bariatric surgery; currently on weight-gain-inducing medication; inadequate response (&lt;5% loss after 12 weeks). <b>Treat and refer concurrently:</b> <b>age over 65</b>; diagnosed or suspected psychiatric or eating disorder; significant nutritional deficiency; CVD, asthma or COPD; already receiving active medical weight-loss treatment elsewhere; signs of undiagnosed comorbidity. Reviews are monthly, with dispensing quantities aligned to the review schedule."]
+,["wt","How do you handle a weight-loss plateau?",
+  "<b>Normalise it — a plateau is expected, not failure.</b> Energy requirements fall as weight drops, hunger signalling rises, and metabolism adapts. Review diet, activity, sleep, stress and adherence, then point to non-scale progress: blood pressure, glucose, mobility, energy, sleep, quality of life. Obesity is chronic and relapsing, so review is long-term — commonly every 2–4 weeks during active loss, then every 3–6 months in maintenance."]
+,["wt","How much physical activity does weight management require?",
+  "<b>150–300 minutes a week of moderate activity, or 75–150 minutes of vigorous</b>, plus muscle-strengthening on at least two days, plus reduced sedentary time. Note this is a wider band than the 150 minutes quoted for cardiovascular risk reduction — weight management sits at the upper end. For type 2 diabetes specifically: 150 minutes a week of moderate-to-vigorous aerobic plus two resistance sessions."]
+
+/* ===== LIPIDS (Week 3) ===== */
+,["lipid","Give the statin intensity table.",
+  "<b>High (&gt;50% LDL-C reduction):</b> atorvastatin 40–80 mg, rosuvastatin 20–40 mg. <b>Moderate (30–49%):</b> atorvastatin 10–20 mg, rosuvastatin 5–10 mg, pravastatin 40–80 mg, simvastatin 20–80 mg. <b>Low (&lt;30%):</b> pravastatin 10–20 mg, simvastatin 5–10 mg. Relative potency: atorvastatin and rosuvastatin &gt; simvastatin &gt; pravastatin. <b>Increase doses at intervals of at least 4 weeks.</b> Simvastatin 80 mg carries more myopathy risk than other statins achieving the same LDL lowering."]
+,["lipid","What is the 80% rule, and what does it mean for escalation?",
+  "<b>More than 80% of a statin's LDL-lowering effect is achieved at 50% of its maximum dose.</b> <b>Adding ezetimibe gives a further 15–25%</b> — so once you are at a sensible dose, adding beats doubling. This is the pharmacological reason the escalation pathway turns to combination therapy rather than pushing the statin indefinitely."]
+,["lipid","When do you stop a statin for safety, and how do you rechallenge?",
+  "<b>Stop if:</b> aminotransferase persistently &gt;3× ULN; CK &gt;10× ULN; or persistent unexplained muscle pain or weakness <i>even with a normal CK</i>. If CK stays raised after stopping, look for another cause the statin may have unmasked — asymptomatic hypothyroidism, neuromuscular disease. <b>Rechallenge after at least 4 weeks</b> if the episode was mild and CK has normalised, considering a precipitant, a lower dose, or a different statin. Counsel: report dark brown urine, or any muscle pain, tenderness or weakness."]
+,["lipid","How common is genuine statin intolerance, and why does the distinction matter?",
+  "<b>Fewer than 10% of patients genuinely experience adverse effects — yet up to 75% of people started on a statin stop within 2 years, and stopping increases major cardiovascular events.</b> Assess: timing of onset, response to withdrawal and rechallenge, symptom character, and alternative explanations (nocebo, other conditions, other medicines, unaccustomed activity). Genuine intolerance is managed by dose reduction, switching statin, intermittent dosing or non-statin therapy. <b>Never stop a statin during symptoms of ACS</b> — cessation increases cardiac events."]
+,["lipid","Which statin interactions should you have at your fingertips?",
+  "Statins are mainly CYP3A4 and OATP1B1 substrates. <b>Pravastatin and rosuvastatin have fewer CYP interactions</b> — useful when the interacting drug cannot be avoided. <b>Simvastatin caps: 10 mg with amlodipine, diltiazem or verapamil; 20 mg with amiodarone.</b> <b>Sodium fusidate</b> — stop the statin for the duration and about a week afterwards; rhabdomyolysis fatalities have been reported. <b>Gemfibrozil is the fibrate to avoid with a statin</b>; fenofibrate is the one used in combination, which is why the Queensland protocol names fenofibrate specifically."]
+,["lipid","Which secondary causes of dyslipidaemia should you chase before prescribing?",
+  "<b>↑ LDL-C:</b> hypothyroidism, nephrotic syndrome, cholestasis, anorexia nervosa, high saturated fat diet. <b>↑ TG with ↓ HDL-C:</b> type 2 diabetes, obesity, renal impairment, smoking, drug therapy. <b>↑ TG:</b> alcohol misuse, oestrogen. <b>↑ LDL-C with ↓ HDL-C:</b> sedentary lifestyle. <b>Beta-blockers</b> raise TC and lower HDL-C. <b>Thiazide diuretics</b> raise TC — and conventional teaching is that they raise triglycerides too. (One secondary source tabulates them as lowering TG; treat that as doubtful and check AMH.) Always confirm an abnormal result with a repeat profile on a different day before acting. <b>Important under the Program:</b> a <i>suspected</i> secondary cause is an ineligibility criterion in the Lipid Modification protocol — you refer, you do not work it up and prescribe."]
+,["lipid","How do you interpret a lipid profile beyond LDL-C?",
+  "<b>Ratios are out of favour</b> — focus on individual components plus overall risk. <b>HDL is not simply \"good cholesterol\"</b>; interpret alongside triglycerides and context, and note there is no evidence that raising HDL with drugs helps. <b>ApoB</b> counts one molecule per atherogenic particle, so it measures particle number rather than cholesterol mass — arguably a better marker than LDL-C alone. <b>Lp(a)</b> is LDL-like, largely genetic, and barely shifts with diet or exercise. <b>ApoA-1</b> is the main HDL protein, inversely related to risk."]
+,["lipid","Fasting or non-fasting for a lipid profile?",
+  "<b>Non-fasting is acceptable for initial screening.</b> Interpret cautiously if triglycerides exceed 4 mmol/L, and collect a fasting sample if they are elevated. <b>Fasting is preferred for tracking change over time.</b> Always confirm an abnormal result with a repeat profile on a different day."]
+,["lipid","Work through this: baseline LDL-C 4.8, now 2.9 after 6 weeks on a high-potency statin, high risk. At target?",
+  "<b>No, on either limb.</b> Reduction achieved = (4.8 − 2.9) ÷ 4.8 ≈ <b>40%</b>, short of the ≥50% required. A 50% reduction would mean reaching 2.4 or below, and the absolute high-risk target is <b>&lt;1.8 mmol/L</b>. Both limbs must be met. Sequence: check adherence first, then increase the dose or switch to a higher-potency statin, then consider adding ezetimibe."]
+,["lipid","Describe the three emerging lipid-lowering agents and why their dosing intervals differ.",
+  "<b>Evolocumab</b> — a monoclonal antibody binding circulating PCSK9, preventing LDL-receptor degradation. ↓LDL ~60%. SC every 2–4 weeks, because the effect lasts only as long as the drug does. <b>Inclisiran</b> — a small interfering RNA that silences hepatic PCSK9 <i>production</i>. ↓LDL ~50%. SC every 6 months after the first two doses, because suppression outlasts the injection; LDL lowering is established but outcome benefit is not yet determined. <b>Bempedoic acid</b> — an ATP-citrate lyase inhibitor acting upstream of HMG-CoA reductase but activated only in the liver, not muscle, which is the rationale in statin intolerance. All three sit <b>outside</b> Queensland pharmacist-prescribing scope."]
+,["lipid","What are fibrates actually for?",
+  "<b>Severe hypertriglyceridaemia (TG &gt;10 mmol/L), to prevent pancreatitis.</b> Statins are not used for that purpose. Within the Program, fenofibrate is the add-on when triglyceride targets are not met on a statin (with fish oil considered first). Monitoring: FBC and LFTs before starting and 3-monthly through the first year; CK before starting and regularly if combined with a statin; reduce dose if CrCl 30–60 mL/min; and watch for a <b>paradoxical HDL fall</b>, which can appear weeks to years in."]
+,["lipid","Which dietary changes specifically target dyslipidaemia?",
+  "Swap saturated and trans fat for mono- and polyunsaturated (avocado, nuts, seeds, vegetable oils) · soluble fibre (oats, psyllium, legumes) · plant sterol products · soy protein · <b>2–3 servings of oily fish a week</b>. Refer intermediate- and high-risk patients to a dietitian."]
+
+/* ===== TYPE 2 DIABETES (Week 3) ===== */
+,["bgl","Give the diagnostic thresholds for diabetes and prediabetes.",
+  "<b>HbA1c:</b> diabetes ≥48 mmol/mol (6.5%); prediabetes 42–46 mmol/mol (6.0–6.4%). <b>Fasting venous glucose:</b> ≥7.0 mmol/L; impaired fasting glucose 6.1–6.9. <b>Random venous glucose:</b> ≥11.1 mmol/L; investigate further if 7.8–11.0. <b>OGTT 2 h after 75 g:</b> ≥11.1; impaired glucose tolerance 7.8–11.0. Symptomatic patient — one positive test confirms. Asymptomatic — repeat on a different day, preferably the same test. <b>Venous laboratory samples only; never diagnose on a finger-prick.</b>"]
+,["bgl","What is the HbA1c unit conversion trap?",
+  "<b>48 mmol/mol = 6.5%</b> — the diagnostic threshold. <b>53 mmol/mol = 7.0%</b> — the general treatment target. Do not pair 6% with 48 mmol/mol; they are not equivalent. Written papers exploit this because the two scales are used interchangeably in practice and the numbers look superficially similar."]
+,["bgl","When should you not trust an HbA1c?",
+  "<b>Falsely low:</b> any haemolytic anaemia, severe kidney impairment, severe liver disease, anaemia of chronic disease, regular phlebotomy (haemochromatosis, blood donors), recent transfusion, and <b>pregnancy and the first 3 months postpartum — don't use it at all in that window</b>. <b>Falsely high:</b> iron deficiency. Haemoglobinopathies interfere with the assay. If HbA1c and blood glucose disagree, suspect an interfering condition and use venous glucose."]
+,["bgl","State the glycaemic targets and who each applies to.",
+  "<b>≤53 mmol/mol (7.0%)</b> — the general target for most adults, including longer duration or established CVD, without high hypoglycaemia risk. <b>Tighter</b> — the QLD protocol Table 1 splits this: <b>≤6% (42 mmol/mol) on lifestyle plus metformin</b>, and <b>≤6.5% (48 mmol/mol) once a second non-insulin agent is added</b>, in recently diagnosed patients without CVD. Also ≤6.5% for young-onset type 2 aged 18–30. (The ADS algorithm collapses both into a single ≤6.5% tier — use the protocol figure for Program questions.) <b>Less stringent, around 64 mmol/mol (8%)</b> — prior severe hypoglycaemia, limited life expectancy, advanced complications, extensive comorbidity. Also: fasting glucose 4–7, postprandial 5–10 mmol/L. <b>Targets are a floor to individualise from, not fixed categories.</b>"]
+,["bgl","How do you choose the second glucose-lowering agent?",
+  "By comorbidity, not by habit. <b>Atherosclerotic CVD</b> → SGLT2 inhibitor or GLP-1 receptor agonist. <b>Heart failure</b> → SGLT2 inhibitor. <b>Chronic kidney disease</b> → SGLT2 inhibitor preferably, or a GLP-1RA. <b>Obesity</b> → GLP-1RA or tirzepatide. There is a <b>conditional recommendation against a sulfonylurea as the first add-on</b> to metformin, because of hypoglycaemia risk. <b>Never combine a DPP-4 inhibitor with a GLP-1RA.</b> Note the SGLT2 <i>glycaemic</i> effect fades below eGFR 45, while heart failure and CKD benefit persists lower still. Keep initiation and continuation separate: the Program brief says do not <b>start</b> an SGLT2 inhibitor below eGFR 30, which is not the same claim as stopping one already running."]
+,["bgl","Give the expected HbA1c fall and weight effect for each drug class added to metformin.",
+  "<b>Metformin</b> 0.8–1.1% as monotherapy, weight neutral or down, no hypoglycaemia. <b>SGLT2i</b> 0.4–0.7%, weight down, low hypo risk alone. <b>GLP-1 analogues</b> 0.7–1.5%, weight down, hypo rare alone. <b>DPP-4i</b> 0.5–0.6%, weight neutral, no hypo. <b>Sulfonylureas</b> 0.5–0.7%, weight up, hypoglycaemia common. <b>Tirzepatide</b> 2–2.5% — the largest fall of the <b>non-insulin</b> agents (insulin's reduction is theoretically unlimited with titration). <b>Insulin</b> 0.7–1.2% or more, weight up, hypoglycaemia common."]
+,["bgl","Give the metformin dose ceilings by renal function, and its other issues.",
+  "<b>Contraindicated below eGFR 30 — do not initiate or continue there.</b> Renal dose ceilings (quoted against CrCl): <b>2 g at CrCl 60–90, 1 g at CrCl 30–60</b>. Some tables list 500 mg at CrCl 15–30; that is a renal-dosing table entry, <i>not</i> permission to use metformin below eGFR 30. Note the case-study source instead caps at 1 g below eGFR 45 — check AMH for the version your assessment uses. Usual dosing 500 mg one to three times daily up to 850 mg two to three times daily, maximum 3 g. Monitor <b>eGFR before starting and every 4–6 months, and vitamin B12 every 12 months</b> — it causes B12 malabsorption. GI effects are common; lactic acidosis is rare."]
+,["bgl","Give the three GLP-1 regimens used in type 2 diabetes with their renal floors.",
+  "<b>Dulaglutide</b> — GFR ≥15; 1.5 mg SC once weekly, no titration. <b>Liraglutide</b> — GFR ≥15; 0.6 mg daily for a week → 1.2 mg, then after at least a week up to 1.8 mg daily. <b>Semaglutide</b> — GFR ≥30; 0.25 mg weekly for 4 weeks → 0.5 mg, then after at least 4 weeks up to 1 mg weekly. <b>Once-weekly agents take 6–8 weeks to reach maximum effect</b> — don't judge response too early. Never withdraw a GLP-1 from the pen into a syringe. These diabetes doses sit well below the weight-management doses (semaglutide 2.4 mg weekly, liraglutide 3 mg daily)."]
+,["bgl","Which glucose-lowering agents are withheld on sick days, and which continue?",
+  "<b>Withhold — metformin</b> (dehydration reduces clearance → lactic acidosis, and it worsens nausea) and <b>SGLT2 inhibitors</b> (illness + dehydration + low carbohydrate → euglycaemic DKA). Restart both only when eating and drinking normally <i>and</i> renal function is back to baseline. <b>Continue — DPP-4 inhibitors</b> (unlikely to cause hypoglycaemia) and <b>sulfonylureas</b> as tolerated, withholding if glucose trends low. <b>GLP-1RA — WITHHOLD.</b> The QLD Blood Glucose protocol is explicit, and this was <i>added</i> in the April 2026 update: advise patients on <b>metformin or a GLP-1 receptor agonist to withhold if they have vomiting, diarrhoea, or are not eating much</b>. Some secondary sources say continue unless nausea worsens — follow the protocol."]
+,["bgl","What are the numeric sick-day triggers, and when do you send someone to hospital?",
+  "<b>Not on insulin</b> — seek help if the last two readings were above 15 mmol/L. <b>On insulin</b> — seek help early; if glucose is above 12 without vomiting or hypos, give the usual dose plus 10–20%. <b>Blood ketones ≥0.6 mmol/L with hyperglycaemia needs urgent advice; &gt;1.5 mmol/L is impending DKA.</b> Straight to hospital for: severe or worsening hyperglycaemia, vomiting more than 4 hours, high fever, abdominal pain, severe headache, drowsiness, marked ketosis, or recurrent hypoglycaemia. <b>A normal glucose does NOT exclude DKA on an SGLT2 inhibitor.</b>"]
+,["bgl","What does the Annual Cycle of Care require?",
+  "<b>HbA1c</b> 3-monthly if unstable, 6-monthly if stable · <b>blood pressure</b> every review · <b>feet</b> every 1–12 months by risk category · <b>eyes</b> every 2 years, more often with retinopathy · <b>dental</b> every 12 months · <b>uACR, eGFR and lipids</b> every 12 months · <b>weight and waist</b> every 6 months · <b>nutrition, activity, medication review, smoking and psychosocial</b> every 12 months."]
+,["bgl","Which drugs raise blood glucose, and which mask hypoglycaemia?",
+  "<b>Raise glucose:</b> glucocorticoids, antipsychotics, calcineurin inhibitors, somatropin, high-dose thiazides. <b>Mask hypoglycaemia warning signs:</b> beta-blockers. <b>Alcohol</b> both lowers glucose and masks the warnings — a combination worth naming explicitly in counselling."]
+,["bgl","How much weight loss changes the diabetes picture?",
+  "<b>≥10% may allow reduction or cessation of glucose-lowering medication.</b> Even <b>&gt;5%</b> improves control, and can produce remission — <b>especially within 1–2 years of diagnosis</b>, which is the figure the QLD protocol and your Week 3 page both use. (Six years is DiRECT's enrolment window, not the Program's number.) This is why weight is not a side conversation in diabetes management but part of the treatment plan."]
+,["bgl","What is MASLD and why should a prescriber care?",
+  "Metabolic dysfunction-associated steatotic liver disease, formerly NAFLD, with MASH the severe form. A leading cause of fibrosis and cirrhosis, and often silent. <b>ALT rises first and may only be modest — above 30 U/L can already indicate injury</b> in someone with metabolic risk, because traditional reference ranges are considered too high. <b>Waist-to-height ratio ≥0.5</b> correlates strongly with the visceral fat driving it. Ultrasound is first-line for steatosis, but <b>FIB-4 and elastography are needed to stage fibrosis — ultrasound alone cannot</b>."]
+
+/* ===== RENAL REASONING — generalisable pharmacology from a colleague's
+   de-identified case study. The case vignette itself is deliberately NOT
+   reproduced here: this app deploys to a public URL, and the author flagged
+   re-identification risk in a small region. Mechanisms only. ===== */
+,["htn","Explain the triple whammy properly — not just name it.",
+  "Renal perfusion under stress depends on two opposing forces. <b>Prostaglandins dilate the afferent arteriole</b> (flow in) and <b>angiotensin II constricts the efferent arteriole</b> (holding pressure in the glomerulus). <b>An NSAID removes the first. An ACE inhibitor or ARB removes the second. A diuretic takes away the volume that was covering for both.</b> Perfusion pressure collapses. A vomiting illness on top of that is an admission. Most students can recite the three drug classes; far fewer can point at a set of results and say <i>this is it happening</i>."]
+,["htn","A urea:creatinine ratio above 100 suggests what, and why?",
+  "<b>A pre-renal picture — reduced renal perfusion.</b> Calculate as urea (mmol/L) ÷ creatinine converted to mmol/L. Mechanism: when perfusion drops, the proximal tubule reabsorbs more sodium and water, and <b>urea follows passively; creatinine is not reabsorbed</b>. So urea climbs faster and the ratio opens up. It is one of very few routine results that tells you about volume status rather than damage. Not specific though — also raised by high protein intake, corticosteroids, catabolic states and <b>gastrointestinal blood loss</b>."]
+,["bgl","A patient starts an SGLT2 inhibitor and eGFR falls. Is that a reason to stop?",
+  "<b>Usually not.</b> SGLT2 inhibitors cause a haemodynamic dip of roughly <b>3–5 mL/min in the first few weeks</b> through restored tubuloglomerular feedback, then it plateaus. That mechanism <i>is</i> how they protect the kidney long term. Distinguish it from volume depletion and true progression: the dip plateaus, volume depletion corrects when you remove the cause, and real progression keeps going. <b>A repeat UEC in 2–4 weeks separates all three</b> and is often the single most useful thing anyone can do that month."]
+,["reas","Why does a trend in eGFR matter more than a single reading?",
+  "A single result lets you assign a stage and move on. The trend tells you what is actually happening. Kidney Health Australia nephrology referral triggers include a <b>sustained fall of 25%, or 15 mL/min, within twelve months</b> — you cannot see that from one number. And when you make a dosing decision against a number that is moving, <b>put a review date on it</b>: metformin ceilings, methotrexate and several other drugs all tighten as eGFR falls."]
+,["safe","Why is an NSAID particularly dangerous alongside methotrexate?",
+  "<b>NSAIDs reduce renal clearance of methotrexate.</b> In an older patient with impaired renal function taking regular rather than occasional NSAID, that combination risks <b>marrow suppression, mucositis and hepatotoxicity</b>. It is a classic community-pharmacy catch, because the NSAID is often bought over the counter or prescribed by someone who did not have the methotrexate in front of them."]
+,["safe","Which PPIs should be avoided with clopidogrel, and why?",
+  "<b>Clopidogrel is a prodrug activated by CYP2C19.</b> Omeprazole and esomeprazole inhibit it and are the ones to avoid. <b>Rabeprazole and pantoprazole are preferred.</b> Worth also noticing when a prescriber has already got this right — if every letter you send only ever lists problems, people stop reading them."]
+,["safe","Fluconazole and celecoxib — what is the interaction?",
+  "<b>Fluconazole inhibits CYP2C9; celecoxib is a CYP2C9 substrate</b>, so exposure roughly doubles. Worth keeping in your back pocket: a course of fluconazole that has finished is not a live interaction, but if symptoms recur and it restarts, it lands on top of whatever else the NSAID is already doing to renal function or methotrexate clearance."]
+
+/* ===== HYPERTENSION detail from the Weeks 1-2 MCQ quiz ===== */
+,["htn","State the Heart Foundation hypertension grades.",
+  "<b>Grade 1 (mild)</b> 140–159 systolic or 90–99 diastolic. <b>Grade 2 (moderate)</b> 160–179 or 100–109. <b>Grade 3 (severe)</b> ≥180 or ≥110. <b>Where systolic and diastolic fall in different grades, the higher grade applies</b> — so 182/104 is Grade 3 on the systolic alone."]
+,["htn","Give the out-of-clinic blood pressure diagnostic thresholds.",
+  "<b>Home and daytime ambulatory: ≥135/85.</b> <b>24-hour ambulatory average: ≥130/80.</b> <b>Night-time: ≥120/70.</b> Note that <b>clinic ≥140/90 is the trigger to offer out-of-clinic monitoring, not the out-of-clinic diagnostic threshold</b> — mixing the two up is a common error, because 140/90 is so familiar."]
+,["htn","How does cuff size affect a blood pressure reading?",
+  "<b>A cuff that is too small overestimates. A cuff that is too large underestimates.</b> This is one of the commonest sources of measurement error, alongside an unsupported arm, crossed legs and insufficient rest before the reading. Worth stating out loud in an OSCE — the examiner is watching for whether you selected the cuff deliberately."]
+,["htn","What does a large inter-arm blood pressure difference mean?",
+  "<b>Above 20 mmHg systolic is abnormal</b> and can suggest <b>aortic dissection or subclavian stenosis</b>, warranting prompt medical assessment. A smaller difference above 5 mmHg is common and simply means you <b>use the arm with the higher reading</b> for all subsequent measurements."]
+,["htn","Name the cardiac auscultation areas and their locations.",
+  "<b>Aortic</b> — 2nd intercostal space, right sternal border. <b>Pulmonic</b> — 2nd ICS, left sternal border. <b>Erb's point</b> — 3rd ICS, left. <b>Tricuspid</b> — 4th/5th ICS, lower left sternal border. <b>Mitral (apex)</b> — <b>5th ICS, midclavicular line</b>. Palpating the carotid while you listen times S1 (with the upstroke) against S2 (after it)."]
+,["htn","A patient with asthma and gout needs an antihypertensive. Which two classes are avoided, and what is left?",
+  "<b>Avoid beta-blockers</b> — contraindicated in asthma, and not first-line for uncomplicated hypertension anyway. <b>Avoid thiazides</b> — dose-dependent hyperuricaemia can precipitate gout. That still leaves <b>three first-line options: ACE inhibitor, ARB, and dihydropyridine calcium channel blocker</b>. The question tests whether you panic at two exclusions or notice how much room remains."]
+,["htn","A patient develops ankle oedema on amlodipine. Why won't a diuretic fix it?",
+  "Because it is not fluid overload. <b>Dihydropyridine oedema comes from precapillary arteriolar dilation</b> — fluid is pushed into the interstitium by a pressure gradient, not retained. A diuretic will not correct it and adds electrolyte and volume risk for no benefit. <b>Reduce the dose, switch class, or add an ACE inhibitor or ARB</b>, which dilate the venous side and can offset the gradient."]
+,["htn","What creatinine rise is acceptable after starting an ACE inhibitor?",
+  "<b>The QLD protocol says up to 25%</b>, with potassium within the normal range, should not necessarily prompt dose reduction or cessation. (Broader international guidance often quotes up to 30% — know the Program figure for Program questions.) The rise happens as the efferent arteriole dilates. A larger rise, a marked eGFR fall, or hyperkalaemia should prompt review — consider <b>bilateral renal artery stenosis, hypovolaemia, or an NSAID interaction</b>. <b>Check renal function and electrolytes before starting and again 1–2 weeks after.</b>"]
+,["htn","Distinguish hypertensive urgency from hypertensive emergency.",
+  "<b>Emergency</b> — severely elevated BP <i>with acute organ dysfunction</i>: neurological deficit, chest pain, pulmonary oedema. Needs <b>immediate hospital assessment and intravenous therapy</b>. <b>Urgency</b> — BP <b>≥180 systolic and/or ≥110 diastolic</b> with symptoms such as severe headache but <b>no acute organ dysfunction</b>; oral therapy and medical review within 24–72 hours. The discriminator is organ dysfunction, not the number. Sudden slurred speech and facial droop with BP 196/120 is an emergency and a stroke call, not a medication review."]
+
+,["safe","Which material in this app is NOT checked against a primary source?",
+  "Worth knowing before a viva. <b>Checked against the Queensland protocol text loaded in this app:</b> hypertension, lipid modification, blood glucose, asthma and COPD — eligibility, referral triggers, monitoring intervals, prescribable medicines. <b>Checked against health.gov.au or the Heart Foundation:</b> AUSDRisk scoring, the heart-healthy eating pattern, activity targets. <b>From a classmate's revision notes and NOT independently verifiable:</b> the statin intensity dose table, ALT/CK stop thresholds, simvastatin interaction caps, ezetimibe's added effect, metformin renal ceilings, GLP-1 renal floors, sick-day ketone thresholds, per-class HbA1c falls, the weight-drug BMI thresholds and stopping rules, all the trial percentages, NHMRC bariatric criteria, the QLD obesity protocol, and every renal-reasoning card (triple whammy, urea:creatinine, NSAID–methotrexate, clopidogrel–PPI). That last group is clinically orthodox and well argued, but it came from one pharmacist's notes, not from PHAR6302. <b>Check anything in it against AMH, Therapeutic Guidelines or Canvas before you rely on it in an assessment.</b>"]
+
 ];
 
 var S2_MCQ=[
@@ -986,6 +1146,69 @@ var COURSE_MCQ=[["htn","A patient's clinic BP is 152/104. Under the Heart Founda
 ,["bgl","Which additional variables does the AusCVDRisk calculator include for people with diabetes?",
   ["Waist circumference and triglycerides","HbA1c, duration of diabetes, uACR and eGFR","Coronary calcium score and family history","Physical activity level and BMI only"],1,
   "The diabetes model adds HbA1c, time since diagnosis, uACR, eGFR and BMI. Coronary calcium score and family history are <i>reclassification</i> factors applied afterwards, not inputs to the diabetes model — which is exactly the confusion this question is built on."]
+
+/* ---- Appended 7 Sep 2026 from a colleague's revision notes. APPEND ONLY. ---- */
+,["wt","A man has a waist circumference of 96 cm. How is this classified?",
+  ["Within the healthy range","Increased risk","Substantially increased risk","Cannot be interpreted without BMI"],1,
+  "For men, ≥94 cm is increased risk and ≥102 cm is substantially increased. For women the thresholds are ≥80 and ≥88 cm. Waist is a better predictor of cardiovascular risk than BMI because it reflects central adiposity — and waist-to-height ratio ≥0.5 works without any ethnic adjustment."]
+,["wt","A patient on a sulfonylurea and an SGLT2 inhibitor is about to start a very low energy diet. What is the priority action?",
+  ["Proceed — VLEDs are safe with any diabetes regimen","Adjust doses and arrange close glucose monitoring before starting","Stop all diabetes medicines for the duration of the diet","Switch the sulfonylurea to insulin first"],1,
+  "The sulfonylurea risks hypoglycaemia as intake falls, and the SGLT2 inhibitor risks euglycaemic ketoacidosis when carbohydrate drops sharply. Doses are adjusted and monitoring arranged before the diet starts. Stopping everything is neither necessary nor safe."]
+,["wt","Which weight-management medicine has a documented stopping rule of less than 5% loss at 16 weeks?",
+  ["Liraglutide 3 mg","Orlistat","Naltrexone/bupropion","Phentermine"],2,
+  "Naltrexone/bupropion is reviewed at 16 weeks; liraglutide at 12 weeks on maintenance. Phentermine is short-term only, up to 12 weeks, so the question doesn't arise. Stopping rules exist because these are expensive drugs with real adverse effects and no point continuing a non-responder."]
+,["wt","Under NHMRC criteria, which patient is eligible for bariatric surgery?",
+  ["BMI 28 with hypertension","BMI 32 with poorly controlled type 2 diabetes and cardiovascular risk","BMI 34 with no complications","BMI 26 with a family history of obesity"],1,
+  "The three criteria are BMI >40 regardless of comorbidity, BMI 35–39.9 with obesity-related complications, or BMI 30–34.9 with poorly controlled type 2 diabetes and cardiovascular risk. BMI 34 without complications does not meet any of them."]
+,["wt","Which statement best reflects current framing of obesity?",
+  ["A lifestyle choice best addressed through willpower","A chronic disease with dysregulated appetite, satiety and energy-expenditure biology","A cosmetic concern unless BMI exceeds 40","Entirely genetic and therefore not modifiable"],1,
+  "Disrupted hypothalamic appetite pathways, impaired leptin/ghrelin/peptide YY signalling, adipose tissue acting as an endocrine organ, and adaptive falls in energy expenditure. That biology explains regain after treatment stops — and is why blame-based framing is both inaccurate and harmful."]
+
+,["lipid","A patient is on a high-potency statin at half its maximum dose and remains above target. What gives the greater additional LDL-C reduction?",
+  ["Doubling the statin dose again","Adding ezetimibe","Switching to a different statin at the same intensity","Adding fish oil"],1,
+  "More than 80% of a statin's effect is achieved at 50% of its maximum dose, so further doubling adds little. Ezetimibe adds a further 15–25%. This is why the escalation pathway turns to combination therapy rather than pushing the statin dose indefinitely."]
+,["lipid","Which finding requires a statin to be stopped?",
+  ["Aminotransferase 2× upper limit of normal","CK 4× upper limit of normal","Persistent unexplained muscle pain with a normal CK","Mild fatigue in the first week"],2,
+  "Stop for aminotransferase persistently >3× ULN, CK >10× ULN, or persistent unexplained muscle pain or weakness even when CK is normal. The last is the one people miss — a normal CK does not mean you carry on regardless of symptoms."]
+,["lipid","Which fibrate should not be combined with a statin?",
+  ["Fenofibrate","Gemfibrozil","Both are equally safe","Neither can be combined with a statin"],1,
+  "Gemfibrozil is the one to avoid; fenofibrate is the fibrate used in combination, which is why the Queensland Lipid Modification protocol names fenofibrate specifically. Fibrates themselves are for severe hypertriglyceridaemia above 10 mmol/L to prevent pancreatitis."]
+,["bgl","An HbA1c of 48 mmol/mol corresponds to what percentage, and what does it signify?",
+  ["6.0% — prediabetes","6.5% — the diagnostic threshold for diabetes","7.0% — the general treatment target","8.0% — a less stringent target"],1,
+  "48 mmol/mol = 6.5%, the diagnostic threshold. 53 mmol/mol = 7.0%, the general treatment target. Pairing 6% with 48 mmol/mol is the classic error — the two scales are used interchangeably in practice and the numbers look deceptively similar."]
+,["bgl","In which situation should HbA1c not be used at all?",
+  ["Iron deficiency","Pregnancy and the first 3 months postpartum","Recent commencement of metformin","Age over 75"],1,
+  "Do not use it in pregnancy or the first 3 months postpartum. It reads falsely low in haemolytic anaemia, severe renal or liver disease, recent transfusion and regular phlebotomy; falsely high in iron deficiency. If HbA1c and glucose disagree, suspect interference and use venous glucose."]
+,["bgl","A patient with type 2 diabetes and heart failure needs a second agent. Which class is preferred?",
+  ["Sulfonylurea","DPP-4 inhibitor","SGLT2 inhibitor","Insulin"],2,
+  "SGLT2 inhibitors are preferred in heart failure. For atherosclerotic CVD either an SGLT2 inhibitor or a GLP-1RA; for CKD an SGLT2 inhibitor preferably; for obesity a GLP-1RA or tirzepatide. There is a conditional recommendation against a sulfonylurea as first add-on, and saxagliptin specifically increased heart failure hospitalisation."]
+,["bgl","A patient on an SGLT2 inhibitor develops gastroenteritis. What is the correct advice?",
+  ["Continue as normal to avoid losing glycaemic control","Withhold it, and restart only when eating and drinking normally with renal function back to baseline","Halve the dose for a week","Switch to insulin for the duration"],1,
+  "Illness plus dehydration plus reduced carbohydrate intake risks euglycaemic ketoacidosis. Metformin is withheld too. Crucially, a normal blood glucose does NOT exclude DKA on an SGLT2 inhibitor — blood ketones ≥0.6 mmol/L with hyperglycaemia needs urgent advice, and >1.5 mmol/L is impending DKA."]
+,["htn","A clinic reading is 164/98 mmHg. What grade is this?",
+  ["High-normal","Grade 1 (mild)","Grade 2 (moderate)","Grade 3 (severe)"],2,
+  "Grade 2 is 160–179 systolic or 100–109 diastolic. The systolic of 164 places it there even though the diastolic of 98 sits in Grade 1 — where the two fall in different grades, the higher grade applies."]
+,["htn","Which home blood pressure average is diagnostic of hypertension?",
+  ["≥120/70","≥130/80","≥135/85","≥140/90"],2,
+  "Home and daytime ambulatory are both ≥135/85. The 24-hour ambulatory average is ≥130/80 and night-time is ≥120/70. Clinic ≥140/90 is the trigger to offer out-of-clinic monitoring, not the out-of-clinic diagnostic threshold."]
+,["htn","Ten days after starting an ACE inhibitor, which result is expected rather than concerning?",
+  ["A creatinine rise of about 20% with normal potassium","A creatinine rise of 45%","Potassium 6.1 mmol/L","eGFR falling from 62 to 38"],0,
+  "The QLD protocol accepts a rise of up to 25% with potassium in range; broader guidance often quotes 30%. Either way a 20% rise with normal potassium is expected as the efferent arteriole dilates. A larger rise, a marked eGFR fall or hyperkalaemia should prompt review for bilateral renal artery stenosis, hypovolaemia or an NSAID interaction."]
+,["htn","A patient develops bilateral ankle oedema six weeks after starting amlodipine. What is the most appropriate action?",
+  ["Add a thiazide diuretic","Add frusemide","Reduce the dose or switch class; an ACE inhibitor or ARB can offset the oedema","Continue unchanged — it always resolves spontaneously"],2,
+  "The oedema comes from precapillary arteriolar dilation, not fluid overload, so a diuretic cannot correct it and adds electrolyte and volume risk for nothing. Dose reduction, switching class, or adding an agent that dilates the venous side are the appropriate responses."]
+,["htn","A 62-year-old presents with BP 196/120, sudden slurred speech and facial droop. What is this?",
+  ["Hypertensive urgency — oral therapy and GP review in 24–72 hours","White-coat hypertension — repeat at the next visit","Hypertensive emergency with acute stroke — immediate hospital assessment","Grade 3 hypertension — start two agents today"],2,
+  "Severely elevated blood pressure with acute neurological deficit is an emergency, needing immediate hospital assessment and intravenous therapy. Urgency applies at ≥180 systolic and/or ≥110 diastolic with symptoms such as severe headache but without acute organ dysfunction. The discriminator is organ dysfunction, not the number."]
+,["safe","A patient on weekly methotrexate is buying an NSAID for ongoing pain. What is the concern?",
+  ["No interaction of clinical significance","NSAIDs reduce renal methotrexate clearance, risking marrow suppression, mucositis and hepatotoxicity","NSAIDs increase methotrexate metabolism, reducing efficacy","The interaction only matters with intravenous methotrexate"],1,
+  "Reduced renal clearance raises methotrexate exposure. It matters most in older patients and impaired renal function, and it is a classic community-pharmacy catch because the NSAID is often bought over the counter."]
+,["safe","Which proton pump inhibitor should be avoided in a patient taking clopidogrel?",
+  ["Pantoprazole","Rabeprazole","Omeprazole","All PPIs are equally acceptable"],2,
+  "Clopidogrel is a prodrug activated by CYP2C19. Omeprazole and esomeprazole inhibit it and reduce activation. Rabeprazole and pantoprazole are preferred."]
+,["htn","A patient on an ACE inhibitor, a thiazide and an NSAID becomes unwell with vomiting. Which mechanism explains the acute kidney injury risk?",
+  ["The NSAID directly damages the renal tubules","Loss of afferent dilation and efferent tone with reduced volume","The diuretic causes direct nephrotoxicity","Hyperkalaemia reduces glomerular filtration"],1,
+  "The NSAID removes prostaglandin-mediated afferent dilation, the ACE inhibitor removes angiotensin-mediated efferent constriction, and the diuretic removes the volume covering for both. Vomiting removes what is left. Being able to explain the mechanism, not just name the triple whammy, is what a viva is testing."]
 
 ];
 
@@ -1447,7 +1670,7 @@ var WEEKS=[
  "medicines. Weight loss and dietary change raise the risk of <b>euglycaemic ketoacidosis</b> on an SGLT-2 inhibitor "+
  "and <b>hypoglycaemia</b> on agents that cause it. Medication review and monitoring may be needed.</div>"+
  "<h3>Referral for specialist obesity management</h3>"+
- "<div class='box red'><b>BMI over 40</b>, or <b>BMI over 35 with significant obesity-related complications.</b> Bariatric surgery is generally not recommended below those thresholds — the comorbidity route needs something like diabetes or obstructive sleep apnoea.</div>"+
+ "<div class='box red'><b>BMI over 40</b>, or <b>BMI over 35 with significant obesity-related complications</b> — and NHMRC criteria additionally allow <b>BMI 30–34.9 with poorly controlled type 2 diabetes and cardiovascular risk</b> — the comorbidity route needs something like diabetes or obstructive sleep apnoea.</div>"+
  "<h3>Very low energy diets</h3>"+
  "<div class='box'>A VLED provides <b>less than 3300 kJ per day</b> through nutritionally complete meal replacements. Consider when previous lifestyle interventions have not worked, <b>rapid weight loss is clinically indicated</b>, severe obesity is present, or <b>preparation for bariatric surgery</b> is required.</div>"},
 
