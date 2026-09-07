@@ -4,9 +4,9 @@
 .autopush.lockdir/
 .DS_Store
 
-# Content bundle for rebuilding elsewhere — not part of the deployed app.
-# ANCHORED to the repo root with a leading slash. Without it, this pattern
-# matched at any depth and silently excluded hub/prescribing-data.js — the
-# 2 MB dataset the hub app loads — so hub/ was pushed without its content
-# and would have rendered empty on GitHub Pages.
-/prescribing-data.js
+# NOTE: /prescribing-data.js used to be ignored here as a local rebuild
+# scratch file. As of 7 Sep 2026 hub/ was promoted to the site root, so this
+# file (plus prescribing-data-ext.js) is now the live dataset the deployed
+# app loads — it must be tracked. Re-adding an ignore rule for it will ship
+# an empty app to GitHub Pages, the exact failure this comment used to warn
+# about happening to hub/prescribing-data.js before it existed at this path.

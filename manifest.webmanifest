@@ -1,16 +1,22 @@
 {
-  "name": "Pharmacist Prescribing — Study & Semester",
-  "short_name": "Prescribing",
-  "start_url": "./",
+  "name": "Prescribing Study Hub",
+  "short_name": "Study Hub",
+  "description": "Offline-first revision app for the Graduate Certificate in Pharmacist Prescribing.",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#faf9f7",
-  "theme_color": "#faf9f7",
+  "background_color": "#0f3d3e",
+  "theme_color": "#0f3d3e",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%238b5e3c'/%3E%3Ctext x='90' y='118' font-size='84' font-family='-apple-system,sans-serif' font-weight='600' fill='white' text-anchor='middle'%3ERx%3C/text%3E%3C/svg%3E",
-      "sizes": "any",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='42' fill='%230f6b66'/%3E%3Cpath d='M96 44v104M44 96h104' stroke='%23ffffff' stroke-width='22' stroke-linecap='round'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%230f6b66'/%3E%3Cpath d='M256 118v276M118 256h276' stroke='%23ffffff' stroke-width='58' stroke-linecap='round'/%3E%3C/svg%3E",
+      "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any"
     }
