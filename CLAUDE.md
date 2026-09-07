@@ -90,6 +90,15 @@ append-only too**, same rule as `cards` and `mcq`.
 - **Semester 2 material is NOT in the search corpus.** The indexing IIFE only pushes
   Semester 1 cards, questions and topic bodies into `CORPUS`. Ask the Hub cannot find
   any s2 content. Pre-existing; worth fixing.
+- **"git push FAILED — check credentials" is often a lie.** On 7 Sep every push
+  failed with `ssh: connect to host github.com port 22: Operation timed out` —
+  the network was blocking SSH, not a key problem. The remote now uses GitHub's
+  SSH-over-443 endpoint (`ssh://git@ssh.github.com:443/...`), which uses the same
+  key on a port almost nothing blocks, and autopush now classifies network vs
+  auth vs behind-remote instead of blaming credentials for everything.
+- **`.git/config` can be edited with the file tools.** That is the safe way to
+  change a remote from the sandbox — no git write command, so no `.git/config.lock`
+  or `.git/index.lock` left behind.
 - **I cannot push to GitHub.** No credentials in the sandbox. Always hand the user:
   `cd ~/Pharmacist-Prescribing && git add -A && git commit -m "..." && git push`
 - Do not run git write commands from the sandbox — they leave `.git/index.lock`

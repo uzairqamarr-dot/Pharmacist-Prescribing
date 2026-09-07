@@ -55,7 +55,32 @@ FILES=$(git status --porcelain | awk '{print $2}' | tr '\n' ' ')
 
 git add -A                     >> "$LOG" 2>&1 || { say "git add FAILED";    exit 1; }
 git commit -m "update $VER"    >> "$LOG" 2>&1 || { say "git commit FAILED"; exit 1; }
-git push                       >> "$LOG" 2>&1 || { say "git push FAILED — check credentials"; exit 1; }
+
+# Push, and say something TRUE about why it failed. The old message blamed
+# credentials for everything, which sent us hunting for a key problem when the
+# actual fault was the network blocking SSH on port 22.
+PUSH_OUT=$(git push 2>&1); PUSH_RC=$?
+echo "$PUSH_OUT" >> "$LOG"
+if [ $PUSH_RC -ne 0 ]; then
+  case "$PUSH_OUT" in
+    *"Operation timed out"*|*"Connection refused"*|*"Network is unreachable"*|*"Could not resolve host"*)
+      n=$(git log --oneline @{u}..HEAD 2>/dev/null | wc -l | tr -d ' ')
+      say "git push FAILED — NETWORK, not credentials. Cannot reach GitHub."
+      say "  $n commit(s) are committed locally and safe; they will go up on the next successful push."
+      say "  If this persists, see FIX-PUSH-BLOCKED.md in the repo."
+      osascript -e 'display notification "Cannot reach GitHub — network, not credentials. Work is saved locally." with title "Prescribing app: push blocked"' 2>/dev/null
+      ;;
+    *"Permission denied"*|*"Authentication failed"*|*"access rights"*)
+      say "git push FAILED — authentication. The SSH key or token is the problem this time."
+      osascript -e 'display notification "GitHub rejected the credentials." with title "Prescribing app: push blocked"' 2>/dev/null
+      ;;
+    *"rejected"*|*"non-fast-forward"*)
+      say "git push FAILED — remote has commits you do not. Run: git pull --rebase && git push"
+      ;;
+    *) say "git push FAILED — see the output above." ;;
+  esac
+  exit 1
+fi
 
 say "pushed $VER  [$FILES]"
 
