@@ -11,9 +11,23 @@ home screen, used often with no signal.
 
 ## Session handover — read this first
 
-**Last worked: 7 September 2026.** Version v2026.09.07a.
+**Last worked: 7 September 2026.** Version v2026.09.07e.
+
+**hub/ was promoted to the site root this session.** The phone's existing
+home-screen icon now opens what used to be `hub/index.html` — a separate
+rebuild of the study app (see "Two apps, one dataset" under Layout below),
+not the iframe shell described further down in this file historically. The
+old shell is gone; `study.html` and `sem.html` are still present and still
+work, but only as standalone pages reached by direct URL — nothing links to
+them anymore. Read the Layout section before assuming the old shell exists.
 
 ### What exists now, beyond the original four-file layout
+
+The table below describes `study.html`'s own content model — still accurate
+for that file, which is unchanged by the promotion. The app now at the site
+root (formerly `hub/index.html`) reads the same data from `prescribing-data.js`
++ `prescribing-data-ext.js` instead, regenerated from `study.html`'s arrays
+(see "Two apps, one dataset" under Layout).
 
 | Thing | Where | Notes |
 |---|---|---|
@@ -114,18 +128,22 @@ append-only too**, same rule as `cards` and `mcq`.
 
 ## Layout
 
-Four files at the repo root. No build step, no bundler, no npm.
+No build step, no bundler, no npm.
 
 | File | What it is |
 |---|---|
-| `index.html` | Shell: header, Study/Semester toggle, two iframes, SW registration |
-| `study.html` | The study app — flashcards, MCQ, topics, search |
-| `sem.html` | The semester dashboard — dates, assessments, grades, WIL log |
-| `sw.js` | Service worker, offline cache |
+| `index.html` | The study app (formerly `hub/index.html`) — flashcards, MCQ, topics, ranked Home screen, Learn/Plan/OSCE/viva. Reads `prescribing-data.js` + `prescribing-data-ext.js` via `<script src>` |
+| `prescribing-data.js` | The dataset `index.html` loads — regenerated from `study.html`'s arrays, not hand-edited. Git-tracked; do NOT re-add to `.gitignore` |
+| `prescribing-data-ext.js` | Extra data (`PLAN`, `EVENTS`, `EXAMS`, etc.) for the root app |
+| `study.html` | The **older, independent** study app — same features, own inline content arrays. Standalone only now; nothing links to it |
+| `sem.html` | The semester dashboard — dates, assessments, grades, WIL log. Standalone only; no equivalent in the root app |
+| `sw.js` | Service worker for the root app — precaches `index.html`, `study.html`, `sem.html`, both data files, and the manifest |
+| `manifest.webmanifest` | PWA manifest for the root app |
+| `hub/server.js`, `hub/package.json` | Leftover local-dev helper for when `hub/` held the app; `server.js` serves from its own directory, so it needs its `root` adjusted (or run from elsewhere) now that the files it served moved to the repo root |
 
-The shell loads the two panes into iframes via `src`, lazily on first view.
-Each pane is a complete standalone HTML document and can be opened directly in
-a browser on its own, which is the easiest way to work on one.
+Every file above is a complete standalone document — open any of them directly
+in a browser, no server required for basic checks (though `sw.js` needs an
+actual HTTP origin to register).
 
 - No CDN links, no web fonts, no analytics, no external requests of any kind.
 - Vanilla ES5-flavoured JS. No frameworks.
@@ -139,19 +157,60 @@ change.
 inlined via `srcdoc`. That was a Netlify Drop workaround and is gone. Do not
 reintroduce it — it made every content change a 1.2 MB single-line diff.
 
+### Two apps, one dataset — and the staleness trap
+
+There are now **two independent, feature-equivalent apps** in this repo:
+
+- The root app (`index.html` + `prescribing-data.js` + `prescribing-data-ext.js`)
+  — this is what the phone's home-screen icon opens.
+- `study.html` — the original, still fully functional, reached only by typing
+  the URL directly (or from a browser bookmark).
+
+They do **not** share a content source. `study.html` has everything inline;
+the root app's dataset is a **static extraction** of `study.html`'s arrays,
+taken on 7 Sep 2026. Edit content in `study.html` (still the source of
+truth — same append-only, same escaping rules as below) and the root app
+will silently go stale until `prescribing-data.js` is regenerated from it.
+
+**Regenerate by byte-copying, never by retyping.** `prescribing-data.js` is
+~500,000 tokens of clinical content that has been checked against primary
+sources. Do not read the arrays into context and rewrite them by hand — an
+LLM will "helpfully" reformat a threshold and introduce a clinical error.
+Instead, slice the exact `var NAME = ...;` statements out of `study.html` by
+byte offset (a bracket/string-aware scanner, not a text rewrite) and write
+them verbatim into `prescribing-data.js`. Then verify by parsing the result
+in a `vm` sandbox and comparing counts (cards, MCQ, per-topic breakdowns)
+against `study.html`'s own counts — never by eyeballing a diff of that size.
+
+They **do** share progress: both use the same `localStorage` key
+(`phar-hub-v1`) with the same shape, and since they're served from the same
+origin on GitHub Pages, progress genuinely carries over between them. Verify
+this hasn't drifted before relying on it again — grep each app's store shape
+(`blankStore()` in the root app, the equivalent in `study.html`) rather than
+assuming.
+
 ## Bump the version on every change
 
 Two places, and they must match:
 
-- `index.html` — the `<span class="ver">` in the header
+- `index.html` — `var VERSION = "..."` near the top of the app `<script>`,
+  shown via `#verbadge` in the footer (tap it to force an update check)
 - `sw.js` — the `VERSION` constant
 
-The version shows top-right on desktop, so the phone can be checked against
-the build that was pushed. `sw.js` keys its cache on `VERSION`, so if it is
-not bumped, phones keep serving the old cached build and the change appears
-not to have deployed.
+The version shows bottom-centre, so the phone can be checked against the
+build that was pushed. `sw.js` keys its cache on `VERSION` (`phar-hub-` +
+`VERSION`), so if it is not bumped, phones keep serving the old cached build
+and the change appears not to have deployed. `study.html` and `sem.html`
+have no version indicator of their own — they were always meant to be read
+through the shell's, which no longer exists; not worth adding one now for
+two pages reached only by direct URL.
 
 ## Data shape
+
+`study.html` remains the source of truth for content. This section describes
+its shape; the root app's `prescribing-data.js`/`prescribing-data-ext.js`
+follow the same element shapes and are extracted from these same arrays —
+see "Two apps, one dataset" under Layout for how to keep them in sync.
 
 All content lives in `study.html`. It is assembled near the end of the data
 section:
@@ -186,9 +245,9 @@ the repo is safe. The keys:
 
 | Key | Owner | Holds |
 |---|---|---|
-| `phar-hub-v1` | `study.html` | `{box, mcq, osce, exams, days, sem}` |
+| `phar-hub-v1` | `study.html` **and** the root `index.html` (formerly `hub/`) | `{box, mcq, osce, osceRuns, exams, days, sem, steps, right, read, viva}` — same shape in both apps, checked 7 Sep 2026, don't assume it still is without checking `blankStore()`/equivalent in both |
 | `phar-sem2-2026-v2` | `sem.html` | dates, assessments, grades, WIL log (migrates from `-v1`) |
-| `phar-merged-view` | `index.html` | last active tab |
+| `phar-merged-view` | orphaned | Was written by the old iframe shell's tab switcher (Study/Semester toggle). That shell is gone, nothing reads or writes this key anymore — same "inert, safe to ignore" status as a retired PLAN step id |
 
 Study progress is keyed by array **index**, namespaced per semester:
 `"s2:14"`.
@@ -219,7 +278,7 @@ revised (e.g. well-controlled asthma and mild COPD are now eligible). The
 changes summary is in the corpus under "Updates Apr 2026". Prefer current
 criteria over anything older.
 
-## Coverage as at v2026.09.07a
+## Coverage as at v2026.09.07e
 
 Semester 1 — 20 conditions, 143 cards, 91 MCQ, 8 OSCE stations.
 
