@@ -1,85 +1,94 @@
-# Push is failing — and it isn't your credentials
+# Push — one command left for you to run
 
-## What's actually happening
+## Where this got to
 
-```
-ssh: connect to host github.com port 22: Operation timed out
-```
+**Original problem:** every push failed with
+`ssh: connect to host github.com port 22: Operation timed out`.
+Not your credentials — your network was blocking SSH on port 22. Autopush reported
+it as "check credentials", which sent us looking in the wrong place.
 
-Your SSH key is fine and the repo is fine. **Outbound port 22 is being blocked**,
-so git can't reach GitHub at all. Autopush reports this as "check credentials"
-because that's the generic message it prints on any push failure — the message is
-misleading, the log line above is the truth.
+**What I changed:**
 
-Usually this means one of: a network that blocks SSH (hospital, hotel, café, some
-corporate and university wifi), a VPN, or a firewall change. If you were pushing
-fine yesterday and haven't touched any settings, suspect the network you're on.
+1. **The remote now uses GitHub's SSH-over-443 endpoint.** Edited directly in
+   `.git/config` (a plain file — no git command, so no lock left behind):
+   `ssh://git@ssh.github.com:443/uzairqamarr-dot/Pharmacist-Prescribing.git`
+   Same SSH key, same repo, a port almost nothing blocks.
+2. **Autopush now tells the truth when a push fails** — it distinguishes network
+   from authentication from behind-the-remote, instead of blaming credentials for
+   everything. Tested against your exact error output.
 
-**Nothing is lost.** Three commits are sitting locally, committed and safe. They'll
-all go up the moment a push succeeds.
-
-## The fix — one file, keeps your existing key
-
-GitHub also accepts SSH on **port 443**, which almost nothing blocks. Paste this
-into Terminal:
+**Result:** the timeout is gone. It now reaches GitHub on port 443. One thing left:
 
 ```
-mkdir -p ~/.ssh && cat >> ~/.ssh/config <<'EOF'
-
-Host github.com
-  Hostname ssh.github.com
-  Port 443
-  User git
-EOF
+Host key verification failed.
 ```
 
-Then test it:
+`ssh.github.com` is a different hostname from `github.com`, so your `known_hosts`
+doesn't have its key yet, and SSH won't trust an unknown host non-interactively.
 
-```
-ssh -T git@github.com
-```
-
-You want: `Hi uzairqamarr-dot! You've successfully authenticated...`
-
-Then push the backlog:
-
-```
-cd ~/Pharmacist-Prescribing && git push
-```
-
-That's it. Autopush will work normally again afterwards — same key, same remote,
-just a port that isn't blocked.
-
-## If that still fails
-
-Try a different network first — tether to your phone for one push. If it works on
-mobile data, it's definitively the wifi you were on, and the config above is the
-permanent fix.
-
-## Why not switch to HTTPS?
-
-You could, but it means creating a personal access token and storing it. The
-port-443 change keeps your existing SSH key and takes one command. Do that first.
+I can't fix this for you — `~/.ssh` is off limits to me, and I shouldn't be
+deciding which host keys your machine trusts anyway.
 
 ---
 
-## What's waiting to go up
+## The fix — verify, then trust
 
-**v2026.09.07a** — 310 cards, 148 questions (was 252 / 128).
+**Step 1. Fetch the key and look at its fingerprint.**
 
-From your colleague's three PDFs:
+```
+ssh-keyscan -p 443 ssh.github.com 2>/dev/null > /tmp/gh443.pub && ssh-keygen -lf /tmp/gh443.pub
+```
 
-- **Weight management** went from 4 cards to 19 — the app's weakest topic. BMI and
-  waist bands, waist-to-height, the 5As, RED/LED/VLED, the pharmacotherapy table
-  with stopping rules, NHMRC bariatric criteria, red flags, screening tools.
-- **Lipids** +12 — statin intensity table, the 80% rule, stop thresholds and
-  rechallenge, interactions, secondary causes, emerging agents.
-- **Diabetes** +14 — diagnostic thresholds, the HbA1c unit trap, when not to trust
-  an HbA1c, drug-class table, GLP-1 regimens, sick days, Annual Cycle of Care.
-- **Renal reasoning** +7 — the triple whammy explained mechanistically, urea:creatinine,
-  the expected SGLT2i eGFR dip, NSAID–methotrexate, clopidogrel–PPI.
-- **Hypertension** +9 — BP grades, out-of-clinic thresholds, cuff size, inter-arm
-  difference, auscultation areas, dihydropyridine oedema, emergency vs urgency.
+**Step 2. Check what it prints against GitHub's published fingerprints.** At least
+one line must match exactly:
 
-**Four cards contradicted the Queensland protocols already in the app** and were
-corrected before shipping — see the session notes in CLAUDE.md.
+| Type | Fingerprint |
+|---|---|
+| Ed25519 | `SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU` |
+| RSA | `SHA256:uNiVztksCsDhcc0u9e8BujQXVUpKZIDTMczCvj3tD2s` |
+| ECDSA | `SHA256:p2QAMXNIC1TJYWeIOttrVc98/R1BUFWu3/LiyKgUfQM` |
+
+Source: [GitHub Docs — SSH key fingerprints](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints).
+`ssh.github.com` serves the same host keys as `github.com`, so these are the values
+to expect.
+
+**If nothing matches, stop.** Don't continue — that would mean something is
+intercepting the connection, which on a network already blocking port 22 is worth
+taking seriously.
+
+**Step 3. If it matches, trust it and push.**
+
+```
+mkdir -p ~/.ssh && cat /tmp/gh443.pub >> ~/.ssh/known_hosts
+cd ~/Pharmacist-Prescribing && git push
+```
+
+That's it. Autopush works normally from then on.
+
+## Faster if you'd rather not verify by hand
+
+```
+cd ~/Pharmacist-Prescribing && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new" git push
+```
+
+Accepts the key on first use and pushes in one go. Fine on a network you trust;
+the verification route above is better on one you don't — and you're on a network
+that's already doing something unusual.
+
+## What's waiting
+
+**Five commits**, all committed locally and safe. Latest is **v2026.09.07a**:
+310 cards, 148 questions, up from 252 / 128.
+
+- **Weight management 4 → 19 cards** — the app's weakest topic
+- **Lipids +12**, **diabetes +14**, **hypertension +9**, **renal reasoning +7**
+- Four cards that contradicted the Queensland protocols, corrected before shipping
+- A card naming which content is protocol-checked and which rests on a classmate's notes
+
+Once the push lands, open the app and tap the version chip — it should read
+**v2026.09.07a**.
+
+## If it still fails
+
+Tether to your phone and push over mobile data. If that works, it confirms the
+wifi is the problem and the port-443 remote is the right permanent fix.
