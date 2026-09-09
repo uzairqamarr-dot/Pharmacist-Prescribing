@@ -11,7 +11,7 @@ home screen, used often with no signal.
 
 ## Session handover — read this first
 
-**Last worked: 7 September 2026.** Version v2026.09.07e.
+**Last worked: 10 September 2026.** Version v2026.09.10a.
 
 **hub/ was promoted to the site root this session.** The phone's existing
 home-screen icon now opens what used to be `hub/index.html` — a separate
@@ -101,6 +101,16 @@ append-only too**, same rule as `cards` and `mcq`.
   (≤6% on lifestyle+metformin, not ≤6.5%), the remission window (1–2 years, not
   6), and the acceptable ACEi creatinine rise (25%, not 30%). A card now names
   which material is protocol-checked and which rests on one student's notes.
+- **Validate a regenerated `prescribing-data.js` BEFORE autopush can see it.**
+  On 8 Sep a bracket scanner mis-parsed an escaped quote, ran past the end of
+  `COURSE_CARDS` and swallowed `COURSE_MCQ`. Autopush committed and pushed the
+  broken file within its 10-minute interval and the live app was blank for ~15
+  minutes. Always: back up the current good copy, regenerate, `new Function(src)`
+  to check it parses AND confirm all 21 globals are defined, restoring the backup
+  on failure — then bump the version. Extract top-level arrays with the `\n];`
+  terminator, not a bracket scanner; use the scanner only for the objects
+  (`BRIEFS`, `PACKS`, `STOP`, `CVD_*`) and the two `window.__` blobs, and
+  slice-to-next-declaration for `THEMES`, `ANAT` and `SUGS`.
 - **Semester 2 material is NOT in the search corpus.** The indexing IIFE only pushes
   Semester 1 cards, questions and topic bodies into `CORPUS`. Ask the Hub cannot find
   any s2 content. Pre-existing; worth fixing.
@@ -278,11 +288,11 @@ revised (e.g. well-controlled asthma and mild COPD are now eligible). The
 changes summary is in the corpus under "Updates Apr 2026". Prefer current
 criteria over anything older.
 
-## Coverage as at v2026.09.07e
+## Coverage as at v2026.09.10a
 
 Semester 1 — 20 conditions, 143 cards, 91 MCQ, 8 OSCE stations.
 
-Semester 2 — 11 topics, **310 cards, 148 MCQ, 10 OSCE stations, 26 spoken viva
+Semester 2 — 11 topics, **331 cards, 157 MCQ, 10 OSCE stations, 26 spoken viva
 prompts**, plus guided Learn sessions with must-know briefs and per-condition
 prescribing packs. Corpus 1208 chunks (ingested 3 Sep 2026).
 
