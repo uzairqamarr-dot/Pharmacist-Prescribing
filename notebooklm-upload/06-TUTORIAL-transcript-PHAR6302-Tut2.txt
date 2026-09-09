@@ -1,0 +1,585 @@
+[Auto-generated transcript. Edits may have been applied for clarity.]
+with Starry will assume that being on a statin will give you about a 20% reduction in events with a baseline rate of say 20%.
+
+So, our 15% high risk
+
+So what that means is after the next five years, we've got 80 people in the statin group, the other 20 have gone
+
+And 60 people in the placebo group. So we've had more people leave because they weren't on statin therapy, because we know that statins reduce these events.
+
+We then follow this cohort for another 10 years. Let's assume that the rate of dementia is 50%.
+
+So the idea would be is that you've now got 40 people with dementia in the satin arm and 30 people with dementia in the placebo arm
+
+By that logic, 40 is bigger than 30
+
+So statins cause dementia
+
+And that's the mathematical logic or lack thereof, that a lot of these studies that have shown these links have done. So can anyone pick what the glaring error is that we've got in this example?
+
+Nothing to do with dementia
+
+They're already dead, so they can't get dementia.
+
+Bingo, competing risk of death. One of the best ways to prevent dementia in your patients is to ensure that they die before they get it
+
+And the same issue happens with competing risk of death for things like cancer as well, although that's becoming less of a from an epidemiologic perspective
+
+A bit less of a competing risk, because there's actually a number of cardiovascular diseases that have far worse outcomes than most cancers. And so it is a bit of a challenge, but dementia is a really good one in this example.
+
+So if you don't adjust for the competing risk of death, you will always end up showing that there are more people that get dementia in the statin group if you don't weight it against the alive cohort.
+
+Now, when we've subjected this to randomized control data, which is really important because most observational studies, you can adjust for everything that's written down, but you can't adjust for the true selection bias where a prescriber somewhere has made a decision to give or not give a therapy
+
+And so, and this is someone like I do a lot of real world research and I don't like answering questions like this because the selection bias becomes a real big issue. So to give you an example, a really common indicator of mortality is the use of digoxin
+
+in people with advanced heart disease. Now, that would suggest, is it because digoxin causes death
+
+Or is it that this person is so frail and sick that that's the only drug we have left to use? And that's really what we're showing is that digoxin is a sign of frailty, is a sign of being really unwell, and so that's why we're seeing these increased signals
+
+I make the same argument with a lot of the trials going on talking about apixaban being superior to rivaroxaban in observational data
+
+Given the therapeutic fashion that we see in Australia with apixaban over rivaroxaban, my concern in any observational trial is that if you're comparing those patients, I don't believe that they are from the same population.
+
+Chances are they're people that have issues with adherence, they have issues with renal function, they have other issues that are driving their stroke and bleeding risk, rather than it being an effective one drug being superior over the other.
+
+And so an example of this was the clinical trialist collaboration this year published a huge network meta-analysis where they took all of the people that got side effects on the placebo and all of the people that got side effects on the active treatment
+
+And they compared them.
+
+And so this is from the supplement. A piece of advice, you know, for those of you that are really starting to get into reading trials, pharmacists thrive in the supplement
+
+So, when everyone reads the paper, that's what doctors are going through, but the pharmacists are the ones nitpicking through the protocol and the supplement, so that's where the real treasure is in these studies. And so in this instance here, if we look at the top two, either cognitive or memory impairment or dementia, including Alzheimer's
+
+That's 62,000 patients on statins and 62,000 patients on placebo
+
+So this is across multiple trials. We can see that there really isn't much of a difference that we're detecting here.
+
+You know, you're talking about a 14% to 7… 14% decrease to a 7% increase, in rudimentary terms, looking at statin versus placebo.
+
+And so we can then apply that, because again, these trials had mostly younger people in them. We've been lucky enough to have the STAR-E trial published only looking at patients looking at older patients
+
+And when we look at the outcomes for this trial, it was atorvastatin 40 versus placebo in people without previous cognitive impairment, without previous cardiovascular disease of any nature
+
+And this is the main endpoint. And they had a subspecified dementia endpoint to try and help answer this question about statins and dementia.
+
+As you can see, comparing the atorvastatin and placebo group, there's a negligible difference.
+
+In the incidence of dementia in these groups, and the incidence is relatively high, like 1 in 10 people ended up developing dementia by the end of this study.
+
+So it gives you a bit of an idea about, you know how unwell this cohort was or how old of this cohort was compared to sort of your more routine
+
+routine trials and again, if you compare the hazard ratio, that's basically giving you an indication per unit time what the hazard of dementia is in this cohort between one drug versus the placebo, and there is this isn't one
+
+And again, addressing that competing risk of death
+
+We can see that the actual risk of death or cause by atorvastatin placebo is also negligible as well. So this isn't an effect where we were just looking at people that died and didn't die
+
+We've taken that into account, and we can see that there's no difference. So
+
+I think that hopefully will put to bed
+
+They'll always be the naysayers, but this is a really convincing argument that you can talk about as well. Like, we actually published, you know, there was a study published in Australians that were older
+
+using primary prevention statin therapy, we found a reduction in heart attacks, and we found no signal for dementia at all.
+
+And this is, you know, talking about over nearly 10,000 people that we randomized to this. And they were all selected out of GP practices. These are all community dwelling individuals as well.
+
+And lastly, I talked about how cool the supplement is. I just wanted to show this as well.
+
+So this is discontinuation of the study drug over the course of the study
+
+Interestingly, can people see that there's you are more likely to stop the drug on placebo versus if you were on the active
+
+This is just a quick lesson in study interpretation. Anyone want to have a guess? Why more people stop the placebo than they did
+
+The active treatment
+
+People on the treatment felt better. I don't
+
+Yeah, right?
+
+Or people just… people feel like they're just taking a placebo and just think, I'm wasting time.
+
+Maybe, I mean, people don't really feel that much different and you might argue that you're not going to feel any different because you're more likely to maybe have side effects if you're on the active, if we believe that there is a relationship with statins and side effects.
+
+Which, again.
+
+Is it because they had an event so they had to get pulled from the trial and get put on statins after that point?
+
+Magic Sarah, exactly right. So if you have a look here, the number one reason for study drug discontinuation was you had to be commenced on open label statin
+
+And this actually lines up from a causality perspective that this reduced heart attacks by 30%.
+
+So therefore, it makes sense that the increased risk of heart attack in the placebo group meant that they had one and then they had to be put on a statin because you had to in that in that instance, once you had the heart attack, you were out of the trial anyway. So they were free to then add that drug on
+
+So the only reason I like to make this point is that, you know, statin discontinuation
+
+I feel like this figure, if people dig into the supplement, may misappropriate it
+
+In terms of how… how this works. But it is, yeah, it's… if you have a look at the reasons that people, did it, the number one reason was being commenced on an open-label statin
+
+In saying that, almost 1400 were either unwilling or reason unknown
+
+But if you look at the difference between the statins and the placebo, they're actually not too much different. But if you look at the open label statin and the
+
+Let's add the… look at the stat and the placebo group, there's a massive difference.
+
+That's basically why
+
+That was it for me, Kristin, answering those three questions.
+
+Thanks. Thanks, Adam. There was one actually before we get to the chat question, I was working in community pharmacy on Saturday and a patient was being newly initiated on a statin, and I didn't counsel on the risk of rhabdomyolysis, and my intern pulled me up and asked me why. And I said, well, the great Adam Lavori told me
+
+But he does not because the risk of scaring someone off a side effect is worse than planting a seed in their brain. So I thought that was a little interesting anecdote to share.
+
+Yeah, that was good.
+
+Look, it'll be funny if it ever comes back to bite me in the arse and I'm hauled off to Pharmacist jail because all these people have said Adam told me to
+
+Quoting Adam LaVore.
+
+There must have been a student of mine.
+
+I'm in that camp as well. That's one thing I took out of the videos and I…
+
+Awesome.
+
+I was like, I was talking to my my other pharmacist today and saying.
+
+I'm not going to talk to people about muscle pain and muscle weakness anymore, and…
+
+I'm just going to talk to him about, you know, all the benefits of taking their statin and…
+
+Yeah, just guess it up.
+
+Yeah, so, yeah, I thought that was really good.
+
+Thanks, Nick.
+
+Oh, we can be cellmates together in pharmacy jail
+
+Adam, I see that Olga asked about point-of-care testing in, I think it was when we were talking about the pragmatic issues of access to pathologies. So if you had a comment on that.
+
+Absolutely. I mean, the devices are only getting better and better
+
+I guess the challenge that we've got with a lot of these things is just how we fund them appropriately.
+
+I mean, Kristin might be able to speak to this, given her awareness across
+
+Across international sort of pharmacy settings, but point of care testing, is that something that's funded in like the NHS or in other jurisdictions? Do you know?
+
+Kristin for different
+
+Not… I'm not super aware about the funding arrangements per se.
+
+Yeah.
+
+But yeah, I mean, I think that sounds like a good… a good option for us. I think that the first key is just being able to allow us to be able to do a Medicare billable reading, or even before that, just having a really transparent way for us to be able to access these results
+
+I don't know about you guys, but I'm finding it's really patchy. Certain pathology providers seem to be really good with my health record, others don't seem to be as
+
+Like, they don't upload things as well, and it doesn't seem to be because of patient preference. It seems to be just the way that the pathology service provides it
+
+But yeah.
+
+Yeah, thank you. I've got some other discourse happening in the chat as well, so…
+
+I suspect this, here we go from Nader. So we've got a little, Nada done his own case there. So 42 year old male, um, from the Oscore risk, less than 1%, no other risk factors, but high triglycerides, high LDLs.
+
+Low HDLs, trialed a statin couldn't tolerate it due to myalgia. How would we be treating this patient?
+
+So, assuming that there's no familial link that we can discern at all
+
+we're a little bit stuck. We can try and get creative with the way that we use statins, so switch… switch the statin
+
+Small gains you can make, and this is just a rule of thumb.
+
+Ezenim every day and rosuvastatin 10 milligrams once a week gives you about the same lipid lowering effect as being on simvastatin 40 every day
+
+So you can, using rosuvastatin with the longer half-life, maybe if they can just do it twice a week
+
+That's just to give us a little bit of oomph in that HMG-CoA reductase inhibition, as well as being able to try and see how aggressive we can get with dietary interventions as well.
+
+So that's one option. At the moment, our ability to use PCSK9 inhibitors is unfortunately limited until this person has an event
+
+Unless, again, you know, depending on how high that LDL is, that's one of the biggest drivers for your clinic Dutch lipid score.
+
+Which is one of the criteria you can use for accessing them in the FH category.
+
+See what that's… what that's like
+
+I mean, if you really wanted to fudge it, get into eat
+
+You know, egg yolk, four egg yolks a day every day for a month and then get your lipids tested or something and just drive that LDL all the way up. That's
+
+I'm just kidding
+
+Sort of. But yeah, that's another option you've got if you want to try and get him onto or them onto our mail yeah him onto a PCS canine inhibitor.
+
+Yeah, thank you. So then, um, yeah, Anthony, I think that answers your question about the statin once a week, um, cohort there.
+
+And I'll also note that the STARI trial that Adam was speaking about, I literally added into week three readings just this week as it got published on the weekend, so if anyone goes back into week three, it's, um, that reading, um, that Adam was talking about is on Canvas.
+
+And, um, okay, so what point should a statin be de-prescribed?
+
+And I think, yeah.
+
+Yeah, so I've popped a little link in the chat for that. So I was fortunate enough to be involved in a deprescribing guideline that was published earlier this year, and
+
+There's an explanatory document in the medical journal of Australia, but there's a link to the actual deprescribing guideline, which is a website. It does provide some guidance on that
+
+That was done before the starry trial came out. And now what we know from that that starry trial in particular is that while we might not necessarily reduce what we call disability adjusted life years or disability free years
+
+In other words, there's no real difference in whether or not a person's going to live longer. We can see a reduced burden of MI, not so much a reduced burden of stroke, which is interesting, and I think that's probably because of AF mechanisms for stroke
+
+in an older cohort is my theory. I haven't dug into the
+
+the back end of the data that's available yet
+
+And
+
+Yeah, so that sort of that sort of guides that I wrote the part of the statins in there. My theory on this and the starry trial supports what I said, which is nice.
+
+is if you're comfortable with the patient in front of you having a stroke or heart attack, then feel free to discontinue the stat.
+
+Now, that might seem like a crude or joke response, but the reality is there are some people where we're kind of comfortable that something like that is going to happen.
+
+And so, in that instance, that would be… would be my advice. Once you're comfortable with that person, you know, moving into a supportive care arrangement, then
+
+feel free to stop the statin. My argument counter, like my argument to it is that if they're counseled correctly and used appropriately, the side effect burden is minimal
+
+The dementia risk is non-existent. And so
+
+I can almost guarantee there's going to be more medicines that are likely to increase that person's risk of adverse events than the statin
+
+So that's my other, I guarantee there'll be some anticholinergic bingo cards that they've got half filled out that we could probably target, which is going to give us far more benefits for that person's quality of life and time spent out of hospital.
+
+Yep.
+
+Thanks for that, Adam. And we do have that deep prescribing guideline in the readings as well. So if anyone's keen around that section on statin-averse effects, there's more info there.
+
+Um,
+
+Suzanne is Repto side effect more certain in one statin over another. So I'm sure Adam is.
+
+Yeah.
+
+Got a lovely paper to drop in the chat there too.
+
+Look, we definitely can see that there's a dose dependent relationship with with
+
+With true rabdo, true myopathy, which makes sense like with any other in other drugs. So you are more likely to see those. I'd be cautious of anything that's observational purely because unless they have, unless
+
+The way they've met, like, validated rabdo is based on like creatine kinase levels or something like that. It's going to be really hard to
+
+To pick that over a myalgia
+
+So, no, I think there are some people that claim to think that the more
+
+the more lipophilic statins, so like atorvastatin over rosuvastatin, is perhaps more likely to have this, but
+
+Given the side effect is so rare in comparison to the volume of people, I think it'd be a really hard thing to be able to say with any high degree of confidence.
+
+Especially when that Lancet meta-analysis, you know, sort of didn't show that. What I might do
+
+is I'll just share that Lancet meta-analysis. It's obviously in the material as well, but there is some further reading you can do, because they compare
+
+Statin to placebo, but they also compare high-dose statin to low-dose statin, so that might help with addressing your question, Suzanne, as well.
+
+Yeah, thanks. Thanks, Adam. And the last question was about how to tackle multiple risk factors. So feel free to chime in, but these were just kind of my thoughts and a framework in which to approach it would be.
+
+addressing immediate threats first, so someone with uncontrolled hypertension being a higher priority than somebody with stable kind of excess weight.
+
+and dyslipidemia and weight management, so I think it's considering that.
+
+risk first, then moving to considering overall cardiovascular risk, and then potentially targeting factors with the greatest bang for buck, so greatest health impact. And then modifiable risk factors. So what resonated for me when I heard from Adam talking about, you know,
+
+the context of someone having a high triglycerides versus high LDL, and then just they'll always hear, you know, work on your diet, work on your diet, and actually being really, um, grounded in what the realities of success are going to be for that patient, dependent on their pathology, for
+
+blanket recommendations like diet and diet, you know, diet modifications. So I think being able to articulate that to patients and prioritize interventions that are achievable, that are meaningful, and that aren't going to make them feel like.
+
+Nothing's working for them. Anyone have any other thoughts or does that kind of feel like a good framework for your addressing someone and you've got multiple risk factors?
+
+I like, um, that last point you made a lot, because, um…
+
+You know, sometimes people can get overwhelmed, and I think it's good to be able to say to someone, you know,
+
+You know that it's, it's like, they're allowed to focus on the things that matter.
+
+to them, and then they feel that they can actually…
+
+Um, make a… make a difference in themselves, or where they can make a change, like…
+
+They may look at something like physical activity and go, there's no way I'm going to be able to.
+
+It's just not my thing, I'm not gonna do it.
+
+Um, but they might be able to make a, you know, dietary change or.
+
+They might have wanted to stop smoking for years and just
+
+Not had the incentive to do it.
+
+So there could be a whole range of other things.
+
+But yeah.
+
+Yeah, got it. I don't know, but I use the saying, um, eat the elephant, just one bit at a time, right? It's kind of how you got to go about it.
+
+Yeah.
+
+I tend to go backwards. I've got clinic tomorrow, so I'll be working with people that have had recent heart attacks, and I'll sort of start from the things they don't have
+
+So I'll say, you know, when we're talking about our full five of our risk factors, like let's say if I was talking, like, talking to yourself, Nicholas might be able to sort of go through and go, you know, look.
+
+First thing that we sort of worry about is diabetes. You don't have diabetes, so tick, we've already got that covered. You're still incredibly young, so we know that age isn't a big part that we need to do, and it's not really a risk factor we can control anyway. Most people get chuffed when you make a comment about them feeling young, because I've spent
+
+The last couple of weeks in hospital or they spent days in hospital feeling like an old person that's had a heart attack or something. And then moved to the next one. And so that's when we go, look, you know, the main driver that's going to be making you feel worse, but also make the biggest difference to your risk is your smoking
+
+And so then we sort of talk about that
+
+I really like your approach, Kristin, with regards to uncontrolled hypertension. I think that's really important.
+
+The other thing you can sort of show them as well is if you are using that old CBD risk calculator, it does have the option to show what happens between smoking, cholesterol, and blood pressure.
+
+So you can always show them and go, these are the differences that we're likely to see with your particular risk factors.
+
+Is there anything that sort of, you know, that resonates with you? We know that both blood pressure and statins are going to be a tablet, you know, you're going to have to take a pill to manage things
+
+And yeah, sort of work through that way. But I like to start off with the things they don't have, or the risk factors they do have well controlled and then build up towards the last things that we need to focus on.
+
+Yeah.
+
+As well. So make sure you're always addressing all the risk factors, so they don't think that
+
+You know, the only 3 problems are the problems they have. And then sort of work around it that way as well.
+
+Yeah, easy wins. Okay, so we answered those questions and I'm not going to send us into breakout rooms because I'm cognizant of the time. But, you know, the opportunity to have these kinds of conversations with somebody working in clinics like Adam does is pretty.
+
+you know, doesn't come around very often, so we could always dig into the cases at a later date, so just making hay whilst the sun's shining. But maybe let's just do one case before we kind of get into the wrap-up. So, looking at Georgette, who is
+
+52 has type 2 diabetes, has an LDL of 3.1, non-smoker, no previous cardiovascular disease, and her father had an MI at age 54.
+
+So just curious about what people's thoughts are and how they would.
+
+address these kinds of data points to making an assessment for Georgette.
+
+Anyone want to have a jumping and kind of talk through the risk factors?
+
+Without putting in a calculator, I'm just assuming this is roughly an intermediate risk to potentially high risk with a family, father, with a previous event.
+
+I probably pull into a room, do an official assessment and risk assessment, show her visually what it looks like with the one in 100 people
+
+But I'll also use the communication techniques to not over accommodate or under-accommodate when I talk to her
+
+And basically, yeah, go find out what the risk is, find out what modifiable risk factors she may have, if any, she's non-smoker, but she is diabetic, so we can see how that's controlled
+
+And…
+
+find weights and waist circumference and discuss them
+
+Yeah, absolutely. Absolutely.
+
+Yes, start with what she… start with what she doesn't have. Old age.
+
+Yeah.
+
+So yeah, so I suppose an official risk assessment consultation.
+
+How do you think, Adam, if he was in your clinic and you were watching Nada speak to Georgette and that was the approach, or what are your thoughts?
+
+Yeah, that's awesome. Interestingly, like there's no blood pressure here if we assume, let's say, I think when I played around with it, I think I made the assumption that her blood pressure was 130.
+
+Actually comes back as a 2% risk
+
+And that shows you how powerful the impact of age is in terms of how it drives her risk.
+
+And that's why when I use the calculator, she had about a 37% lifetime risk.
+
+of cardiovascular, which is still actually not too bad. I've used it on some of my patients, and they're coming back at, like, 75% chance of cardiovascular disease.
+
+But no, I think your approach is really good and this may be seeing what her thoughts and goals are.
+
+You know, she's approaching the age where her father had the heart attack.
+
+Assuming her father's sort of 30-year, 20 to 30 years older than her, but his experience of his heart attack is going to be vastly different to what her experience would be now and his experience probably would have been a lot more traumatic.
+
+I imagine
+
+Oh, sorry, so then Georgia
+
+is now taking rosuvastatin.
+
+And her LDL has now come back at 2.4. So what are our thoughts about that, Nader, as to how she's responded to the rosuvastatin?
+
+Did I hear Adam in the podcast say we don't treat targets
+
+So it looks like she's responding well. I suppose I would want to know more about
+
+Pardonians, whether this is driven by endogenous or exogenous
+
+Cholesterol. If it is something that might be diet related and is unable or unwilling to change, maybe an acetamide addition could help with the exogenous intake.
+
+Maybe
+
+Of course, we can always trial increasing the receiver, but if she's responding… I suppose the first question is, how long is that… how long was she on that before that drop happened
+
+Yeah.
+
+Whereas maybe we stayed the course a little bit longer
+
+Yeah.
+
+I've been kind of intentionally vague just to kind of draw out those things. So yeah, timeframe and other basic things like, you know, is she taking it? Has her sister told her that it causes dementia? So all those kinds of factors could definitely
+
+be at play. And then I think, yeah, the other cases, you know, I think maybe everybody can have a play around with them in the next little while and potentially we can chat about them at the beginning of the next tutorial. So there's case
+
+to their case three and case four. So I might just leave those… actually, no, let's do case four.
+
+Um, and maybe just have a… someone can have a crack at, um, how they might speak to this particular patient. So we'll leave cases 2 and 3 for, um, discussion at the beginning of the next tutorial, but I think just in terms of all that we've discussed today, whilst it's fresh in our minds,
+
+58-year-old patient with statin prescribed to them has said, "I've watched several experts online who say cholesterol isn't the problem. I've read that statins are dangerous and the industry has exaggerated the benefits.
+
+So I thought this was a nice case because it kind of dovetails between, um, some of the things that, uh, Alison was, uh, really highlighting in the previous tutorial. Anyone want to have a, a, um, an attempt at how they might handle this particular conversation?
+
+You're going to see on my screen.
+
+Emma, Dave.
+
+Anyone?
+
+I suppose the first thing I would do, maybe I'm not well equipped to answer the whole thing, is just really go with an approach of curiosity, try and get him to unpack what his concerns are. Is it about big pharma? Is it
+
+You know, I don't know, but just listen for a little bit to try and gather the information so that I can sort of direct where I'll go next.
+
+Okay.
+
+Yeah, bingo, the curiosity, that's the word I was chasing for in this answer. So yeah.
+
+Yay.
+
+Yes.
+
+Maybe you need to tell her that she's young still.
+
+The Ted Lasso approach. I like it.
+
+And then often.
+
+Yeah, I mean, I've seen some wacky things in my algorithm of people feeding butter sticks to toddlers. So, you know, it's all kind of out there.
+
+Lots to unpack.
+
+I suppose
+
+It's
+
+And then you can offer her a COVID vaccine.
+
+Yeah.
+
+It's hard because you just really want to jump in and tell them, no, please take this like and it's really hard to sort of hold back. And just yeah, I find that really hard when you know the benefits and yeah
+
+Yeah. And I think it's kind of like the same golden minute kind of mentality plays into here of just…
+
+tease it out, and maybe it isn't today that you're going to have the win, but you're planting the seeds of a win down the track for sure. Thanks.
+
+But it's also often maybe like you will have patients who absolutely will not agree to a statin. So then you have to perhaps pivot and think, okay, well, if you're not going to have that, what are my other options and what can I give you that's going to give you some sort of improvement in your outcomes when you completely adamant that you've read so much, you will not take this particular
+
+Killer medication.
+
+Yeah, yeah. So yeah, I love that idea, Sarah, about, you know, if you're not going to win on that front, try and engage the battle on another front and see what wins can be made. I really love that.
+
+Okay, so just a quick few bits and bobs as well, so just an assessment check-in. Um, so we are now week three. Week 4 quiz is next week, and that's content from weeks one to four.
+
+Assessment 2, so I've been receiving lots of questions about the chronic Condition Action Plan, and I've been posting all my responses to students de-identified on the discussion board, just in the interest of fairness, and getting everyone the same information, because I figure if someone's thinking it,
+
+you a bunch of others haven't as well, so if you haven't dug into that assessment yet, and you do, and you have a few questions, I'd really encourage you to go to the discussion board first.
+
+Assessment to be very similar to those who've done 301 in the VIVA that we did with that, but my Excel spreadsheet with everybody's schedules is now available online, so similar process, um, if you have been allocated a time that doesn't work for you,
+
+please try and swap with someone else, and there's a date up until we're accepting swaps with.
+
+I'll do my best to accommodate those and then just email me with the swaps with the other person who has agreed to the swap with you.
+
+And finally, assessment three is in week nine, and that is on all the details are available online for that as well. So hopefully some time in the mid-semester break will be when everybody kind of digs into that one, I think.
+
+Okay.
+
+So case four, like I was saying, with that particular patient, the ideas from 6201 and 6202, I think really crop up in that patient, and I think it's why it's such a nice case to bring all the different concepts that we have been covering
+
+Both in first semester and in second semester, because that's a really nice case that's grounded in a lot of clinical meat, but you aren't going to get very far if you're having, um, you know, not even be able to engage in the basics with a patient.
+
+Okay, so just thought
+
+I'd wrap up again a little bit now. So hopefully what we've covered today is feeling more comfortable with interpreting lipid pathology, being able to spot patients who can benefit from therapy, confident in a framework for starting or modifying therapy.
+
+able to explain trade-offs, the risks, if the risks are what the um you know are grounded in evidence or not and the benefits of therapy, addressing misinformation and participating in future prescribing modelling.
+
+So today, basically the point was reasoning, clinical reasoning, and today's cases and discussions are going to mirror the reasoning process that we look for in OSCE examinations, and more importantly, hopefully mirroring the reasoning you'll need as a pharmacist, prescriber.
+
+managing dyslipidemia in practice.
+
+And in the interest of time, maybe just a silent reflection for one thing from today's discussion that's changed your thinking or practice around lipids. And one area of lipid management that you might remain uncertain about, so maybe when you're engaging with
+
+cases two and three.
+
+free to pop on the discussion boards anything that you wish to be covered in tutorial 3, so hopefully we can close the loop there and answer any questions similar to what we did. I really think that's a nice way to make the best of our time together like we did today.
+
+Starting off with, these were the questions I got at the end of last tutorial and that I've received in the interim, and we can dig into them all together, because I feel like that is really the best way to go about it.
+
+And I'll finish on this slide that I stole from Alison, because I think it's great. So this is the tutorial schedule. You can see, guys, we're already a third of the way through, so well done. And I really like to thank Adam so much for his time today and making himself available.
+
+Round of applause for Adam, everybody. It's so wonderful to listen to him. If you didn't feel like you got enough of Adam, he is in the podcast playlist on the Purple Pen episode with him. So yeah, thank you so much, Adam, and thank you, Alison, and thank you everybody for
+
+for joining us this evening.
+
+Happy Tuesday!
+
+Catch you all later.
+
+Oh, we didn't we missed… I'm sorry, I missed Anthony's question. How much is Rapatha privately? It's like thousands, isn't it, Adam?
+
+I don't think it's like an osmpic situation, unless you're…
+
+properly.
+
+Yeah, just having a look, it's $630 for the pen
+
+And that'd give you
+
+Three packs
+
+Yeah, it's
+
+Okay, not as Ixy as I thought. Okay.
+
+Yeah.
+
+It's… yeah, it's not as… not as prohibitive as you might think. I mean, you know, I guess compared to, like, Manjaro, you can't dose click or anything like that, so you can't aliquot your doses out with a higher concentration.
+
+They've closed that loophole too.
+
+How?
+
+Um, the, the new pen, the new delivery pen, there's no more fifth dose.
+
+Oh yeah, yeah, yeah
+
+Oh, you mean in terms of you can still dial up your doses? Yes. Oh, yeah, yeah, yeah. No, so I thought we were talking about something else. Yeah.
+
+Yeah, so no, so, like, the, like, like, for Tezepatide, your
+
+You can monitor your out-of-pocket drug cost because the price doesn't scale linearly with the increase in concentration
+
+Yes, yeah, yeah.
+
+Absolute pleasure.
+
+Alrighty. Well, again, thank you so much. Really appreciate the time tonight, Adam.
+
+Bye.
+
+Thanks so much for having me. Take care.
+
