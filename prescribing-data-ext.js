@@ -261,6 +261,7 @@ var LINKS = [
     {n:"Heart Foundation — BMI calculator", u:"https://www.heartfoundation.org.au/BMI-calculator", w:"Quick BMI calculation during a consultation.", t:"Tool"}
   ]},
   {id:"path", name:"Interpreting pathology", blurb:"Reference level, treatment target and exclusion threshold are three different lines. Know which one a question is asking about before you answer it.", items:[
+    {n:"QLD Chronic Conditions Manual — dyslipidaemia", u:"https://www.ccm.health.qld.gov.au/management-of-diagnosed-conditions/dyslipidaemia", w:"Diagnosis and management, with the secondary-causes table. Note its Table 1 diuretics row and its own prose disagree on triglyceride direction — see the flashcard.", t:"AU guideline"},
     {n:"Pathology Tests Explained — lipid profile", u:"https://ptex.au/ptests.php?q=Lipid+profile+%28cholesterol+and+triglycerides%29", w:"Australian plain-language explanation of what each lipid test measures and why it is ordered. Good for explaining a result to a patient.", t:"AU guideline"},
     {n:"Victor Chang — high cholesterol", u:"https://www.victorchang.edu.au/heart-disease/high-cholesterol", w:"Lab flagging levels and on-treatment targets in table form. Patient-facing, and its risk-band LABELS do not match the protocol — see the flashcard on this.", t:"Background"},
     {n:"Glucose and HbA1c unit conversion", u:"https://heartcare.sydney/glucose-unit-conversion/", w:"Converting between mmol/mol and %, and mmol/L and mg/dL. Useful when a source quotes HbA1c in the units you do not use.", t:"Tool"},
