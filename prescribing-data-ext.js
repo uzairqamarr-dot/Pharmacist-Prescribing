@@ -260,6 +260,12 @@ var LINKS = [
     {n:"Dept of Health, Disability and Ageing — BMI and waist measurement", u:"https://www.health.gov.au/topics/overweight-and-obesity/bmi-and-waist", w:"How to measure and interpret waist circumference and BMI. The course names this specifically as the standard to measure against.", t:"AU guideline"},
     {n:"Heart Foundation — BMI calculator", u:"https://www.heartfoundation.org.au/BMI-calculator", w:"Quick BMI calculation during a consultation.", t:"Tool"}
   ]},
+  {id:"path", name:"Interpreting pathology", blurb:"Reference level, treatment target and exclusion threshold are three different lines. Know which one a question is asking about before you answer it.", items:[
+    {n:"Pathology Tests Explained — lipid profile", u:"https://ptex.au/ptests.php?q=Lipid+profile+%28cholesterol+and+triglycerides%29", w:"Australian plain-language explanation of what each lipid test measures and why it is ordered. Good for explaining a result to a patient.", t:"AU guideline"},
+    {n:"Victor Chang — high cholesterol", u:"https://www.victorchang.edu.au/heart-disease/high-cholesterol", w:"Lab flagging levels and on-treatment targets in table form. Patient-facing, and its risk-band LABELS do not match the protocol — see the flashcard on this.", t:"Background"},
+    {n:"Glucose and HbA1c unit conversion", u:"https://heartcare.sydney/glucose-unit-conversion/", w:"Converting between mmol/mol and %, and mmol/L and mg/dL. Useful when a source quotes HbA1c in the units you do not use.", t:"Tool"},
+    {n:"HEART UK — HDL cholesterol", u:"https://www.heartuk.org.uk/educational-content/hdl-cholesterol", w:"Background on HDL biology. A United Kingdom charity — the science transfers, the thresholds and guidelines do not. Do not quote its numbers as Australian practice.", t:"Background"}
+  ]},
   {id:"ref", name:"Medicines reference", blurb:"None of these are in your uploaded sources, so anything you take from them has to be cited to them. When a question needs renal dosing, a full contraindication list or an interaction table, this is where it lives.", items:[
     {n:"Australian Medicines Handbook (AMH Online)", u:"https://amhonline.amh.net.au/", w:"Doses, renal and hepatic adjustment, contraindications, interactions, practical prescribing notes. Subscription.", t:"Drug reference"},
     {n:"Therapeutic Guidelines (eTG)", u:"https://www.tg.org.au/", w:"Condition-based treatment guidance. The hypertension protocol explicitly refers you here for secondary causes. Subscription.", t:"Drug reference"},
