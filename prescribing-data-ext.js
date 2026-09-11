@@ -256,6 +256,10 @@ var LINKS = [
     {n:"Diabetes Australia — Aboriginal and Torres Strait Islander resources", u:"https://www.diabetesaustralia.com.au/aboriginal-torres-strait-islander-people/", w:"Culturally tailored patient education material for diabetes.", t:"AU guideline"},
     {n:"Johns Hopkins Center for Indigenous Health — Together on Diabetes", u:"https://cih.jhu.edu/together-overcoming-diabetes-health-through-coaching-and-culture/", w:"Coaching and culture model for diabetes care. Useful framing, but a United States program — do not cite it as Australian practice.", t:"Background"}
   ]},
+  {id:"assess", name:"Assessment and measurement", blurb:"Week 3 asks you to measure and interpret, not just to prescribe. These are the references the course names for doing it correctly.", items:[
+    {n:"Dept of Health, Disability and Ageing — BMI and waist measurement", u:"https://www.health.gov.au/topics/overweight-and-obesity/bmi-and-waist", w:"How to measure and interpret waist circumference and BMI. The course names this specifically as the standard to measure against.", t:"AU guideline"},
+    {n:"Heart Foundation — BMI calculator", u:"https://www.heartfoundation.org.au/BMI-calculator", w:"Quick BMI calculation during a consultation.", t:"Tool"}
+  ]},
   {id:"ref", name:"Medicines reference", blurb:"None of these are in your uploaded sources, so anything you take from them has to be cited to them. When a question needs renal dosing, a full contraindication list or an interaction table, this is where it lives.", items:[
     {n:"Australian Medicines Handbook (AMH Online)", u:"https://amhonline.amh.net.au/", w:"Doses, renal and hepatic adjustment, contraindications, interactions, practical prescribing notes. Subscription.", t:"Drug reference"},
     {n:"Therapeutic Guidelines (eTG)", u:"https://www.tg.org.au/", w:"Condition-based treatment guidance. The hypertension protocol explicitly refers you here for secondary causes. Subscription.", t:"Drug reference"},
