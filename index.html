@@ -1229,6 +1229,54 @@ R.progress = function(v){
 };
 
 /* ---------- SEARCH (offline over __CORPUS__) ---------- */
+/* ---------- LINKS: categorised resource directory ----------
+   Anchors only. Nothing here touches the network until a link is tapped,
+   so the pane itself works with no signal. */
+var linkCat = "all";
+R.links = function(v){
+  var h = '<h1>Links</h1><p class="muted">Where to look things up, grouped by condition. ' +
+          'The badge tells you what kind of source it is &mdash; <b>Governs practice</b> decides whether you <i>may</i> act, ' +
+          'everything else tells you what is clinically appropriate. When they disagree, scope wins.</p>';
+
+  h += '<div class="card"><h2>Which one do I reach for?</h2><div class="body">' +
+       '<p><b>Choosing a lipid-lowering medicine</b> &rarr; Heart Foundation pharmacological lipid management. ' +
+       'Then the QLD dyslipidaemia protocol to check it is within scope.</p>' +
+       '<p><b>Escalating diabetes treatment</b> &rarr; the ADS Australian T2D glycaemic management algorithm (June 2024).</p>' +
+       '<p><b>Monitoring treatment response</b> &rarr; the QLD protocol for the condition &mdash; it sets the review intervals and ' +
+       'the results that change your action. The ADS algorithm adds the 3-month review rule for glucose.</p>' +
+       '<p><b>During a consultation</b> &rarr; whichever is one page. The COPD-X Handbook and the ADS algorithm are built for ' +
+       'point of care; a 324-page national guide is not.</p>' +
+       '<p class="small muted">You are not expected to memorise these. You are expected to know which one answers which question.</p>' +
+       '</div></div>';
+
+  h += '<div class="row" style="margin:14px 0 4px">' +
+       '<button type="button" class="chip' + (linkCat === "all" ? " on" : "") + '" data-lkf="all">All</button>';
+  for (var i = 0; i < LINKS.length; i++)
+    h += '<button type="button" class="chip' + (linkCat === LINKS[i].id ? " on" : "") +
+         '" data-lkf="' + esc(LINKS[i].id) + '">' + esc(LINKS[i].name.split(" — ")[0]) + '</button>';
+  h += '</div>';
+
+  var shown = 0, c, j, it;
+  for (i = 0; i < LINKS.length; i++){
+    c = LINKS[i];
+    if (linkCat !== "all" && linkCat !== c.id) continue;
+    shown++;
+    h += '<div class="card"><h2>' + esc(c.name) + '</h2>';
+    if (c.blurb) h += '<p class="small muted">' + esc(c.blurb) + '</p>';
+    for (j = 0; j < c.items.length; j++){
+      it = c.items[j];
+      h += '<div class="listrow" style="display:block;padding:10px 0">' +
+           '<a href="' + esc(it.u) + '" target="_blank" rel="noopener noreferrer"><b>' + esc(it.n) + '</b></a> ' +
+           '<span class="pill">' + esc(it.t) + '</span>' +
+           '<div class="small muted" style="margin-top:4px">' + esc(it.w) + '</div></div>';
+    }
+    h += '</div>';
+  }
+  if (!shown) h += '<div class="card"><p class="muted">Nothing in that category yet.</p></div>';
+  h += '<p class="small muted">Links open in your browser and need signal. Everything else in this app works offline.</p>';
+  v.innerHTML = h;
+};
+
 R.search = function(v){
   var h = '<h1>Search</h1><div class="card"><input id="sq" type="search" placeholder="Search the whole course offline…" autocomplete="off">' +
           '<div class="row" style="margin-top:10px">';
@@ -1288,6 +1336,8 @@ document.addEventListener("click", function(ev){
   function has(){ for (var i = 0; i < arguments.length; i++) if (b.getAttribute(arguments[i]) != null) return true; return false; }
 
   if (b.getAttribute("data-more") != null){ openSheet(); return; }
+  /* Links pane category filter */
+  if (b.getAttribute("data-lkf") != null){ linkCat = b.getAttribute("data-lkf"); R.links(v); return; }
   if (b.getAttribute("data-go") != null){
     var arg = b.getAttribute("data-arg");
     if (arg && cur.tab !== b.getAttribute("data-go")){ /* carry arg into target screen */
