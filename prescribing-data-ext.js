@@ -206,3 +206,60 @@ COURSE_CARDS.push(
       t: strip(all[j][1]) + " " + strip(all[j][2])});
 })();
 /* note: Weeks 3-4 block = 34 cards, case-study block = 24 cards */
+
+/* ============================================================================
+   LINKS — categorised resource directory (added 12 Sep 2026)
+   Top level, outside the IIFE above, so `LINKS` is a global for index.html.
+   Anchors only: nothing here fires a network request until the user taps it,
+   so the app still works fully offline.
+   Every URL below was either supplied by Uzair from course materials or
+   verified before being added. Do not add a URL you have not opened.
+   Shape: {id, name, blurb, items:[{n, u, w, t}]}
+     t = tier badge: "Governs practice" | "AU guideline" | "Tool" |
+                     "Drug reference" | "Background"
+   ========================================================================= */
+var LINKS = [
+  {id:"start", name:"Start here — what governs what you may do", blurb:"The pilot protocols are the document that decides whether you may act. Guidelines tell you what is clinically appropriate; the protocol tells you what is within your scope. When they differ, scope wins.", items:[
+    {n:"QLD pilot — clinical protocols (all conditions)", u:"https://www.health.qld.gov.au/clinical-practice/guidelines-procedures/community-pharmacy-pilots/resources/clinical/protocols", w:"Eligibility, exclusions, what you may prescribe, referral criteria. Updated 7 April 2026 — check you are reading the current version.", t:"Governs practice"},
+    {n:"QLD pilot — chronic conditions handbook", u:"https://www.health.qld.gov.au/__data/assets/pdf_file/0012/1451001/chronic-conditions-pilot-handbook.pdf", w:"How the pilot operates around the protocols: documentation, notification, the service model.", t:"Governs practice"},
+    {n:"QLD pilot — all clinical resources", u:"https://www.health.qld.gov.au/clinical-practice/guidelines-procedures/community-pharmacy-pilots/resources/clinical", w:"Forms, consent, referral templates and supporting documents.", t:"Governs practice"},
+    {n:"QLD pilot — about", u:"https://www.health.qld.gov.au/clinical-practice/guidelines-procedures/community-pharmacy-pilots/about", w:"Scope of the pilot and which programs exist. Useful orientation for an assignment intro.", t:"Governs practice"}
+  ]},
+  {id:"cvdrisk", name:"Absolute CVD risk", blurb:"Risk band decides the treatment threshold, so this comes before any drug decision. Remember the two frameworks use different band labels for the same numbers.", items:[
+    {n:"AusCVDRisk calculator", u:"https://www.cvdcheck.org.au/calculator", w:"The calculator itself. Use CLINIC readings — home or ambulatory figures underestimate risk.", t:"Tool"},
+    {n:"2023 Australian CVD risk guideline", u:"https://www.cvdcheck.org.au/", w:"The guideline behind the calculator. Supersedes the 2012 absolute risk guidelines.", t:"AU guideline"},
+    {n:"Heart Foundation — CVD risk guideline hub", u:"https://www.heartfoundation.org.au/for-professionals/guideline-for-managing-cvd", w:"Heart Foundation landing page for the 2023 guideline and calculator.", t:"AU guideline"}
+  ]},
+  {id:"htn", name:"Hypertension", blurb:"The 2016 Heart Foundation guideline is what the module quizzes are built on. The QLD protocol is what decides whether you may treat.", items:[
+    {n:"Heart Foundation — hypertension (professionals)", u:"https://www.heartfoundation.org.au/for-professionals/hypertension", w:"The 2016 guideline for diagnosis and management. Initiation thresholds by risk band, targets, the Figure 6.1 and 6.2 algorithms.", t:"AU guideline"}
+  ]},
+  {id:"lipid", name:"Lipids and dyslipidaemia", blurb:"Reach for the Heart Foundation toolkit page to CHOOSE an agent; reach for the QLD protocol to check whether you may prescribe it.", items:[
+    {n:"Heart Foundation — pharmacological lipid management", u:"https://www.heartfoundation.org.au/heart-health-check-toolkit/pharmacological-lipid", w:"Selecting a lipid-lowering medicine: agent choice, intensity, targets. This is the one for the question about choosing a lipid medicine.", t:"AU guideline"},
+    {n:"QLD pilot — dyslipidaemia protocol (PDF)", u:"https://www.health.qld.gov.au/__data/assets/pdf_file/0014/1451102/cvd-dyslipidaemia-protocol.pdf", w:"Eligibility, exclusions, what a pharmacist may prescribe under the Lipid Modification Program, and referral triggers.", t:"Governs practice"}
+  ]},
+  {id:"bgl", name:"Blood glucose and type 2 diabetes", blurb:"The ADS algorithm is the escalation map. The QLD protocol is the scope boundary. They answer different questions — do not substitute one for the other.", items:[
+    {n:"ADS — Australian T2D glycaemic management algorithm (June 2024)", u:"https://www.diabetessociety.com.au/updated-t2d-algorithm-june-2024/", w:"How to ESCALATE treatment: monotherapy to dual to multiple therapies, with the PBS combination rules. This is the one for the escalation question.", t:"AU guideline"},
+    {n:"Diabetes Australia — health professional guidelines", u:"https://www.diabetesaustralia.com.au/health-professional-guidelines/", w:"Guideline hub, including the Living Evidence Guidelines in Diabetes that the ADS algorithm is read alongside.", t:"AU guideline"}
+  ]},
+  {id:"asthma", name:"Asthma", blurb:"", items:[
+    {n:"Australian Asthma Handbook", u:"https://www.asthmahandbook.org.au/", w:"Australia's national asthma guidelines. Stepwise management, device technique, action plans.", t:"AU guideline"},
+    {n:"Asthma and COPD overlap", u:"https://www.asthmahandbook.org.au/clinical-topics/asthma-and-copd", w:"For the patient who does not sit cleanly in one condition — relevant to the breathless-smoker OSCE station.", t:"AU guideline"}
+  ]},
+  {id:"copd", name:"COPD", blurb:"", items:[
+    {n:"COPD-X Plan", u:"https://copdx.org.au/", w:"Australia and New Zealand COPD guidelines. Updated quarterly, so check the version.", t:"AU guideline"},
+    {n:"COPD-X Handbook (Lung Foundation)", u:"https://lungfoundation.com.au/support-resources/resource-hub/copd-x-handbook/", w:"Point-of-care summary of COPD-X, mobile friendly. This is the one to have open during a consultation.", t:"AU guideline"},
+    {n:"Lung Foundation — clinical tools and resources", u:"https://lungfoundation.com.au/lung-diseases/copd/health-professionals/clinical-tools-and-resources/", w:"Action plans, device technique checklists, patient-facing material.", t:"AU guideline"}
+  ]},
+  {id:"cultural", name:"Culturally safe care", blurb:"Directly assessed — there is an OSCE station on culturally safe shared decision-making. Cultural safety is judged by the person receiving care, not by the clinician providing it.", items:[
+    {n:"NACCHO and RACGP — National guide to preventive healthcare for Aboriginal and Torres Strait Islander people (4th ed)", u:"https://www.naccho.org.au/", w:"Screening recommendations, preventive healthcare, risk factor management. The 324-page fourth edition is in your uploads.", t:"AU guideline"},
+    {n:"Australian Indigenous HealthInfoNet", u:"https://healthinfonet.ecu.edu.au/", w:"Epidemiology, health information, culturally appropriate resources. Good for the statistics an assignment intro needs.", t:"AU guideline"},
+    {n:"Diabetes Australia — Aboriginal and Torres Strait Islander resources", u:"https://www.diabetesaustralia.com.au/aboriginal-torres-strait-islander-people/", w:"Culturally tailored patient education material for diabetes.", t:"AU guideline"},
+    {n:"Johns Hopkins Center for Indigenous Health — Together on Diabetes", u:"https://cih.jhu.edu/together-overcoming-diabetes-health-through-coaching-and-culture/", w:"Coaching and culture model for diabetes care. Useful framing, but a United States program — do not cite it as Australian practice.", t:"Background"}
+  ]},
+  {id:"ref", name:"Medicines reference", blurb:"None of these are in your uploaded sources, so anything you take from them has to be cited to them. When a question needs renal dosing, a full contraindication list or an interaction table, this is where it lives.", items:[
+    {n:"Australian Medicines Handbook (AMH Online)", u:"https://amhonline.amh.net.au/", w:"Doses, renal and hepatic adjustment, contraindications, interactions, practical prescribing notes. Subscription.", t:"Drug reference"},
+    {n:"Therapeutic Guidelines (eTG)", u:"https://www.tg.org.au/", w:"Condition-based treatment guidance. The hypertension protocol explicitly refers you here for secondary causes. Subscription.", t:"Drug reference"},
+    {n:"PBS", u:"https://www.pbs.gov.au/", w:"Subsidy status, restrictions, authority requirements, streamlined codes. Decides whether your clinically correct choice is actually affordable.", t:"Drug reference"},
+    {n:"TGA", u:"https://www.tga.gov.au/", w:"Product information, approved indications, boxed warnings, safety alerts and shortages.", t:"Drug reference"}
+  ]}
+];
