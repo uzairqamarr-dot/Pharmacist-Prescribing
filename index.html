@@ -222,7 +222,7 @@ button.chip{min-height:36px}
    Prescribing Study Hub — app script (ES5, no dependencies)
    ================================================================ */
 "use strict";
-var VERSION = "v2026.09.14b";
+var VERSION = "v2026.09.14c";
 var LSKEY = "phar-hub-v1";
 var DAY = 86400000;
 var INT = [0, 0, 1, 3, 8, 21];          /* Leitner intervals (days), boxes 1..5 */
@@ -561,7 +561,7 @@ R.learn = function(v, arg){
   var sem = cur.sem;
   if (arg) { learn = {cond: arg, stage: 0, missed: [], q: 0, fixQ: []}; }
   if (!learn.cond){
-    var h = '<h1>Learn</h1><p class="muted">Pick a topic. Each session: read the brief, recall cards, test with MCQs, then fix anything missed. About 15 minutes.</p>';
+    var h = '<h1>Study</h1><p class="muted">Pick a topic. Each session: read the brief, recall cards, test with MCQs, then fix anything missed. About 15 minutes.</p>';
     var dl = nearestDeadline(), cov = dl && dl.cov ? dl.cov : [];
     for (var i = 0; i < DATA[sem].conds.length; i++){
       var c = DATA[sem].conds[i], r = topicReadiness(sem, c.id);
@@ -1353,7 +1353,7 @@ R.cond = function(v){
   h += step(6, "Pharmacotherapy", rxh);
 
   h += step(7, "Counsel and self-care", bullets((p.counsel || []).concat(p.self || [])));
-  h += step(8, "Safety-net &mdash; what sends them back or onward", bullets(p.safety));
+  h += step(8, "Safety-net — what sends them back or onward", bullets(p.safety));
   h += step(9, "Review", '<p>' + raw(p.review || "Not recorded.") + '</p>');
 
   h += '<div class="card"><h2>Practise this one</h2><div class="body">';
