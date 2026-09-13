@@ -1257,6 +1257,116 @@ R.progress = function(v){
 };
 
 /* ---------- SEARCH (offline over __CORPUS__) ---------- */
+
+/* ---------- CONDITIONS: the QLD protocol walked through in order ----------
+   One page per Program condition, sequenced the way a consultation runs and
+   the way the protocol is written: scope first, then history and examination,
+   then measurement, then plan, then prescribe, then counsel, safety-net and
+   review. Every block is existing PACKS/EXAMS data — nothing invented here. */
+var condOpen = null;
+function condList(){
+  var out = [], i, c;
+  for (i = 0; i < DATA[cur.sem].conds.length; i++){
+    c = DATA[cur.sem].conds[i];
+    if (PACKS[c.id]) out.push(c);
+  }
+  return out;
+}
+function examsFor(id){
+  var out = [], i;
+  for (i = 0; i < EXAMS.length; i++){
+    var cs = EXAMS[i].conditionSlugs || [];
+    for (var j = 0; j < cs.length; j++) if (cs[j] === id) { out.push(EXAMS[i]); break; }
+  }
+  return out;
+}
+function osceFor(id){
+  var out = [], i, list = DATA[cur.sem].osce || [];
+  for (i = 0; i < list.length; i++) if (list[i].cond === id) out.push(list[i]);
+  return out;
+}
+function step(n, title, body){
+  return '<div class="card"><div class="row" style="align-items:baseline;gap:10px">' +
+         '<span class="pill">STEP ' + n + '</span><h2 style="margin:0">' + esc(title) + '</h2></div>' +
+         '<div class="body">' + body + '</div></div>';
+}
+function bullets(a){
+  if (!a || !a.length) return '<p class="muted">Nothing recorded for this condition.</p>';
+  var h = '<ul>', i;
+  for (i = 0; i < a.length; i++) h += '<li>' + raw(a[i]) + '</li>';
+  return h + '</ul>';
+}
+R.cond = function(v){
+  var list = condList(), i, h;
+  if (!list.length){ v.innerHTML = '<h1>Conditions</h1><p class="muted">No prescribing packs for this semester.</p>'; return; }
+  var active = null;
+  for (i = 0; i < list.length; i++) if (list[i].id === condOpen) active = list[i];
+  if (!active) active = list[0];
+
+  h = '<h1>Conditions</h1><p class="muted">Each condition walked through in the order the Queensland protocol is written &mdash; and the order a consultation actually runs. Scope first, prescribing late.</p>';
+  h += '<div class="row" style="margin:0 0 16px">';
+  for (i = 0; i < list.length; i++)
+    h += '<button type="button" class="chip' + (list[i].id === active.id ? " on" : "") +
+         '" data-cond="' + esc(list[i].id) + '">' + esc(list[i].name) + '</button>';
+  h += '</div>';
+
+  var p = PACKS[active.id], ex = examsFor(active.id), os = osceFor(active.id);
+  h += '<div class="card"><div class="row between"><h2 style="margin:0">' + esc(active.name) + '</h2>' +
+       '<span class="pill">' + esc(p.prog || active.tag || "") + '</span></div>';
+  if (PROTO_URL[active.id])
+    h += '<div class="body"><a href="' + PROTO_URL[active.id] + '" target="_blank" rel="noopener noreferrer">' +
+         'Open the Queensland protocol (PDF)</a> &mdash; the document this page follows.</div>';
+  h += '</div>';
+
+  h += step(1, "Am I allowed to treat this patient?",
+        '<p class="small muted">Run this before anything else. Reasoning your way to a plan you are not permitted to act on is wasted effort.</p>' +
+        '<h3>Excluded if</h3>' + bullets(p.out));
+
+  h += step(2, "Refer when",
+        '<p class="small muted">The other scope boundary. These end or escalate your involvement whatever the numbers say.</p>' +
+        bullets(p.refer));
+
+  var exh = '';
+  if (ex.length){
+    for (i = 0; i < ex.length; i++){
+      var e = ex[i], ph = e.phases || [], k;
+      exh += '<h3>' + esc(e.shortTitle || e.title) + '</h3>';
+      if (e.indication) exh += '<p class="small muted">' + esc(e.indication) + '</p>';
+      if (ph.length){
+        exh += '<ol>';
+        for (k = 0; k < ph.length; k++) exh += '<li>' + esc(ph[k].phase || "") + '</li>';
+        exh += '</ol>';
+      }
+    }
+    exh += '<p class="small muted">Full step-by-step walkthrough, equipment and pitfalls: Reference &rarr; Exams &amp; vitals.</p>';
+  } else {
+    exh = '<p class="muted">No physical examination walkthrough is mapped to this condition.</p>';
+  }
+  h += step(3, "History and physical examination", exh);
+
+  h += step(4, "Measurements, tests and clinical checks", bullets(p.checks));
+  h += step(5, "Non-pharmacological management",
+        '<p class="small muted">Offered to every patient, whether or not anything is prescribed.</p>' + bullets(p.nonrx));
+
+  var rxh = '<h3>You may prescribe</h3>' + bullets(p.rx);
+  if (p.rxnote) rxh += '<h3>Constraints</h3><p>' + raw(p.rxnote) + '</p>';
+  h += step(6, "Pharmacotherapy", rxh);
+
+  h += step(7, "Counsel and self-care", bullets((p.counsel || []).concat(p.self || [])));
+  h += step(8, "Safety-net &mdash; what sends them back or onward", bullets(p.safety));
+  h += step(9, "Review", '<p>' + raw(p.review || "Not recorded.") + '</p>');
+
+  h += '<div class="card"><h2>Practise this one</h2><div class="body">';
+  if (BRIEFS[active.id]) h += '<p>Must-know brief, about ' + esc(String(BRIEFS[active.id].mins)) + ' minutes &mdash; Study tab.</p>';
+  if (os.length){
+    h += '<p>OSCE station' + (os.length > 1 ? 's' : '') + ' for this condition:</p><ul>';
+    for (i = 0; i < os.length; i++) h += '<li>' + esc(os[i].title) + ' &mdash; ' + esc(String(os[i].time || "")) + '</li>';
+    h += '</ul><p class="small muted">Run it timed under Practise &rarr; OSCE run.</p>';
+  }
+  h += '</div></div>';
+  v.innerHTML = h;
+};
+
 /* ---------- SEMESTER: dates, grades, WIL log ----------
    sem.html is a separate standalone page with its own localStorage key
    (phar-sem2-2026-v2). It is precached by sw.js, so this works offline.
@@ -1382,11 +1492,18 @@ document.addEventListener("click", function(ev){
   var b = ev.target;
   while (b && b !== document && !(b.tagName === "BUTTON" && hasData(b))) b = b.parentNode;
   if (!b || b === document) return;
-  var sem = cur.sem, v = $("view");
+  var sem = cur.sem, v = $("subview") || $("view");
 
   function has(){ for (var i = 0; i < arguments.length; i++) if (b.getAttribute(arguments[i]) != null) return true; return false; }
 
   if (b.getAttribute("data-more") != null){ openSheet(); return; }
+  if (b.getAttribute("data-sub") != null){
+    var parts = b.getAttribute("data-sub").split(":");
+    cur.sub[parts[0]] = parts[1];
+    renderGroup(parts[0], $("view"));
+    return;
+  }
+  if (b.getAttribute("data-cond") != null){ condOpen = b.getAttribute("data-cond"); R.cond($("view")); return; }
   /* Links pane category filter */
   if (b.getAttribute("data-lkf") != null){ linkCat = b.getAttribute("data-lkf"); R.links(v); return; }
   if (b.getAttribute("data-go") != null){
@@ -1595,7 +1712,8 @@ document.addEventListener("click", function(ev){
     return;
   }
   function hasData(el2){
-    return el2.getAttribute("data-lkf") != null ||
+    return el2.getAttribute("data-lkf") != null || el2.getAttribute("data-sub") != null ||
+      el2.getAttribute("data-cond") != null ||
       el2.getAttribute("data-go") != null || el2.getAttribute("data-more") != null ||
       el2.getAttribute("data-learn") != null || el2.getAttribute("data-lstage") != null ||
       el2.getAttribute("data-lcard") != null || el2.getAttribute("data-lnext") != null ||
