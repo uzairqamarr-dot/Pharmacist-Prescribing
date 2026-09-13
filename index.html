@@ -376,12 +376,12 @@ var NAV = [
 var GROUPS = {
   practise:  ["cards", "mcq", "viva", "mock", "osce"],
   myplan:    ["plan", "progress", "sem"],
-  reference: ["cram", "exams", "anat", "course", "links", "search"]
+  reference: ["topics", "cram", "exams", "anat", "course", "links", "search"]
 };
 var SUBLABEL = {
   cards:"Flashcards", mcq:"MCQs", viva:"Say it out loud", mock:"Timed exam", osce:"OSCE run",
   plan:"Assessments", progress:"Progress", sem:"Semester",
-  cram:"Cram sheet", exams:"Exams & vitals", anat:"Anatomy", course:"Course weeks",
+  topics:"Topic notes", cram:"Cram sheet", exams:"Exams & vitals", anat:"Anatomy", course:"Course weeks",
   links:"Links", search:"Search"
 };
 /* Queensland protocol PDFs, verified against the Queensland Health protocols
@@ -1510,9 +1510,11 @@ document.addEventListener("click", function(ev){
     var arg = b.getAttribute("data-arg");
     if (arg && cur.tab !== b.getAttribute("data-go")){ /* carry arg into target screen */
       if (b.getAttribute("data-go") === "learn") learn = {cond: arg, stage: 0, missed: [], q: 0, fixQ: []};
-      if (b.getAttribute("data-go") === "topics") topicOpen = arg;
+      if (b.getAttribute("data-go") === "topics"){ topicOpen = arg; cur.sub.reference = "topics"; }
     }
-    go(b.getAttribute("data-go"));
+    var tgt = b.getAttribute("data-go");
+    if (tgt === "topics"){ cur.sub.reference = "topics"; tgt = "reference"; }
+    go(tgt);
     return;
   }
   /* Learn */
