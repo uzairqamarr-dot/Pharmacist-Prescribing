@@ -377,6 +377,7 @@ var NAV = [
   ["viva",     "Say it out loud", "🎙"],
   ["osce",     "OSCE",            "⏲"],
   ["progress", "Progress",        "▥"],
+  ["sem",      "Semester",        "▣"],
   ["links",    "Links",           "⇗"],
   ["search",   "Search",          "⌕"]
 ];
@@ -1229,6 +1230,29 @@ R.progress = function(v){
 };
 
 /* ---------- SEARCH (offline over __CORPUS__) ---------- */
+/* ---------- SEMESTER: dates, grades, WIL log ----------
+   sem.html is a separate standalone page with its own localStorage key
+   (phar-sem2-2026-v2). It is precached by sw.js, so this works offline.
+   In a single-file build (no sem.html alongside it) the link is dead, so
+   check for that and say so rather than navigating into a 404. */
+R.sem = function(v){
+  var solo = (typeof SINGLE_FILE !== "undefined" && SINGLE_FILE);
+  v.innerHTML =
+    '<h1>Semester</h1>' +
+    '<p class="muted">Key dates, assessments with the grade calculator, WIL hours and the portfolio log.</p>' +
+    (solo
+      ? '<div class="card"><h2>Not in this build</h2><div class="body"><p>The semester dashboard is a separate page and is not bundled into this single-file copy.</p>' +
+        '<p>Open it from the phone app, or at <b>uzairqamarr-dot.github.io/Pharmacist-Prescribing/sem.html</b></p></div></div>'
+      : '<div class="card"><div class="body"><p>This opens a separate page. Use your browser’s back button to return here — your study progress is untouched.</p></div>' +
+        '<a class="btn-p" href="sem.html" style="display:inline-block;text-decoration:none">Open semester dashboard</a></div>') +
+    '<div class="card"><h2>What is in there</h2><div class="body"><ul>' +
+    '<li>Countdown and key dates</li>' +
+    '<li>All nine assessments with weightings and a grade calculator</li>' +
+    '<li>WIL hours tracker</li>' +
+    '<li>Portfolio log</li>' +
+    '</ul><p class="small muted">Stored separately from your flashcard progress, so nothing here can affect your Leitner state.</p></div></div>';
+};
+
 /* ---------- LINKS: categorised resource directory ----------
    Anchors only. Nothing here touches the network until a link is tapped,
    so the pane itself works with no signal. */
