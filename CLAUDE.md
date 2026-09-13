@@ -21,6 +21,34 @@ old shell is gone; `study.html` and `sem.html` are still present and still
 work, but only as standalone pages reached by direct URL — nothing links to
 them anymore. Read the Layout section before assuming the old shell exists.
 
+**RETIRED 13 Sep 2026 — the Claude artifact.** There was a Cowork artifact
+named "Pharmacist Prescribing App" (id `pharmacist-prescribing-app`), created
+17 Aug, last updated 7 Sep. It was a single-file build of the **old iframe
+shell** — 224 cards / 129 MCQ, Study and Semester panes in nested frames. By
+13 Sep the live app had 589 cards / 262 questions, so the artifact was 365
+cards behind and looked like a different product, which is exactly what
+prompted the question.
+
+Uzair decided to **retire it**. Do not refresh it, do not rebuild it, and do
+not create a replacement artifact of the study app unless he asks. Reasons,
+so this isn't relitigated:
+
+- `localStorage` is **per-origin**. A claude.ai copy cannot see the GitHub
+  Pages progress — it starts from zero and then diverges permanently. His
+  Leitner state is the most valuable thing in the app.
+- The artifact has no service worker, so it loses the offline-first
+  behaviour that is the whole point (he uses it with no signal).
+- It is a snapshot. Eleven versions shipped on 13 Sep alone; any artifact
+  copy is stale within hours.
+
+**There is now exactly one study app: the site root, served by GitHub Pages.**
+
+One genuine loose end this leaves: `sem.html` (countdown, assessment dates,
+grade calculator, WIL hours, portfolio log) has no entry point at all now —
+the artifact was the last thing surfacing that functionality. If he ever asks
+"where do I track my grades / WIL hours", that is the answer, and linking it
+from the root app would be the fix.
+
 ### What exists now, beyond the original four-file layout
 
 The table below describes `study.html`'s own content model — still accurate
