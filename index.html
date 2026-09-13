@@ -236,6 +236,50 @@ var DATA = {
        mcq: window.__SEM1__.mcq, osce: S1_OSCE}
 };
 
+/* ---------- RETIRED ENTRIES (duplicate audit, 14 Sep 2026) ----------
+   These indices are duplicates of another entry that says the same thing.
+   They are NOT deleted from the arrays. Progress is keyed by array index
+   ("s2:14"), so splicing element 29 out would silently hand every later
+   card the saved Leitner state of its neighbour — the exact corruption
+   CLAUDE.md warns about. Instead the element stays put and is filtered
+   out of every pool, queue, count and readiness figure. Nothing shifts,
+   nothing corrupts, and un-retiring one is deleting a line.
+
+   The value names the survivor that carries the same content, so this
+   doubles as the audit record. Semester 1 has no duplicates. */
+var RETIRED = {
+  s2: {
+    cards: {
+      2:   "67 — Level 1 asthma; 67 adds the AIR-only framing and names the AAH",
+      19:  "185 — COPD exacerbation ineligibility, 185 spells the terms out",
+      29:  "198 — thiazide electrolytes; 198 adds RCPA intervals and the ACEi contrast",
+      42:  "106 — statin baseline tests; 106 adds the retest note and the source",
+      537: "268 — the statin 80% rule",
+      548: "281 — when HbA1c misleads; 281 is the fuller list",
+      556: "286 — GLP-1 regimens; 286 keeps the weight-management dose contrast",
+      558: "289 — Annual Cycle of Care; 289 gives the complete list",
+      559: "290 — drugs raising glucose; 290 keeps the alcohol nuance",
+      571: "298 — PPIs with clopidogrel; 298 is the fuller version"
+    },
+    mcq: {
+      23:  "97 — metformin monitoring; 97 has five options and covers the other agents",
+      150: "28 — which BP goes into the risk calculator; 28 has five options",
+      254: "140 — grading 164/98; 140 now carries 254's grade boundaries",
+      255: "141 — home BP diagnostic threshold; identical question",
+      256: "101 — undersized cuff; 101 now carries 256's other error sources",
+      258: "44 — mitral auscultation; 44 is half of the mitral/aortic contrast pair",
+      260: "143 — amlodipine ankle oedema",
+      261: "142 — ACEi creatinine rise. 142 states the QLD 25% AND the broader 30%; 261 only said 30%"
+    }
+  },
+  s1: {cards: {}, mcq: {}}
+};
+/* True when an index should still be studied. */
+function live(sem, kind, i){
+  var r = RETIRED[sem];
+  return !(r && r[kind] && r[kind][i]);
+}
+
 /* ---------- escaping ---------- */
 function esc(s){
   return String(s == null ? "" : s)
@@ -326,11 +370,11 @@ function keyOf(sem, i){ return sem + ":" + i; }
 /* topic readiness: % of cards seen + mcqs answered for one topic */
 function topicReadiness(sem, condId){
   var d = DATA[sem], cards = 0, cardsSeen = 0, qs = 0, qsDone = 0, i, k;
-  for (i = 0; i < d.cards.length; i++) if (d.cards[i][0] === condId){
+  for (i = 0; i < d.cards.length; i++) if (d.cards[i][0] === condId && live(sem, "cards", i)){
     cards++; k = keyOf(sem, i);
     if (store.box[k] && store.box[k].seen > 0) cardsSeen++;
   }
-  for (i = 0; i < d.mcq.length; i++) if (d.mcq[i][0] === condId){
+  for (i = 0; i < d.mcq.length; i++) if (d.mcq[i][0] === condId && live(sem, "mcq", i)){
     qs++; k = keyOf(sem, i);
     if (store.mcq[k] > 0) qsDone++;
   }
@@ -340,6 +384,7 @@ function topicReadiness(sem, condId){
 function dueCards(sem){
   var now = Date.now(), out = [], d = DATA[sem], i, k, e;
   for (i = 0; i < d.cards.length; i++){
+    if (!live(sem, "cards", i)) continue;
     k = keyOf(sem, i); e = store.box[k];
     if (!e) { out.push(i); continue; }              /* new cards are due */
     if (e.due <= now) out.push(i);
@@ -603,7 +648,7 @@ R.learn = function(v, arg){
   if (learn.stage === 1){                     /* RECALL */
     var cards = [];
     for (var i = 0; i < DATA[sem].cards.length; i++)
-      if (DATA[sem].cards[i][0] === c.id) cards.push(i);
+      if (DATA[sem].cards[i][0] === c.id && live(sem, "cards", i)) cards.push(i);
     if (!cards.length){ learn.stage = 2; R.learn(v); return; }
     if (learn.q >= cards.length){
       v.innerHTML = sh + '<div class="card"><h2>Recall done</h2><p class="muted">' + cards.length + ' cards.</p>' +
@@ -626,7 +671,7 @@ R.learn = function(v, arg){
   if (learn.stage === 2){                     /* TEST */
     var qs = [];
     for (var m = 0; m < DATA[sem].mcq.length; m++)
-      if (DATA[sem].mcq[m][0] === c.id) qs.push(m);
+      if (DATA[sem].mcq[m][0] === c.id && live(sem, "mcq", m)) qs.push(m);
     if (!qs.length){ learn.stage = 3; R.learn(v); return; }
     if (learn.q >= qs.length){
       var nm = learn.missed.length;
@@ -883,7 +928,7 @@ R.cards = function(v){
     for (i = 0; i < DATA[sem].conds.length; i++){
       c2 = DATA[sem].conds[i]; n = 0;
       for (var j = 0; j < DATA[sem].cards.length; j++)
-        if (DATA[sem].cards[j][0] === c2.id && cardDueTs(sem, j) <= Date.now()) n++;
+        if (DATA[sem].cards[j][0] === c2.id && live(sem, "cards", j) && cardDueTs(sem, j) <= Date.now()) n++;
       h += '<button type="button" class="listrow" data-cstart="' + esc(c2.id) + '">' +
            '<span>' + esc(c2.name) + '</span><span class="small muted">' + n + ' due</span><span class="arrow">›</span></button>';
     }
@@ -891,6 +936,7 @@ R.cards = function(v){
     /* box distribution */
     var dist = [0, 0, 0, 0, 0, 0], k, e2;
     for (i = 0; i < DATA[sem].cards.length; i++){
+      if (!live(sem, "cards", i)) continue;
       e2 = store.box[keyOf(sem, i)];
       dist[e2 ? e2.b : 0]++;
     }
@@ -975,6 +1021,7 @@ R.mcq = function(v){
 function mcqFilter(sem){
   var out = [], i, q;
   for (i = 0; i < DATA[sem].mcq.length; i++){
+    if (!live(sem, "mcq", i)) continue;
     q = DATA[sem].mcq[i];
     if (mcqSess.topic && q[0] !== mcqSess.topic) continue;
     if (mcqSess.theme && themeOf(q[1]) !== mcqSess.theme) continue;
@@ -1218,11 +1265,13 @@ R.progress = function(v){
   var sem = cur.sem, i, k;
   var dist = [0, 0, 0, 0, 0, 0], e;
   for (i = 0; i < DATA[sem].cards.length; i++){
+    if (!live(sem, "cards", i)) continue;
     e = store.box[keyOf(sem, i)];
     dist[e ? e.b : 0]++;
   }
   var att = 0, cor = 0;
   for (i = 0; i < DATA[sem].mcq.length; i++){
+    if (!live(sem, "mcq", i)) continue;
     k = keyOf(sem, i);
     att += store.mcq[k] || 0; cor += store.right[k] || 0;
   }
@@ -1528,7 +1577,7 @@ document.addEventListener("click", function(ev){
   if (b.getAttribute("data-lcard") != null){
     var got = b.getAttribute("data-lcard") === "1";
     var cards = [], i;
-    for (i = 0; i < DATA[sem].cards.length; i++) if (DATA[sem].cards[i][0] === learn.cond) cards.push(i);
+    for (i = 0; i < DATA[sem].cards.length; i++) if (DATA[sem].cards[i][0] === learn.cond && live(sem, "cards", i)) cards.push(i);
     gradeCard(sem, cards[learn.q], got);
     learn.q++; R.learn(v); return;
   }
@@ -1557,6 +1606,7 @@ document.addEventListener("click", function(ev){
   if (b.getAttribute("data-cstart") != null){
     var f = b.getAttribute("data-cstart"), now = Date.now(), q = [];
     for (var i = 0; i < DATA[sem].cards.length; i++){
+      if (!live(sem, "cards", i)) continue;
       if (f !== "all" && DATA[sem].cards[i][0] !== f) continue;
       if (cardDueTs(sem, i) <= now) q.push(i);
     }
@@ -1586,7 +1636,7 @@ document.addEventListener("click", function(ev){
   /* Mock exam */
   if (b.getAttribute("data-kstart") != null){
     var pool = [], i2;
-    for (i2 = 0; i2 < DATA[sem].mcq.length; i2++) pool.push(i2);
+    for (i2 = 0; i2 < DATA[sem].mcq.length; i2++) if (live(sem, "mcq", i2)) pool.push(i2);
     /* deterministic-ish shuffle */
     for (i2 = pool.length - 1; i2 > 0; i2--){
       var r = Math.floor(Math.random() * (i2 + 1)), tmp = pool[i2]; pool[i2] = pool[r]; pool[r] = tmp;
