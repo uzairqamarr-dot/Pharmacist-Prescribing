@@ -222,7 +222,7 @@ button.chip{min-height:36px}
    Prescribing Study Hub — app script (ES5, no dependencies)
    ================================================================ */
 "use strict";
-var VERSION = "v2026.09.14c";
+var VERSION = "v2026.09.14d";
 var LSKEY = "phar-hub-v1";
 var DAY = 86400000;
 var INT = [0, 0, 1, 3, 8, 21];          /* Leitner intervals (days), boxes 1..5 */
@@ -278,6 +278,13 @@ var RETIRED = {
 function live(sem, kind, i){
   var r = RETIRED[sem];
   return !(r && r[kind] && r[kind][i]);
+}
+/* How many entries are actually in play — what every count shown to the
+   user should be, since the retired ones are never served. */
+function liveCount(sem, kind){
+  var arr = DATA[sem][kind], n = 0, i;
+  for (i = 0; i < arr.length; i++) if (live(sem, kind, i)) n++;
+  return n;
 }
 
 /* ---------- escaping ---------- */
@@ -1035,7 +1042,7 @@ var mock = {queue: null, q: 0, answers: [], startTs: 0, limitMs: 0, MIN_PER_Q: 1
 R.mock = function(v){
   var sem = cur.sem;
   if (!mock.queue){
-    var n = Math.min(20, DATA[sem].mcq.length);
+    var n = Math.min(20, liveCount(sem, "mcq"));
     v.innerHTML = '<h1>Exam</h1><div class="card"><h2>Timed mock paper</h2>' +
       '<p class="muted">' + n + ' questions drawn from across the semester, ' + mock.MIN_PER_Q +
       ' minutes each — ' + Math.round(n * mock.MIN_PER_Q) + ' minutes total. The clock runs on wall time: ' +
