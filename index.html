@@ -363,26 +363,40 @@ function themeLabel(id){
 
 /* ---------- navigation: ONE dispatcher ---------- */
 var NAV = [
-  ["home",     "Home",            "⌂"],
-  ["learn",    "Learn",           "▶"],
-  ["plan",     "Plan",            "✓"],
-  ["course",   "Course",          "≡"],
-  ["cram",     "Cram sheet",      "▤"],
-  ["exams",    "Exams & vitals",  "✚"],
-  ["topics",   "Topics",          "◉"],
-  ["cards",    "Flashcards",      "▦"],
-  ["mcq",      "MCQs",            "?"],
-  ["mock",     "Exam",            "⏱"],
-  ["anat",     "Anatomy",         "◎"],
-  ["viva",     "Say it out loud", "🎙"],
-  ["osce",     "OSCE",            "⏲"],
-  ["progress", "Progress",        "▥"],
-  ["sem",      "Semester",        "▣"],
-  ["links",    "Links",           "⇗"],
-  ["search",   "Search",          "⌕"]
+  ["home",      "Home",       "\u2302"],
+  ["learn",     "Study",      "\u25b6"],
+  ["cond",      "Conditions", "\u25c9"],
+  ["practise",  "Practise",   "\u25a6"],
+  ["myplan",    "Plan",       "\u2713"],
+  ["reference", "Reference",  "\u2261"]
 ];
-var MOBILE_MAIN = ["home", "learn", "cards", "viva"];
-var cur = {tab: "home"};
+/* Six top-level tabs. Everything that used to be its own tab still exists and
+   still uses its original renderer — the groups below just decide how you
+   reach it. Nothing was deleted and no progress key changed. */
+var GROUPS = {
+  practise:  ["cards", "mcq", "viva", "mock", "osce"],
+  myplan:    ["plan", "progress", "sem"],
+  reference: ["cram", "exams", "anat", "course", "links", "search"]
+};
+var SUBLABEL = {
+  cards:"Flashcards", mcq:"MCQs", viva:"Say it out loud", mock:"Timed exam", osce:"OSCE run",
+  plan:"Assessments", progress:"Progress", sem:"Semester",
+  cram:"Cram sheet", exams:"Exams & vitals", anat:"Anatomy", course:"Course weeks",
+  links:"Links", search:"Search"
+};
+/* Queensland protocol PDFs, verified against the Queensland Health protocols
+   page on 14 Sep 2026. UI wiring, not clinical content. */
+var PROTO_URL = {
+  htn:   "https://www.health.qld.gov.au/__data/assets/pdf_file/0015/1451103/cvd-hypertension-protocol.pdf",
+  lipid: "https://www.health.qld.gov.au/__data/assets/pdf_file/0014/1451102/cvd-dyslipidaemia-protocol.pdf",
+  bgl:   "https://www.health.qld.gov.au/__data/assets/pdf_file/0013/1451101/cvd-bloodglucose-protocol.pdf",
+  asthma:"https://www.health.qld.gov.au/__data/assets/pdf_file/0012/1304400/asthma-protocol.pdf",
+  copd:  "https://www.health.qld.gov.au/__data/assets/pdf_file/0013/1304401/copd-protocol.pdf",
+  wt:    "https://www.health.qld.gov.au/__data/assets/pdf_file/0020/1304390/overweight-obesity-management-guideline.pdf",
+  smoke: "https://www.health.qld.gov.au/__data/assets/pdf_file/0023/1304249/smoking-cessation-guideline.pdf"
+};
+var MOBILE_MAIN = ["home", "learn", "cond", "practise"];
+var cur = {tab: "home", sub: {}};
 
 function navButton(item, onMob){
   var on = cur.tab === item[0] ? " on" : "";
@@ -421,11 +435,24 @@ function go(tab){
   cur.tab = tab;
   closeSheet();
   renderNav();
-  var fn = R[tab] || R.home;
   var v = $("view");
   v.scrollTop = 0;
   try { window.scrollTo(0, 0); } catch (e) {}
-  fn(v);
+  if (GROUPS[tab]) renderGroup(tab, v);
+  else (R[tab] || R.home)(v);
+}
+/* A group tab renders a row of chips and hands the rest of the pane to the
+   original renderer, writing into #subview. The delegated click handler
+   targets #subview when it exists, so a sub-pane re-rendering itself cannot
+   wipe out the chip row above it. */
+function renderGroup(tab, v){
+  var subs = GROUPS[tab], active = cur.sub[tab] || subs[0], i, h = '<div class="row" style="margin:0 0 16px">';
+  for (i = 0; i < subs.length; i++)
+    h += '<button type="button" class="chip' + (subs[i] === active ? " on" : "") +
+         '" data-sub="' + tab + ':' + subs[i] + '">' + esc(SUBLABEL[subs[i]] || subs[i]) + '</button>';
+  h += '</div><div id="subview"></div>';
+  v.innerHTML = h;
+  (R[active] || R.home)($("subview"));
 }
 function setSem(s){
   if (s !== "s1" && s !== "s2") return;
