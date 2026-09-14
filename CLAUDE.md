@@ -11,22 +11,45 @@ home screen, used often with no signal.
 
 ## Session handover — read this first
 
-**Last worked: 14 September 2026.** Version v2026.09.14d.
+**Last worked: 14 September 2026.** Version v2026.09.14e.
 
 **Duplicates are retired, not deleted — `RETIRED` in `index.html`.** A 14 Sep
-audit of all 594 cards and 264 questions found 10 cards and 8 questions that
-restate another entry. They are still in the arrays. `RETIRED` lists their
+audit of all 594 cards and 264 questions retired **42 cards and 10 questions**
+that restate another entry. They are still in the arrays. `RETIRED` lists their
 indices, each mapped to the survivor that carries the same content, and
-`live(sem, kind, i)` filters them out of every pool, queue, count and
-readiness figure. `liveCount()` gives the number actually in play: **584
-cards, 256 questions**.
+`live(sem, kind, i)` filters them out of every pool, queue, count and readiness
+figure. `liveCount()` gives the number in play: **552 cards, 254 questions**.
 
-This is the pattern to use for any future duplicate or retraction. Splicing
-the element out would shift every later index and silently reassign saved
-Leitner state — the corruption this file warns about under Progress. Keeping
-the element and filtering it costs a few KB and makes un-retiring a
-one-line delete. **Do not "clean up" `RETIRED` by actually removing the
-entries.**
+Splicing the elements out would shift every later index and silently reassign
+saved Leitner state — the corruption this file warns about under Progress.
+Keeping them and filtering costs a few KB and makes un-retiring one a one-line
+delete. **Do not "clean up" `RETIRED` by actually removing the entries.**
+
+**Three retirements were clinical corrections, not tidying.** Each of these was
+live in the deck and contradicted by its own surviving twin:
+
+- card [552] said a GLP-1RA is withheld on sick days *only if nausea worsens*.
+  The QLD Blood Glucose protocol says **withhold**, an explicit April 2026
+  change. This is the classmate-notes error this file already records — it had
+  been corrected in one card and left standing in another.
+- card [555] listed metformin 500 mg at CrCl 15–30 with no caveat. Metformin is
+  contraindicated below eGFR 30; that row is a renal-dosing table entry, not
+  permission to use it. The survivor [285] says so.
+- card [28] wrote the ACE inhibitor rule as a creatinine rise up to 25% **or**
+  potassium in range. The protocol is **and**. Survivor [307].
+
+**One duplicate finder is not enough.** The first pass (token Jaccard on
+question+answer) found 18. A second pass (character 5-gram Dice on the answer
+alone) found 5 more that were worded completely differently. A third (overlap of
+clinical tokens only — numbers, units, drug names) found 19 more, nearly all
+short-recall cards whose content sits verbatim inside a longer table card. Run
+all three before claiming a deck is clean.
+
+**The short-vs-long collapse is a judgement call, easily reversed.** Where a
+one-line card's answer appeared verbatim inside a fuller card, the short one was
+retired. That trades fast drilling for less repetition. If Uzair wants the quick
+recall cards back, deleting their lines from `RETIRED` restores them with their
+Leitner state intact.
 
 **hub/ was promoted to the site root this session.** The phone's existing
 home-screen icon now opens what used to be `hub/index.html` — a separate
@@ -338,21 +361,21 @@ revised (e.g. well-controlled asthma and mild COPD are now eligible). The
 changes summary is in the corpus under "Updates Apr 2026". Prefer current
 criteria over anything older.
 
-## Coverage as at v2026.09.14d
+## Coverage as at v2026.09.14e
 
-Semester 2 — **584 cards, 256 questions in play** (594 / 264 in the arrays;
-10 cards and 8 questions retired as duplicates, see `RETIRED`). Per topic:
+Semester 2 — **552 cards, 254 questions in play** (594 / 264 in the arrays;
+42 cards and 10 questions retired as duplicates, see `RETIRED`). Per topic:
 
 | Topic | Cards | MCQ |
 |---|---|---|
-| htn | 143 | 84 |
-| lipid | 124 | 45 |
-| bgl | 96 | 35 |
-| wt | 87 | 31 |
-| copd | 33 | 17 |
-| asthma | 30 | 14 |
-| comm | 21 | 12 |
+| htn | 136 | 84 |
+| lipid | 118 | 44 |
+| bgl | 85 | 34 |
+| wt | 82 | 31 |
+| copd | 31 | 17 |
+| asthma | 29 | 14 |
 | safe | 21 | 7 |
+| comm | 21 | 12 |
 | reas | 12 | 4 |
 | smoke | 9 | 3 |
 | eth | 8 | 4 |
