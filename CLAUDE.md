@@ -11,7 +11,22 @@ home screen, used often with no signal.
 
 ## Session handover — read this first
 
-**Last worked: 10 September 2026.** Version v2026.09.10a.
+**Last worked: 14 September 2026.** Version v2026.09.14d.
+
+**Duplicates are retired, not deleted — `RETIRED` in `index.html`.** A 14 Sep
+audit of all 594 cards and 264 questions found 10 cards and 8 questions that
+restate another entry. They are still in the arrays. `RETIRED` lists their
+indices, each mapped to the survivor that carries the same content, and
+`live(sem, kind, i)` filters them out of every pool, queue, count and
+readiness figure. `liveCount()` gives the number actually in play: **584
+cards, 256 questions**.
+
+This is the pattern to use for any future duplicate or retraction. Splicing
+the element out would shift every later index and silently reassign saved
+Leitner state — the corruption this file warns about under Progress. Keeping
+the element and filtering it costs a few KB and makes un-retiring a
+one-line delete. **Do not "clean up" `RETIRED` by actually removing the
+entries.**
 
 **hub/ was promoted to the site root this session.** The phone's existing
 home-screen icon now opens what used to be `hub/index.html` — a separate
@@ -139,6 +154,13 @@ append-only too**, same rule as `cards` and `mcq`.
   terminator, not a bracket scanner; use the scanner only for the objects
   (`BRIEFS`, `PACKS`, `STOP`, `CVD_*`) and the two `window.__` blobs, and
   slice-to-next-declaration for `THEMES`, `ANAT` and `SUGS`.
+- **Two entries with the same stem can both be right.** The duplicate audit
+  nearly retired MCQ [142] because [261] asked the same thing. [142] gives the
+  QLD protocol's 25% acceptable creatinine rise *and* the broader 30%; [261]
+  only said 30%. The newer, longer entry is not automatically the better one —
+  read both explanations before choosing which survives. Genuine contrast
+  pairs (cards 59/60, 102/108, 183/184, 308/310; questions 44/100) exist on
+  purpose to force discrimination and must never be collapsed.
 - **Semester 2 material is NOT in the search corpus.** The indexing IIFE only pushes
   Semester 1 cards, questions and topic bodies into `CORPUS`. Ask the Hub cannot find
   any s2 content. Pre-existing; worth fixing.
@@ -316,7 +338,26 @@ revised (e.g. well-controlled asthma and mild COPD are now eligible). The
 changes summary is in the corpus under "Updates Apr 2026". Prefer current
 criteria over anything older.
 
-## Coverage as at v2026.09.10a
+## Coverage as at v2026.09.14d
+
+Semester 2 — **584 cards, 256 questions in play** (594 / 264 in the arrays;
+10 cards and 8 questions retired as duplicates, see `RETIRED`). Per topic:
+
+| Topic | Cards | MCQ |
+|---|---|---|
+| htn | 143 | 84 |
+| lipid | 124 | 45 |
+| bgl | 96 | 35 |
+| wt | 87 | 31 |
+| copd | 33 | 17 |
+| asthma | 30 | 14 |
+| comm | 21 | 12 |
+| safe | 21 | 7 |
+| reas | 12 | 4 |
+| smoke | 9 | 3 |
+| eth | 8 | 4 |
+
+## Coverage as at v2026.09.10a (historical)
 
 Semester 1 — 20 conditions, 143 cards, 91 MCQ, 8 OSCE stations.
 
@@ -337,9 +378,12 @@ prescribing packs. Corpus 1208 chunks (ingested 3 Sep 2026).
 
 ## Known gaps
 
-- COPD is by far the weakest at 7 cards / 4 questions, against 54 / 27 for
-  hypertension — despite having 55 corpus chunks of source material sitting
-  there unused. This is the obvious next thing to fix.
+- **Coverage is lopsided.** htn 143/84 and lipid 124/45 against smoke 9/3,
+  eth 8/4, reas 12/4. Smoking cessation is a Program condition with its own
+  QLD protocol and is examinable in the OSCE — 9 cards is thin. Week 5
+  (smoking cessation) material has not been ingested yet; that is the fix.
+- Ethics/reasoning/communication (the 6202 side) are thin against how much
+  of the viva and OSCE they actually carry.
 - The MCQ pane walks in fixed order and shows previous answers on a second
   pass rather than re-testing. Options are not shuffled.
 - Sem 1 topic notes are indexed for search but the Sem 1 source documents
