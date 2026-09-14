@@ -222,7 +222,7 @@ button.chip{min-height:36px}
    Prescribing Study Hub — app script (ES5, no dependencies)
    ================================================================ */
 "use strict";
-var VERSION = "v2026.09.14d";
+var VERSION = "v2026.09.14e";
 var LSKEY = "phar-hub-v1";
 var DAY = 86400000;
 var INT = [0, 0, 1, 3, 8, 21];          /* Leitner intervals (days), boxes 1..5 */
@@ -254,11 +254,28 @@ var RETIRED = {
       13:  "182 — asthma alarm signs; same list, 182 names the QLD protocol",
       16:  "129 — stable COPD steps; 129 adds 'LAMA or LABA' and the source",
       19:  "185 — COPD exacerbation ineligibility, 185 spells the terms out",
+      28:  "307 — ACEi creatinine rise. 28 also wrote the rule as 25% OR normal potassium; the protocol is AND",
       29:  "198 — thiazide electrolytes; 198 adds RCPA intervals and the ACEi contrast",
+      36:  "102 — LDL-C targets; 102 gives all three risk categories and the source",
       42:  "106 — statin baseline tests; 106 adds the retest note and the source",
+      43:  "107 — fenofibrate monitoring; 107 adds the paradoxical HDL fall",
+      51:  "199 — metformin monitoring; 199 also covers the other Program agents",
+      80:  "533 — reclassification factors; 533 gives every specific",
       92:  "210 — weight of auscultation in hypertension; 210 is the fuller answer",
+      105: "173 — ezetimibe and fenofibrate roles; 173 adds the two-agent maximum",
+      113: "451 — physical activity targets; 451 adds the safety assessment first",
+      118: "513 — tirzepatide vs the GLP-1RAs; 513 adds the Australian indications",
+      119: "511 — SELECT and FLOW; 511 adds ESSENCE and the citations",
       536: "267 — statin intensity table; 267 also gives the relative-potency ranking",
+      541: "271 — statin interactions; 271 adds sodium fusidate and gemfibrozil",
+      547: "279 — diabetes diagnostic thresholds; 279 carries the prediabetes ranges too (547's unique line folded into 279)",
+      549: "280 — HbA1c unit conversion; 280 explains why papers exploit it",
+      550: "283 — second glucose-lowering agent; 283 adds the DPP-4/GLP-1 rule and the eGFR nuance",
+      552: "287 — sick-day rules. 552 said GLP-1RA 'withhold only if worsening nausea'; the QLD protocol says WITHHOLD, an explicit April 2026 change",
+      553: "288 — sick-day numeric triggers; 288 covers the ketone thresholds and more",
+      555: "285 — metformin renal ceilings. 555 listed 500 mg at CrCl 15-30 without noting metformin is contraindicated below eGFR 30",
       563: "258 — VLED with diabetes; 258 adds 'not after the first hypo'",
+      568: "489 — medicines that induce weight gain; 489 sets them in the assessment",
       537: "268 — the statin 80% rule",
       548: "281 — when HbA1c misleads; 281 is the fuller list",
       556: "286 — GLP-1 regimens; 286 keeps the weight-management dose contrast",

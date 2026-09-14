@@ -730,7 +730,7 @@ var COURSE_CARDS=[["htn","State the Heart Foundation clinic BP classification th
 
 /* ===== TYPE 2 DIABETES (Week 3) ===== */
 ,["bgl","Give the diagnostic thresholds for diabetes and prediabetes.",
-  "<b>HbA1c:</b> diabetes ≥48 mmol/mol (6.5%); prediabetes 42–46 mmol/mol (6.0–6.4%). <b>Fasting venous glucose:</b> ≥7.0 mmol/L; impaired fasting glucose 6.1–6.9. <b>Random venous glucose:</b> ≥11.1 mmol/L; investigate further if 7.8–11.0. <b>OGTT 2 h after 75 g:</b> ≥11.1; impaired glucose tolerance 7.8–11.0. Symptomatic patient — one positive test confirms. Asymptomatic — repeat on a different day, preferably the same test. <b>Venous laboratory samples only; never diagnose on a finger-prick.</b>"]
+  "<b>HbA1c:</b> diabetes ≥48 mmol/mol (6.5%); prediabetes 42–46 mmol/mol (6.0–6.4%). <b>Fasting venous glucose:</b> ≥7.0 mmol/L; impaired fasting glucose 6.1–6.9. <b>Random venous glucose:</b> ≥11.1 mmol/L; investigate further if 7.8–11.0. <b>OGTT 2 h after 75 g:</b> ≥11.1; impaired glucose tolerance 7.8–11.0. Symptomatic patient — one positive test confirms. Asymptomatic — repeat on a different day, preferably the same test. <b>Venous laboratory samples only; never diagnose on a finger-prick. An HbA1c below 48 does not refute a diagnosis made on venous glucose or OGTT.</b>"]
 ,["bgl","What is the HbA1c unit conversion trap?",
   "<b>48 mmol/mol = 6.5%</b> — the diagnostic threshold. <b>53 mmol/mol = 7.0%</b> — the general treatment target. Do not pair 6% with 48 mmol/mol; they are not equivalent. Written papers exploit this because the two scales are used interchangeably in practice and the numbers look superficially similar."]
 ,["bgl","When should you not trust an HbA1c?",
