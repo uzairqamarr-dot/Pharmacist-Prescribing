@@ -11,22 +11,22 @@ home screen, used often with no signal.
 
 ## Session handover — read this first
 
-**Last worked: 14 September 2026.** Version v2026.09.14e.
+**Last worked: 14 September 2026.** Version v2026.09.14f.
 
 **Duplicates are retired, not deleted — `RETIRED` in `index.html`.** A 14 Sep
-audit of all 594 cards and 264 questions retired **42 cards and 10 questions**
+audit of all 594 cards and 264 questions retired **41 cards and 10 questions**
 that restate another entry. They are still in the arrays. `RETIRED` lists their
 indices, each mapped to the survivor that carries the same content, and
 `live(sem, kind, i)` filters them out of every pool, queue, count and readiness
-figure. `liveCount()` gives the number in play: **552 cards, 254 questions**.
+figure. `liveCount()` gives the number in play: **553 cards, 254 questions**.
 
 Splicing the elements out would shift every later index and silently reassign
 saved Leitner state — the corruption this file warns about under Progress.
 Keeping them and filtering costs a few KB and makes un-retiring one a one-line
 delete. **Do not "clean up" `RETIRED` by actually removing the entries.**
 
-**Three retirements were clinical corrections, not tidying.** Each of these was
-live in the deck and contradicted by its own surviving twin:
+**Two retirements were clinical corrections, not tidying.** Both were live in
+the deck and contradicted by their own surviving twin:
 
 - card [552] said a GLP-1RA is withheld on sick days *only if nausea worsens*.
   The QLD Blood Glucose protocol says **withhold**, an explicit April 2026
@@ -35,8 +35,15 @@ live in the deck and contradicted by its own surviving twin:
 - card [555] listed metformin 500 mg at CrCl 15–30 with no caveat. Metformin is
   contraindicated below eGFR 30; that row is a renal-dosing table entry, not
   permission to use it. The survivor [285] says so.
-- card [28] wrote the ACE inhibitor rule as a creatinine rise up to 25% **or**
-  potassium in range. The protocol is **and**. Survivor [307].
+
+**A fourth "correction" was my own error, caught by the review panel.** I
+retired card [28] claiming it wrongly wrote the ACE inhibitor rule as a
+creatinine rise up to 25% **or** potassium in range. The Hypertension protocol,
+Table 4, says exactly that — "or". Card [28] was quoting it verbatim and has
+been un-retired. Card [307] and MCQ [142], which both paraphrased it as "with",
+now quote the protocol and flag the conjunction. **The lesson: check the source
+before calling an entry wrong, especially when the other copy reads more
+sensibly.** The clinically sensible paraphrase was the inaccurate one.
 
 **One duplicate finder is not enough.** The first pass (token Jaccard on
 question+answer) found 18. A second pass (character 5-gram Dice on the answer
@@ -361,14 +368,14 @@ revised (e.g. well-controlled asthma and mild COPD are now eligible). The
 changes summary is in the corpus under "Updates Apr 2026". Prefer current
 criteria over anything older.
 
-## Coverage as at v2026.09.14e
+## Coverage as at v2026.09.14f
 
-Semester 2 — **552 cards, 254 questions in play** (594 / 264 in the arrays;
-42 cards and 10 questions retired as duplicates, see `RETIRED`). Per topic:
+Semester 2 — **553 cards, 254 questions in play** (594 / 264 in the arrays;
+41 cards and 10 questions retired as duplicates, see `RETIRED`). Per topic:
 
 | Topic | Cards | MCQ |
 |---|---|---|
-| htn | 136 | 84 |
+| htn | 137 | 84 |
 | lipid | 118 | 44 |
 | bgl | 85 | 34 |
 | wt | 82 | 31 |
@@ -403,8 +410,11 @@ prescribing packs. Corpus 1208 chunks (ingested 3 Sep 2026).
 
 - **Coverage is lopsided.** htn 143/84 and lipid 124/45 against smoke 9/3,
   eth 8/4, reas 12/4. Smoking cessation is a Program condition with its own
-  QLD protocol and is examinable in the OSCE — 9 cards is thin. Week 5
-  (smoking cessation) material has not been ingested yet; that is the fix.
+  QLD protocol and is examinable in the OSCE — 9 cards is thin. Week 5 IS
+  ingested, but all 9 cards come from one of its 13 pages: nothing yet on
+  dependence scoring (FTND, Heaviness of Smoking Index), lapse vs relapse, or
+  **tobacco smoke inducing CYP1A2** — which matters for clozapine, olanzapine
+  and theophylline when a patient quits.
 - Ethics/reasoning/communication (the 6202 side) are thin against how much
   of the viva and OSCE they actually carry.
 - The MCQ pane walks in fixed order and shows previous answers on a second
