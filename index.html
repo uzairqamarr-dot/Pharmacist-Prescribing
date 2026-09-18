@@ -159,7 +159,48 @@ button.chip{min-height:36px}
 .body .box,.body .blu{background:var(--surface2);border-radius:10px;padding:12px 14px;margin:10px 0}
 .body .blu{border-left:4px solid var(--teal)}
 .body .red,.body .amb{border-left:4px solid var(--accent)}
-.body ul,.body ol{padding-left:1.3em}
+.body ul,.body ol{padding-left:1.25em;margin:10px 0}
+
+/* ---------- READABILITY PASS (19 Sep) ----------
+   The complaint was that answers read as one undifferentiated block. Card
+   answers are author-written HTML, so the fix is typographic rather than a
+   rewrite of 550 cards: give every structural element real vertical rhythm,
+   force separation after a <br>, and make bold act as a subheading instead
+   of disappearing into the paragraph. */
+.body{line-height:1.62;font-size:1rem}
+.body p{margin:0 0 .85em}
+.body p:last-child{margin-bottom:0}
+.body li{margin:.4em 0;line-height:1.55}
+.body li::marker{color:var(--teal)}
+.body br{content:"";display:block;margin-bottom:.55em}
+/* A bold run that opens a line reads as a heading for what follows. */
+.body b,.body strong{font-weight:680;color:var(--ink)}
+.body i,.body em{color:var(--ink2)}
+.body>b:first-child,.body>strong:first-child{display:block;margin-bottom:.35em;font-size:1.04rem}
+.explain .body{font-size:.98rem}
+.explain{line-height:1.62}
+/* Source attribution, wherever a card names where its answer comes from. */
+.body .src,.src-chip{display:inline-block;background:var(--surface2);border:1px solid var(--line);
+  border-radius:8px;padding:2px 8px;font-size:.76rem;font-weight:600;color:var(--ink3);
+  margin-top:8px;letter-spacing:.01em}
+/* The assessed answer, when a card also carries a competing figure. */
+.body .assessed{background:var(--teal-t);border-left:4px solid var(--teal);border-radius:0 10px 10px 0;
+  padding:11px 14px;margin:10px 0}
+.body .assessed .lbl{display:block;font-size:.72rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--teal);margin-bottom:4px}
+.body .alt{background:var(--surface2);border-left:3px solid var(--line);border-radius:0 10px 10px 0;
+  padding:10px 13px;margin:10px 0;font-size:.94rem;color:var(--ink2)}
+.body .alt .lbl{display:block;font-size:.72rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+
+/* selected state for the new multi-select chips */
+.chip-on{background:var(--teal-t);border-color:var(--teal);color:var(--teal)}
+.chip-n{display:inline-block;background:var(--surface);border-radius:20px;padding:0 6px;
+  font-size:.72rem;color:var(--ink3);min-width:18px;text-align:center}
+.chip-on .chip-n{background:rgba(255,255,255,.65);color:var(--teal)}
+.row.wrap{flex-wrap:wrap}
+.row.gap{gap:8px}
+.mt{margin-top:14px}
 .hidden-a{position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;height:0;overflow:hidden}
 #updatebar{position:fixed;left:12px;right:12px;bottom:78px;z-index:70;display:none;
   background:var(--ink);color:var(--bg);border-radius:14px;padding:12px 16px;
@@ -781,11 +822,36 @@ R.learn = function(v, arg){
 /* shared MCQ question renderer (Learn test/fix + MCQ screen + mock) */
 function renderMcqQuestion(v, headHtml, qi, sem, mode){
   var q = DATA[sem].mcq[qi];
+  /* If he has already answered this one in this session, re-show the result
+     rather than letting him answer twice — Back is for re-reading, and a
+     second answer would double-count in store.mcq. */
+  var prev = (mode === "mcq" && mcqSess.answers && mcqSess.answers[qi] != null)
+             ? mcqSess.answers[qi] : null;
   var h = headHtml + '<div class="card"><div class="qbox body">' + raw(q[1]) + '</div><div id="opts">';
-  for (var i = 0; i < q[2].length; i++)
-    h += '<button type="button" class="opt" data-opt="' + i + '">' + raw(q[2][i]) + '</button>';
+  for (var i = 0; i < q[2].length; i++){
+    var cls = "opt";
+    if (prev != null){
+      if (i === q[3]) cls = "opt right";
+      else if (i === prev) cls = "opt wrong";
+    }
+    h += '<button type="button" class="' + cls + '" data-opt="' + i + '">' + raw(q[2][i]) + '</button>';
+  }
   h += '</div><div id="mexp"></div></div>';
   v.innerHTML = h;
+
+  function navRow(){
+    var r = '<div class="row gap">';
+    if (mode === "mcq" && mcqSess.i > 0) r += '<button type="button" class="btn-g btn-sm" data-mback="1">\u2039 Back</button>';
+    r += '</div>';
+    return r;
+  }
+  if (prev != null){
+    var okp = prev === q[3];
+    $("mexp").innerHTML = '<div class="explain body"><b>' + (okp ? "Correct." : "Not quite.") + '</b> ' + raw(q[4]) + '</div>' +
+      '<button type="button" class="btn-p btn-block" data-mnext="1">Next</button>' + navRow();
+    return;
+  }
+
   var done = false;
   $("opts").addEventListener("click", function(ev){
     var b = ev.target;
@@ -814,12 +880,15 @@ function renderMcqQuestion(v, headHtml, qi, sem, mode){
             (ok ? "Next" : "It comes back later — next") + '</button>';
     } else if (mode === "mcq"){
       if (!ok) mcqSess.missed.push(qi);
+      mcqSess.answers[qi] = pick;
+      persistMcqSess();
       nxt = '<button type="button" class="btn-p btn-block" data-mnext="1">Next</button>';
     } else if (mode === "mock"){
       mock.answers[mock.q] = pick;
       nxt = '<button type="button" class="btn-p btn-block" data-knext="1">Next</button>';
     }
-    $("mexp").innerHTML = '<div class="explain body"><b>' + (ok ? "Correct." : "Not quite.") + '</b> ' + raw(q[4]) + '</div>' + nxt;
+    $("mexp").innerHTML = '<div class="explain body"><b>' + (ok ? "Correct." : "Not quite.") + '</b> ' + raw(q[4]) + '</div>' +
+      nxt + navRow();
   });
 }
 
@@ -1015,51 +1084,85 @@ function pickLabel(sem, list){
   if (list.length === 2) return condName(sem, list[0]) + " + " + condName(sem, list[1]);
   return list.length + " topics";
 }
+/* Cards due now, restricted to a set of topics. Empty list = all topics. */
+function duePool(sem, picks){
+  var out = [], all = dueCards(sem), i;
+  for (i = 0; i < all.length; i++){
+    if (!picks.length || picks.indexOf(DATA[sem].cards[all[i]][0]) >= 0) out.push(all[i]);
+  }
+  return out;
+}
 function cardDueTs(sem, i){
   var e = store.box[keyOf(sem, i)];
   return e ? e.due : 0;
 }
 R.cards = function(v){
-  var sem = cur.sem;
+  var sem = cur.sem, i, j, c2, n;
   if (!cardSess.queue){
-    var h = '<h1>Flashcards</h1><p class="muted">Leitner spaced repetition — five boxes, intervals 0, 0, 1, 3, 8, 21 days. New cards are due immediately.</p>';
     var due = dueCards(sem);
-    var chunk = Math.min(due.length, 20);
-    h += '<div class="card"><div class="row between"><div><div class="big-n">' + due.length + '</div>' +
-         '<div class="small muted">cards due now — sessions run in chunks of ' + chunk + ' · ' + mins(Math.max(2, chunk * 0.4)) + '</div></div>' +
-         '<button type="button" class="btn-p" data-cstart="all"' + (due.length ? "" : " disabled") + '>Start a chunk</button></div></div>';
-    h += '<div class="card"><h2>By topic</h2>';
-    var i, c2, n;
+    var h = '<h1>Flashcards</h1>';
+
+    /* Resume banner — only when a real unfinished session is on disk. */
+    var sv = store.sess.cards;
+    if (sv && sv.i < sv.queue.length){
+      h += '<div class="card hero"><div class="k">Picked up where you left off</div>' +
+           '<h2>' + (sv.queue.length - sv.i) + ' cards still to go</h2>' +
+           '<div class="mins">' + esc(pickLabel(sem, sv.filter || [])) + '</div>' +
+           '<button type="button" data-cresume="1">Resume</button>' +
+           '<button type="button" class="btn-g btn-block" data-cdrop="1">Start something new instead</button></div>';
+    }
+
+    h += '<p class="muted">Leitner spaced repetition — five boxes, intervals 0, 0, 1, 3, 8, 21 days. New cards are due immediately.</p>';
+
+    /* Topic multi-select. Tap as many as you want, then Start. */
+    h += '<div class="card"><div class="row between"><h2>Pick your topics</h2>' +
+         '<span class="small muted">' + esc(pickLabel(sem, cardPick)) + '</span></div>' +
+         '<div class="row wrap gap">';
+    h += '<button type="button" class="chip' + (cardPick.length ? '' : ' chip-on') + '" data-cpick="__all">All</button>';
     for (i = 0; i < DATA[sem].conds.length; i++){
       c2 = DATA[sem].conds[i]; n = 0;
-      for (var j = 0; j < DATA[sem].cards.length; j++)
+      for (j = 0; j < DATA[sem].cards.length; j++)
         if (DATA[sem].cards[j][0] === c2.id && live(sem, "cards", j) && cardDueTs(sem, j) <= Date.now()) n++;
-      h += '<button type="button" class="listrow" data-cstart="' + esc(c2.id) + '">' +
-           '<span>' + esc(c2.name) + '</span><span class="small muted">' + n + ' due</span><span class="arrow">›</span></button>';
+      if (!n && cardPick.indexOf(c2.id) < 0) continue;      /* nothing due, not selected — hide it */
+      h += '<button type="button" class="chip' + (cardPick.indexOf(c2.id) >= 0 ? ' chip-on' : '') +
+           '" data-cpick="' + esc(c2.id) + '">' + esc(c2.name) + ' <span class="chip-n">' + n + '</span></button>';
     }
     h += '</div>';
+
+    var pool = duePool(sem, cardPick);
+    var chunk = Math.min(pool.length, 20);
+    h += '<div class="row between mt"><div><div class="big-n">' + pool.length + '</div>' +
+         '<div class="small muted">due in ' + esc(pickLabel(sem, cardPick).toLowerCase()) +
+         (pool.length ? ' — next chunk ' + chunk + ' cards · ' + mins(Math.max(2, chunk * 0.4)) : '') + '</div></div>' +
+         '<button type="button" class="btn-p" data-cstart="1"' + (pool.length ? "" : " disabled") + '>Start</button></div>';
+    h += '</div>';
+
     /* box distribution */
-    var dist = [0, 0, 0, 0, 0, 0], k, e2;
+    var dist = [0, 0, 0, 0, 0, 0], e2;
     for (i = 0; i < DATA[sem].cards.length; i++){
       if (!live(sem, "cards", i)) continue;
       e2 = store.box[keyOf(sem, i)];
       dist[e2 ? e2.b : 0]++;
     }
-    h += '<div class="card"><h2>Boxes</h2><div class="row">';
+    h += '<div class="card"><h2>Boxes</h2><div class="row wrap gap">';
     for (i = 0; i <= 5; i++)
       h += '<span class="chip">' + (i === 0 ? "new" : "box " + i) + ': ' + dist[i] + '</span>';
-    h += '</div></div>';
+    h += '</div><p class="small muted mt">A card you miss returns the same day. One you get right moves up a box and comes back later.</p></div>';
     v.innerHTML = h;
     return;
   }
-  /* session */
+
+  /* ---- in a session ---- */
   var q = cardSess.queue;
   if (cardSess.i >= q.length){
     v.innerHTML = '<div class="card hero"><div class="k">Session done</div><h1>' + q.length + ' cards reviewed</h1>' +
-      '<div class="mins">Due dates updated</div><button type="button" data-cend="1">Back</button></div>';
+      '<div class="mins">Due dates updated</div>' +
+      '<button type="button" data-cend="1">Finish</button>' +
+      '<button type="button" class="btn-g btn-block" data-cback="1">Look back at the last one</button></div>';
     return;
   }
   var ci = q[cardSess.i], card = DATA[sem].cards[ci];
+  var graded = !!store.box[keyOf(sem, ci)];
   v.innerHTML = '<div class="row between"><span class="small muted">Card ' + (cardSess.i + 1) + ' of ' + q.length +
     ' · ' + esc(condName(sem, card[0])) + '</span>' +
     '<button type="button" class="btn-g btn-sm" data-cend="1">End</button></div>' +
@@ -1068,11 +1171,17 @@ R.cards = function(v){
     '<button type="button" class="btn-p btn-block" id="crev">Show answer</button>' +
     '<div class="rate-row" id="crate" style="display:none">' +
     '<button type="button" class="btn-g" data-cgot="0">Missed it</button>' +
-    '<button type="button" class="btn-p" data-cgot="1">Got it</button></div></div>';
+    '<button type="button" class="btn-p" data-cgot="1">Got it</button></div></div>' +
+    /* Back revisits without re-grading; Skip moves on without a rating. */
+    '<div class="row gap">' +
+    (cardSess.i > 0 ? '<button type="button" class="btn-g btn-sm" data-cback="1">\u2039 Back</button>' : '') +
+    (graded ? '<button type="button" class="btn-g btn-sm" data-cfwd="1">Next \u203a</button>' : '') +
+    '</div>';
   $("crev").onclick = function(){
     $("cans").style.display = "block"; $("crev").style.display = "none"; $("crate").style.display = "flex";
   };
 };
+
 function gradeCard(sem, ci, got){
   var k = keyOf(sem, ci), e = store.box[k] || {b: 1, due: 0, seen: 0};
   e.seen++;
@@ -1084,26 +1193,54 @@ function gradeCard(sem, ci, got){
 }
 
 /* ---------- MCQs ---------- */
-var mcqSess = {topic: "", theme: "", queue: null, i: 0, missed: []};
+var mcqSess = store.sess.mcq
+  ? {topics: store.sess.mcq.filter || [], theme: "", queue: store.sess.mcq.queue,
+     i: store.sess.mcq.i, missed: [], answers: store.sess.mcq.answers || {}}
+  : {topics: [], theme: "", queue: null, i: 0, missed: [], answers: {}};
+function persistMcqSess(){
+  store.sess.mcq = mcqSess.queue
+    ? {sem: cur.sem, queue: mcqSess.queue, i: mcqSess.i, filter: mcqSess.topics,
+       answers: mcqSess.answers, ts: Date.now()}
+    : null;
+  save();
+}
 R.mcq = function(v){
-  var sem = cur.sem;
+  var sem = cur.sem, i;
   if (!mcqSess.queue){
-    var h = '<h1>MCQs</h1><p class="muted">Filter by topic and theme, then answer. Explanations appear after you commit.</p>';
-    h += '<div class="card"><div class="small muted" style="margin-bottom:6px">Topic</div><div class="row" id="tchips">';
-    h += '<button type="button" class="chip' + (mcqSess.topic === "" ? " on" : "") + '" data-tpic="">All</button>';
-    var i;
-    for (i = 0; i < DATA[sem].conds.length; i++)
-      h += '<button type="button" class="chip' + (mcqSess.topic === DATA[sem].conds[i].id ? " on" : "") +
-           '" data-tpic="' + esc(DATA[sem].conds[i].id) + '">' + esc(DATA[sem].conds[i].name) + '</button>';
-    h += '</div><div class="small muted" style="margin:12px 0 6px">Theme</div><div class="row">';
-    h += '<button type="button" class="chip' + (mcqSess.theme === "" ? " on" : "") + '" data-ttheme="">All</button>';
+    var h = '<h1>MCQs</h1>';
+
+    var sv = store.sess.mcq;
+    if (sv && sv.i < sv.queue.length){
+      h += '<div class="card hero"><div class="k">Picked up where you left off</div>' +
+           '<h2>' + (sv.queue.length - sv.i) + ' questions still to go</h2>' +
+           '<div class="mins">' + esc(pickLabel(sem, sv.filter || [])) + '</div>' +
+           '<button type="button" data-mresume="1">Resume</button>' +
+           '<button type="button" class="btn-g btn-block" data-mdrop="1">Start something new instead</button></div>';
+    }
+
+    h += '<p class="muted">Pick as many topics as you like, then answer. Explanations appear after you commit.</p>';
+    h += '<div class="card"><div class="row between"><div class="small muted">Topics</div>' +
+         '<span class="small muted">' + esc(pickLabel(sem, mcqSess.topics)) + '</span></div>' +
+         '<div class="row wrap gap" id="tchips">';
+    h += '<button type="button" class="chip' + (mcqSess.topics.length ? "" : " chip-on") + '" data-mpick="__all">All</button>';
+    for (i = 0; i < DATA[sem].conds.length; i++){
+      var cid = DATA[sem].conds[i].id, cn = 0, j;
+      for (j = 0; j < DATA[sem].mcq.length; j++)
+        if (DATA[sem].mcq[j][0] === cid && live(sem, "mcq", j)) cn++;
+      if (!cn) continue;
+      h += '<button type="button" class="chip' + (mcqSess.topics.indexOf(cid) >= 0 ? " chip-on" : "") +
+           '" data-mpick="' + esc(cid) + '">' + esc(DATA[sem].conds[i].name) +
+           ' <span class="chip-n">' + cn + '</span></button>';
+    }
+    h += '</div><div class="small muted" style="margin:14px 0 6px">Theme</div><div class="row wrap gap">';
+    h += '<button type="button" class="chip' + (mcqSess.theme === "" ? " chip-on" : "") + '" data-ttheme="">All</button>';
     for (i = 0; i < THEMES.length; i++)
-      h += '<button type="button" class="chip' + (mcqSess.theme === THEMES[i][0] ? " on" : "") +
+      h += '<button type="button" class="chip' + (mcqSess.theme === THEMES[i][0] ? " chip-on" : "") +
            '" data-ttheme="' + esc(THEMES[i][0]) + '">' + esc(THEMES[i][1]) + '</button>';
     h += '</div>';
     var n = mcqFilter(sem).length;
     h += '<div class="divider"></div><div class="row between"><div><div class="big-n">' + n + '</div>' +
-         '<div class="small muted">questions match · ' + mins(n * 1.2) + '</div></div>' +
+         '<div class="small muted">questions in ' + esc(pickLabel(sem, mcqSess.topics).toLowerCase()) + ' · ' + mins(n * 1.2) + '</div></div>' +
          '<button type="button" class="btn-p" data-mstart="1"' + (n ? "" : " disabled") + '>Start</button></div></div>';
     v.innerHTML = h;
     return;
@@ -1114,12 +1251,13 @@ R.mcq = function(v){
       '<div class="mins">' + mcqSess.missed.length + ' missed this set</div>';
     if (mcqSess.missed.length)
       h2 += '<button type="button" data-mfix="1">Fix the missed now</button>';
-    h2 += '<button type="button" data-mend="1" style="margin-left:8px">Back to filters</button></div>';
+    h2 += '<button type="button" data-mend="1" style="margin-left:8px">Back to filters</button>' +
+          '<button type="button" class="btn-g btn-block" data-mback="1">Look back at the last one</button></div>';
     v.innerHTML = h2;
     return;
   }
   var head = '<div class="row between"><span class="small muted">Question ' + (mcqSess.i + 1) + ' of ' + q.length +
-    ' · ' + esc(condName(sem, DATA[sem].mcq[q[mcqSess.i]][0])) + ' · ' + esc(themeLabel(themeOf(DATA[sem].mcq[q[mcqSess.i]][1]))) + '</span>' +
+    ' \u00b7 ' + esc(condName(sem, DATA[sem].mcq[q[mcqSess.i]][0])) + ' \u00b7 ' + esc(themeLabel(themeOf(DATA[sem].mcq[q[mcqSess.i]][1]))) + '</span>' +
     '<button type="button" class="btn-g btn-sm" data-mend="1">End</button></div>';
   renderMcqQuestion(v, head, q[mcqSess.i], sem, "mcq");
 };
@@ -1128,7 +1266,7 @@ function mcqFilter(sem){
   for (i = 0; i < DATA[sem].mcq.length; i++){
     if (!live(sem, "mcq", i)) continue;
     q = DATA[sem].mcq[i];
-    if (mcqSess.topic && q[0] !== mcqSess.topic) continue;
+    if (mcqSess.topics.length && mcqSess.topics.indexOf(q[0]) < 0) continue;
     if (mcqSess.theme && themeOf(q[1]) !== mcqSess.theme) continue;
     out.push(i);
   }
@@ -1708,36 +1846,76 @@ document.addEventListener("click", function(ev){
     R.topics(v); return;
   }
   /* Flashcards */
-  if (b.getAttribute("data-cstart") != null){
-    var f = b.getAttribute("data-cstart"), now = Date.now(), q = [];
-    for (var i = 0; i < DATA[sem].cards.length; i++){
-      if (!live(sem, "cards", i)) continue;
-      if (f !== "all" && DATA[sem].cards[i][0] !== f) continue;
-      if (cardDueTs(sem, i) <= now) q.push(i);
-    }
-    if (!q.length) return;
-    if (q.length > 20) q = q.slice(0, 20);   /* small startable chunks */
-    cardSess = {queue: q, i: 0, filter: f};
+  if (b.getAttribute("data-cpick") != null){
+    var pid = b.getAttribute("data-cpick");
+    if (pid === "__all") cardPick = []; else togglePick(cardPick, pid);
     R.cards(v); return;
   }
-  if (b.getAttribute("data-cend") != null){ cardSess = {queue: null, i: 0, filter: ""}; R.cards(v); return; }
+  if (b.getAttribute("data-cstart") != null){
+    var q = duePool(sem, cardPick);
+    if (!q.length) return;
+    if (q.length > 20) q = q.slice(0, 20);   /* small startable chunks */
+    cardSess = {queue: q, i: 0, filter: cardPick.slice()};
+    persistCardSess(); R.cards(v); return;
+  }
+  if (b.getAttribute("data-cresume") != null){
+    var sv = store.sess.cards;
+    if (sv) cardSess = {queue: sv.queue, i: sv.i, filter: sv.filter || []};
+    R.cards(v); return;
+  }
+  if (b.getAttribute("data-cdrop") != null){
+    cardSess = {queue: null, i: 0, filter: []}; persistCardSess(); R.cards(v); return;
+  }
+  if (b.getAttribute("data-cend") != null){
+    cardSess = {queue: null, i: 0, filter: []}; persistCardSess(); R.cards(v); return;
+  }
+  /* Back steps to the previous card WITHOUT ungrading it — the box it earned
+     stands; this is for looking at it again, not for re-answering. */
+  if (b.getAttribute("data-cback") != null){
+    if (cardSess.i > 0) cardSess.i--;
+    persistCardSess(); R.cards(v); return;
+  }
+  if (b.getAttribute("data-cfwd") != null){
+    if (cardSess.i < cardSess.queue.length) cardSess.i++;
+    persistCardSess(); R.cards(v); return;
+  }
   if (b.getAttribute("data-cgot") != null){
     gradeCard(sem, cardSess.queue[cardSess.i], b.getAttribute("data-cgot") === "1");
-    cardSess.i++; R.cards(v); return;
+    cardSess.i++; persistCardSess(); R.cards(v); return;
   }
   /* MCQs */
-  if (b.getAttribute("data-tpic") != null){ mcqSess.topic = b.getAttribute("data-tpic"); R.mcq(v); return; }
-  if (b.getAttribute("data-ttheme") != null){ mcqSess.theme = b.getAttribute("data-ttheme"); R.mcq(v); return; }
-  if (b.getAttribute("data-mstart") != null){
-    mcqSess.queue = mcqFilter(sem); mcqSess.i = 0; mcqSess.missed = [];
+  if (b.getAttribute("data-mpick") != null){
+    var mp = b.getAttribute("data-mpick");
+    if (mp === "__all") mcqSess.topics = []; else togglePick(mcqSess.topics, mp);
     R.mcq(v); return;
   }
-  if (b.getAttribute("data-mnext") != null){ mcqSess.i++; R.mcq(v); return; }
+  if (b.getAttribute("data-ttheme") != null){ mcqSess.theme = b.getAttribute("data-ttheme"); R.mcq(v); return; }
+  if (b.getAttribute("data-mstart") != null){
+    mcqSess.queue = mcqFilter(sem); mcqSess.i = 0; mcqSess.missed = []; mcqSess.answers = {};
+    persistMcqSess(); R.mcq(v); return;
+  }
+  if (b.getAttribute("data-mresume") != null){
+    var msv = store.sess.mcq;
+    if (msv) mcqSess = {topics: msv.filter || [], theme: "", queue: msv.queue, i: msv.i,
+                        missed: [], answers: msv.answers || {}};
+    R.mcq(v); return;
+  }
+  if (b.getAttribute("data-mdrop") != null){
+    mcqSess.queue = null; mcqSess.i = 0; mcqSess.answers = {}; persistMcqSess(); R.mcq(v); return;
+  }
+  /* Back re-shows an answered question with its result intact — it does not
+     re-score it, because store.mcq/right were already incremented. */
+  if (b.getAttribute("data-mback") != null){
+    if (mcqSess.i > 0) mcqSess.i--;
+    persistMcqSess(); R.mcq(v); return;
+  }
+  if (b.getAttribute("data-mnext") != null){ mcqSess.i++; persistMcqSess(); R.mcq(v); return; }
   if (b.getAttribute("data-mfix") != null){
     mcqSess.queue = mcqSess.missed.slice(); mcqSess.i = 0; mcqSess.missed = [];
     R.mcq(v); return;
   }
-  if (b.getAttribute("data-mend") != null){ mcqSess.queue = null; R.mcq(v); return; }
+  if (b.getAttribute("data-mend") != null){
+    mcqSess.queue = null; mcqSess.i = 0; mcqSess.answers = {}; persistMcqSess(); R.mcq(v); return; }
   /* Mock exam */
   if (b.getAttribute("data-kstart") != null){
     var pool = [], i2;
@@ -1879,6 +2057,11 @@ document.addEventListener("click", function(ev){
       el2.getAttribute("data-cstart") != null || el2.getAttribute("data-cend") != null ||
       el2.getAttribute("data-cgot") != null || el2.getAttribute("data-tpic") != null ||
       el2.getAttribute("data-ttheme") != null || el2.getAttribute("data-mstart") != null ||
+      el2.getAttribute("data-cpick") != null || el2.getAttribute("data-cresume") != null ||
+      el2.getAttribute("data-cdrop") != null || el2.getAttribute("data-cback") != null ||
+      el2.getAttribute("data-cfwd") != null || el2.getAttribute("data-mpick") != null ||
+      el2.getAttribute("data-mresume") != null || el2.getAttribute("data-mdrop") != null ||
+      el2.getAttribute("data-mback") != null ||
       el2.getAttribute("data-mnext") != null || el2.getAttribute("data-mfix") != null ||
       el2.getAttribute("data-mend") != null || el2.getAttribute("data-kstart") != null ||
       el2.getAttribute("data-knext") != null || el2.getAttribute("data-kend") != null ||
