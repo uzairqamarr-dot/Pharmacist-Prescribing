@@ -331,7 +331,11 @@ function raw(s){ return String(s == null ? "" : s); }   /* trusted course HTML *
 /* ---------- store: single localStorage key, repair-on-load ---------- */
 function blankStore(){
   return {box:{}, mcq:{}, osce:{}, osceRuns:{}, exams:{}, days:{},
-          sem:"s2", steps:{}, right:{}, read:{}, viva:{}};
+          sem:"s2", steps:{}, right:{}, read:{}, viva:{},
+          /* Where he was up to. Held in the store, not in memory, so closing
+             the app mid-session resumes instead of starting the queue again —
+             that was the "it resets to the beginning" bug. */
+          sess:{cards:null, mcq:null}, savedAt:0};
 }
 function repairBox(v){
   var o = {};
@@ -364,15 +368,52 @@ function loadStore(){
         s.right = repairObj(p.right); s.read = repairObj(p.read);
         s.viva = repairObj(p.viva);
         s.sem = (p.sem === "s1" || p.sem === "s2") ? p.sem : "s2";
+        s.savedAt = (typeof p.savedAt === "number") ? p.savedAt : 0;
+        /* Restore an unfinished session. Validated hard: a stale queue whose
+           indices no longer exist, or one saved under the other semester,
+           must not resurrect and point at the wrong cards. */
+        s.sess = {cards:null, mcq:null};
+        if (p.sess && typeof p.sess === "object"){
+          s.sess.cards = validSess(p.sess.cards, s.sem, "cards");
+          s.sess.mcq   = validSess(p.sess.mcq,   s.sem, "mcq");
+        }
       }
     } catch (e) {}
   }
   return s;
 }
+/* A saved session is only safe to resume if every index in it still exists
+   in the same semester's array and is still live. Anything else is dropped. */
+function validSess(o, sem, kind){
+  if (!o || typeof o !== "object" || o.sem !== sem) return null;
+  if (Object.prototype.toString.call(o.queue) !== "[object Array]" || !o.queue.length) return null;
+  var arr = DATA[sem] && DATA[sem][kind], i;
+  if (!arr) return null;
+  for (i = 0; i < o.queue.length; i++){
+    var n = o.queue[i];
+    if (typeof n !== "number" || n < 0 || n >= arr.length || !live(sem, kind, n)) return null;
+  }
+  var idx = (typeof o.i === "number" && o.i >= 0) ? Math.min(o.i, o.queue.length) : 0;
+  return {sem: sem, queue: o.queue, i: idx,
+          filter: (Object.prototype.toString.call(o.filter) === "[object Array]") ? o.filter : [],
+          answers: (o.answers && typeof o.answers === "object") ? o.answers : {},
+          ts: (typeof o.ts === "number") ? o.ts : 0};
+}
 var store = loadStore();
 function save(){
+  store.savedAt = Date.now();
   try { localStorage.setItem(LSKEY, JSON.stringify(store)); } catch (e) {}
 }
+/* iOS can kill a backgrounded home-screen app without warning, and "hidden"
+   is the last event guaranteed to fire. Every state change already saves
+   synchronously; this is the belt to that braces. */
+(function(){
+  function flush(){ try { save(); } catch (e) {} }
+  document.addEventListener("visibilitychange", function(){
+    if (document.visibilityState === "hidden") flush();
+  });
+  window.addEventListener("pagehide", flush);
+})();
 function bumpDay(){
   var d = new Date();
   var k = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
@@ -949,7 +990,31 @@ R.topics = function(v, arg){
 };
 
 /* ---------- FLASHCARDS (Leitner, 5 boxes) ---------- */
-var cardSess = {queue: null, i: 0, filter: ""};
+/* The live session is a VIEW of store.sess.cards, not a separate truth.
+   Every mutation goes through setCardSess() so it is written to disk
+   immediately — closing the app mid-chunk now resumes where he left off. */
+var cardSess = store.sess.cards ? {queue: store.sess.cards.queue, i: store.sess.cards.i,
+                                   filter: store.sess.cards.filter || []}
+                                : {queue: null, i: 0, filter: []};
+function persistCardSess(){
+  store.sess.cards = cardSess.queue
+    ? {sem: cur.sem, queue: cardSess.queue, i: cardSess.i, filter: cardSess.filter, ts: Date.now()}
+    : null;
+  save();
+}
+/* Topic multi-select. An empty list means every topic. */
+var cardPick = [];
+function togglePick(list, id){
+  var k = list.indexOf(id);
+  if (k >= 0) list.splice(k, 1); else list.push(id);
+  return list;
+}
+function pickLabel(sem, list){
+  if (!list.length) return "All topics";
+  if (list.length === 1) return condName(sem, list[0]);
+  if (list.length === 2) return condName(sem, list[0]) + " + " + condName(sem, list[1]);
+  return list.length + " topics";
+}
 function cardDueTs(sem, i){
   var e = store.box[keyOf(sem, i)];
   return e ? e.due : 0;
