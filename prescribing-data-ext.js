@@ -219,7 +219,15 @@ COURSE_CARDS.push(
                      "Drug reference" | "Background"
    ========================================================================= */
 var LINKS = [
-  {id:"protocols", name:"THE PROTOCOLS — what governs what you may do", blurb:"The seven Queensland documents. These decide eligibility, exclusions, what you may prescribe and when you must refer. Everything else on this page tells you what is clinically appropriate; only these tell you what is permitted. Verified against the Queensland Health protocols page, 14 Sep 2026.", items:[
+  {id:"diabetes2026", name:"DIABETES \u2014 what has moved (workshop pre-reading)", items:[
+  {t:"ADS Australian Type 2 Diabetes Glycaemic Management Algorithm (7 May 2026)", u:"https://www.diabetessociety.com.au/", n:"One page. Comorbidity, not HbA1c, drives agent choice."},
+  {t:"Living Evidence Guidelines in Diabetes (MAGICapp)", u:"https://app.magicapp.org/summary/guideline_7844.html", n:"The evidence behind the algorithm. A lookup tool, not a read-through."},
+  {t:"Diabetes Australia \u2014 best practice guidelines hub", u:"https://www.diabetesaustralia.com.au/health-professional-guidelines/", n:"Index of current Australian guidance. Check currency here before quoting anything."},
+  {t:"Mounjaro manufacturer rejects PBS recommendation (newsGP, Apr 2026)", u:"https://www1.racgp.org.au/newsgp/clinical/mounjaro-manufacturer-rejects-pbs-recommendation", n:"Tirzepatide stays private script, ~$645/month. Semaglutide and dulaglutide remain PBS-listed."},
+  {t:"NSW ACI \u2014 SGLT2 inhibitors during acute illness", u:"https://aci.health.nsw.gov.au/", n:"Euglycaemic DKA, and the blood ketone thresholds. NSW-specific."},
+  {t:"CATAG \u2014 perioperative management of SGLT2 inhibitors", u:"https://www.catag.org.au/", n:"The 3-day hold: 2 days before plus the day of. Covers colonoscopy with bowel prep."}
+]},
+{id:"protocols", name:"THE PROTOCOLS — what governs what you may do", blurb:"The seven Queensland documents. These decide eligibility, exclusions, what you may prescribe and when you must refer. Everything else on this page tells you what is clinically appropriate; only these tell you what is permitted. Verified against the Queensland Health protocols page, 14 Sep 2026.", items:[
     {n:"CVD Risk Reduction — CVD risk assessment and HYPERTENSION management", u:"https://www.health.qld.gov.au/__data/assets/pdf_file/0015/1451103/cvd-hypertension-protocol.pdf", w:"The big one. Absolute CVD risk assessment, reclassification factors, hypertension eligibility, exclusions, thresholds and pharmacotherapy. Steps A–H.", t:"Governs practice"},
     {n:"CVD Risk Reduction — LIPID modification", u:"https://www.health.qld.gov.au/__data/assets/pdf_file/0014/1451102/cvd-dyslipidaemia-protocol.pdf", w:"Table 3 treatment targets, Table 7 reference levels, statin and ezetimibe criteria, referral triggers.", t:"Governs practice"},
     {n:"CVD Risk Reduction — BLOOD GLUCOSE management", u:"https://www.health.qld.gov.au/__data/assets/pdf_file/0013/1451101/cvd-bloodglucose-protocol.pdf", w:"HbA1c targets by patient type, diagnostic and referral thresholds, escalation and the 0.5% rule.", t:"Governs practice"},
