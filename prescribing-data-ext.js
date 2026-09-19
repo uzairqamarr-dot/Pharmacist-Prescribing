@@ -298,3 +298,108 @@ var LINKS = [
     {n:"TGA", u:"https://www.tga.gov.au/", w:"Product information, approved indications, boxed warnings, safety alerts and shortages.", t:"Drug reference"}
   ]}
 ];
+
+/* ============================================================
+   DRUGS — drug-class reference, added 19 Sep 2026.
+   Source: Australian Type 2 Diabetes Glycaemic Management Algorithm
+   (Australian Diabetes Society, updated 7 May 2026), "Table of Evidence
+   and Properties of Glucose-Lowering Agents", plus the Queensland pilot
+   protocols for what a pharmacist may actually prescribe.
+   Nothing here is written from general pharmacology — where the source
+   is silent the field says so.
+   Shape: {id, cls, tag, agents[], moa, ci, cautions, se, admin, cost,
+           pbs, prog, outcomes}
+   ============================================================ */
+var DRUGS = [
+{id:"met", cls:"Biguanide", tag:"T2D · first-line", agents:["metformin","metformin XR"],
+ moa:"Reduces hepatic glucose output, lowering fasting glucose.",
+ ci:"eGFR &lt;30 mL/min/1.73m&sup2;. Severe hepatic impairment.",
+ cautions:"Suspend during acute illness that could cause tissue hypoxia or alter renal function &mdash; the S in SADMANS.",
+ se:"GI effects (common), lactic acidosis (rare), <b>weight neutral</b>. Causes B12 malabsorption.",
+ admin:"Oral. Start low and up-titrate. Slow-release available.",
+ cost:"$", pbs:"General schedule.",
+ prog:"Prescribable under the Blood Glucose Program. Monitor eGFR before starting then every 4&ndash;6 months, and serum B12 at least every 12 months.",
+ outcomes:"UKPDS."},
+
+{id:"su", cls:"Sulfonylurea", tag:"T2D", agents:["gliclazide","gliclazide MR","glimepiride","glipizide","glibenclamide"],
+ moa:"Triggers insulin release in a <b>glucose-independent</b> manner &mdash; which is why it causes hypoglycaemia.",
+ ci:"Severe renal or hepatic impairment.",
+ cautions:"Hypoglycaemia. The ADS algorithm carries a <b>conditional recommendation against</b> a sulfonylurea as the first add-on to metformin, for that reason. Withheld on sick days (the S in SADMANS).",
+ se:"<b>Weight gain.</b> Hypoglycaemia.",
+ admin:"Oral. Start low and up-titrate. Slow-release available.",
+ cost:"$", pbs:"General schedule.",
+ prog:"Not a first add-on under the ADS algorithm. Anyone starting a very low energy or ketogenic diet while on one is at real hypoglycaemia risk &mdash; review the dose before the diet starts.",
+ outcomes:"UKPDS; ADVANCE (gliclazide MR)."},
+
+{id:"dpp4", cls:"DPP-4 inhibitor (gliptin)", tag:"T2D", agents:["sitagliptin","linagliptin","saxagliptin","alogliptin","vildagliptin"],
+ moa:"Blocks the enzyme that inactivates GLP-1, so more endogenous GLP-1 is available; GLP-1 stimulates beta-cell insulin release.",
+ ci:"Source lists none absolute. Avoid on a history of pancreatitis.",
+ cautions:"Pancreatitis. Hospitalisation for heart failure with <b>saxagliptin</b> (SAVOR-TIMI 53). Nasopharyngitis, often settling in 10&ndash;14 days.",
+ se:"Rash, pancreatitis, GI disturbance, <b>weight neutral</b>.",
+ admin:"Oral. Dose adjustment in renal impairment &mdash; <b>except linagliptin</b>.",
+ cost:"$$", pbs:"Subsidised with metformin or an SU (dual), or with both (triple), or with insulin.",
+ prog:"<b>Never combine a DPP-4 inhibitor with a GLP-1RA</b> &mdash; both act on the same incretin pathway. Continue on sick days (low hypoglycaemia risk).",
+ outcomes:"EXAMINE, SAVOR-TIMI 53, TECOS, CARMELINA, CAROLINA."},
+
+{id:"sglt2", cls:"SGLT2 inhibitor (gliflozin)", tag:"T2D · cardiorenal", agents:["dapagliflozin","empagliflozin","ertugliflozin"],
+ moa:"Blocks the sodium-glucose co-transporter in the proximal tubule, causing urinary glucose loss.",
+ ci:"Source lists none absolute for T2D; review carefully with diuretics.",
+ cautions:"<b>Very low carbohydrate intake, bowel preparation and the periprocedural period</b> all raise ketoacidosis risk. Glycaemic effect is reduced or insignificant below eGFR 45 &mdash; but <b>heart failure and CKD benefit persists below eGFR 25</b>.",
+ se:"Dehydration, dizziness, genitourinary infection (advise good fluid intake and meticulous toileting hygiene), <b>ketoacidosis</b>, weight loss.",
+ admin:"Oral.",
+ cost:"$$", pbs:"Subsidised with metformin, an SU, both, or insulin. <b>Not</b> subsidised as monotherapy, nor with a glitazone, nor with a GLP-1RA.",
+ prog:"<b>Two different withholding rules.</b> Unplanned illness: withhold (the final S in SADMANS), restart when eating and drinking normally. Planned procedure, including colonoscopy with bowel prep: omit for <b>3 days &mdash; the 2 days before plus the day of</b> (CATAG). Short day-stay such as gastroscopy: the day of is enough. Monitor with <b>blood</b> ketones; urine ketones are unreliable on an SGLT2 inhibitor.",
+ outcomes:"EMPA-REG OUTCOME; CREDENCE and DAPA-CKD showed renal benefit <b>regardless of baseline HbA1c</b>."},
+
+{id:"glp1", cls:"GLP-1 receptor agonist", tag:"T2D · cardiorenal · weight", agents:["semaglutide","dulaglutide","liraglutide"],
+ moa:"Stimulates beta-cell insulin release and slows gastric emptying.",
+ ci:"Avoid with a history of pancreatitis or pancreatic malignancy.",
+ cautions:"Dose adjustment in moderate-severe renal impairment. Increased pancreatitis risk.",
+ se:"Nausea, vomiting, <b>weight loss</b>, increased heart rate.",
+ admin:"Subcutaneous injection. <b>Never draw a dose out of the pen into a syringe.</b>",
+ cost:"$$$", pbs:"Dulaglutide and semaglutide subsidised with metformin, an SU, both, or insulin. Authority to initiate required if an SGLT2i did not achieve a meaningful response, after which the SGLT2i should be ceased. <b>Not</b> subsidised as monotherapy, nor with a gliptin, glitazone or SGLT2 inhibitor.",
+ prog:"<b>Before a procedure, Australia does not recommend stopping it.</b> The 2025 ADS/ANZCA/GESA/NACOS recommendations say elective preprocedural cessation is explicitly <b>not</b> recommended &mdash; it risks hyperglycaemia and may compromise weight control. A 24-hour clear fluid diet then standard 6-hour fasting is advised instead. The risk being managed is <b>aspiration from delayed gastric emptying</b>, not ketoacidosis. This reversed the 2023 American position, so it is a high-yield currency point. On sick days the QLD Blood Glucose protocol says <b>withhold</b> (an explicit April 2026 change).",
+ outcomes:"REWIND (dulaglutide), LEADER (liraglutide), SUSTAIN-6 and FLOW (semaglutide)."},
+
+{id:"tzd", cls:"Thiazolidinedione (glitazone)", tag:"T2D · less common", agents:["pioglitazone"],
+ moa:"PPAR-gamma agonist. Lowers glucose durably through insulin sensitisation.",
+ ci:"Source lists none absolute.",
+ cautions:"<b>Symptomatic heart failure.</b> Rosiglitazone is not available in Australia.",
+ se:"Fluid retention, heart failure, increased non-axial fracture risk in women, increased bladder cancer risk, <b>weight gain</b>.",
+ admin:"Oral.",
+ cost:"$", pbs:"Subsidised with metformin or an SU or both, where there is a contraindication or intolerance to the metformin&ndash;SU combination. Subsidised with insulin.",
+ prog:"Listed by the ADS algorithm as a less commonly used approach.",
+ outcomes:"PROACTIVE (pioglitazone); RECORD (rosiglitazone)."},
+
+{id:"agi", cls:"Alpha-glucosidase inhibitor", tag:"T2D · less common", agents:["acarbose"],
+ moa:"Slows intestinal carbohydrate absorption, reducing postprandial glucose.",
+ ci:"Severe renal impairment (creatinine clearance &lt;25 mL/min/1.73m&sup2;).",
+ cautions:"GI disorders associated with malabsorption.",
+ se:"Bloating and flatulence, <b>weight neutral</b>.",
+ admin:"Oral, with meals as tolerated.",
+ cost:"$", pbs:"General schedule. The only agent PBS-reimbursed for <b>monotherapy</b> among the less-common options.",
+ prog:"Less commonly used.",
+ outcomes:"Not stated in the ADS table."},
+
+{id:"ins", cls:"Insulin", tag:"T2D · injectable", agents:["basal (e.g. glargine)","prandial (e.g. aspart, glulisine)","premix / co-formulated (e.g. degludec/aspart)"],
+ moa:"Directly activates the insulin receptor.",
+ ci:"Source lists none absolute.",
+ cautions:"Consider dose adjustment in moderate-severe renal disease. Hypoglycaemia risk rises sharply if carbohydrate intake drops &mdash; relevant to any remission or VLED attempt.",
+ se:"<b>Hypoglycaemia, weight gain.</b>",
+ admin:"Subcutaneous injection. Consider early if the BGL is very high.",
+ cost:"$&ndash;$$$", pbs:"General schedule. Levemir is restricted to type 1 diabetes.",
+ prog:"Not prescribable under the Program. Note that being on insulin excludes someone from the DiRECT-Aus remission criteria.",
+ outcomes:"UKPDS; ORIGIN (glargine); DEVOTE (degludec)."},
+
+{id:"tirz", cls:"Dual GIP / GLP-1 receptor agonist", tag:"T2D · weight · not PBS", agents:["tirzepatide (Mounjaro)"],
+ moa:"Dual GIP <i>and</i> GLP-1 receptor agonist &mdash; this is what separates it from the GLP-1RAs above.",
+ ci:"Not stated in the sources provided.",
+ cautions:"Not stated in the sources provided &mdash; check AMH before relying on detail here.",
+ se:"Not stated in the sources provided.",
+ admin:"Subcutaneous injection.",
+ cost:"~$645 per month, private script.",
+ pbs:"<b>Not PBS-listed.</b> PBAC recommended listing for T2D in March 2026; in April 2026 the manufacturer rejected the recommendation and walked away. It remains TGA-approved, private script only. Semaglutide and dulaglutide <b>do</b> remain PBS-listed &mdash; that is the practical answer most patients need.",
+ prog:"Outside pharmacist prescribing scope. It is in the course because patients ask about it constantly and you need to counsel accurately on medicines you cannot prescribe.",
+ outcomes:"Not stated in the sources provided."}
+];
+if (typeof window !== "undefined") window.DRUGS = DRUGS;

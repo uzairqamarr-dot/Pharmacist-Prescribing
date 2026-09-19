@@ -201,6 +201,10 @@ button.chip{min-height:36px}
 .row.wrap{flex-wrap:wrap}
 .row.gap{gap:8px}
 .mt{margin-top:14px}
+.drow{padding:12px 0;border-bottom:1px solid var(--line)}
+.drow:last-child{border-bottom:0}
+.dlbl{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:5px}
 .hidden-a{position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;height:0;overflow:hidden}
 #updatebar{position:fixed;left:12px;right:12px;bottom:78px;z-index:70;display:none;
   background:var(--ink);color:var(--bg);border-radius:14px;padding:12px 16px;
@@ -543,9 +547,10 @@ var NAV = [
 var GROUPS = {
   practise:  ["cards", "mcq", "viva", "mock", "osce"],
   myplan:    ["plan", "progress", "sem"],
-  reference: ["topics", "cram", "exams", "anat", "course", "links", "search"]
+  reference: ["drugs", "topics", "cram", "exams", "anat", "course", "links", "search"]
 };
 var SUBLABEL = {
+  drugs:"Drug classes",
   cards:"Flashcards", mcq:"MCQs", viva:"Say it out loud", mock:"Timed exam", osce:"OSCE run",
   plan:"Assessments", progress:"Progress", sem:"Semester",
   topics:"Topic notes", cram:"Cram sheet", exams:"Exams & vitals", anat:"Anatomy", course:"Course weeks",
@@ -1686,6 +1691,42 @@ R.sem = function(v){
    Anchors only. Nothing here touches the network until a link is tapped,
    so the pane itself works with no signal. */
 var linkCat = "all";
+/* ---------- DRUG CLASSES ---------- */
+var drugOpen = null;
+R.drugs = function(v){
+  var L = (typeof DRUGS !== "undefined") ? DRUGS : [];
+  if (!L.length){ v.innerHTML = '<h1>Drug classes</h1><p class="muted">No drug data loaded.</p>'; return; }
+  var i, d;
+  if (drugOpen == null){
+    var h = '<h1>Drug classes</h1><p class="muted">What each class does, what is in it, what to watch for, and what you may actually prescribe. Built from the ADS Australian Type 2 Diabetes Glycaemic Management Algorithm (7 May 2026) and the Queensland protocols.</p>';
+    h += '<div class="card">';
+    for (i = 0; i < L.length; i++){
+      d = L[i];
+      h += '<button type="button" class="listrow" data-drug="' + esc(d.id) + '">' +
+           '<span><b>' + esc(d.cls) + '</b><br><span class="small muted">' + esc(d.agents.join(" \u00b7 ")) + '</span></span>' +
+           '<span class="arrow">\u203a</span></button>';
+    }
+    h += '</div><div class="card"><h2>How to read the cost column</h2><p class="small muted">$ = $0\u2013499 \u00b7 $$ = $500\u2013999 \u00b7 $$$ = over $1,000 per annum cost to the PBS. From the ADS table \u2014 not the patient co-payment.</p></div>';
+    v.innerHTML = h; return;
+  }
+  d = null;
+  for (i = 0; i < L.length; i++) if (L[i].id === drugOpen) d = L[i];
+  if (!d){ drugOpen = null; R.drugs(v); return; }
+  function row(lbl, val){
+    return val ? '<div class="drow"><div class="dlbl">' + esc(lbl) + '</div><div class="body">' + raw(val) + '</div></div>' : "";
+  }
+  var h2 = '<button type="button" class="btn-g btn-sm" data-drug="*back">\u2039 All classes</button>' +
+    '<div class="card"><div class="k">' + esc(d.tag) + '</div><h1>' + esc(d.cls) + '</h1><div class="row wrap gap">';
+  for (i = 0; i < d.agents.length; i++) h2 += '<span class="chip">' + esc(d.agents[i]) + '</span>';
+  h2 += '</div></div><div class="card">' +
+    row("How it works", d.moa) + row("Contraindications", d.ci) + row("Precautions", d.cautions) +
+    row("Side effects", d.se) + row("Administration", d.admin) + '</div>';
+  h2 += '<div class="card"><h2>Prescribing and counselling</h2><div class="body">' + raw(d.prog) + '</div></div>';
+  h2 += '<div class="card">' + row("PBS and access", d.pbs) + row("Cost", d.cost) + row("Outcome trials", d.outcomes) +
+    '<p class="small muted mt">Source: ADS Australian Type 2 Diabetes Glycaemic Management Algorithm, updated 7 May 2026.</p></div>';
+  v.innerHTML = h2;
+};
+
 R.links = function(v){
   var h = '<h1>Links</h1><p class="muted">Where to look things up, grouped by condition. ' +
           'The badge tells you what kind of source it is &mdash; <b>Governs practice</b> decides whether you <i>may</i> act, ' +
@@ -1797,6 +1838,11 @@ document.addEventListener("click", function(ev){
   }
   if (b.getAttribute("data-cond") != null){ condOpen = b.getAttribute("data-cond"); R.cond($("view")); return; }
   /* Links pane category filter */
+  if (b.getAttribute("data-drug") != null){
+    var dv = b.getAttribute("data-drug");
+    drugOpen = (dv === "*back") ? null : dv;
+    R.drugs(v); return;
+  }
   if (b.getAttribute("data-lkf") != null){ linkCat = b.getAttribute("data-lkf"); R.links(v); return; }
   if (b.getAttribute("data-go") != null){
     var arg = b.getAttribute("data-arg");
@@ -2057,6 +2103,7 @@ document.addEventListener("click", function(ev){
       el2.getAttribute("data-cstart") != null || el2.getAttribute("data-cend") != null ||
       el2.getAttribute("data-cgot") != null || el2.getAttribute("data-tpic") != null ||
       el2.getAttribute("data-ttheme") != null || el2.getAttribute("data-mstart") != null ||
+      el2.getAttribute("data-drug") != null ||
       el2.getAttribute("data-cpick") != null || el2.getAttribute("data-cresume") != null ||
       el2.getAttribute("data-cdrop") != null || el2.getAttribute("data-cback") != null ||
       el2.getAttribute("data-cfwd") != null || el2.getAttribute("data-mpick") != null ||
