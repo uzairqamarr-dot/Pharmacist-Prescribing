@@ -11,7 +11,19 @@ home screen, used often with no signal.
 
 ## Session handover — read this first
 
-**Last worked: 14 September 2026.** Version v2026.09.14f.
+**Last worked: 19 September 2026.** Version v2026.09.19b.
+
+**19 Sep: session position is now persisted, and progress bugs are fixed.**
+The "it resets to the beginning" complaint was not localStorage loss — the
+Leitner boxes were saving fine. `cardSess`/`mcqSess` lived only in memory, so
+closing the app lost his place in the 20-card queue. Both now mirror into
+`store.sess` through `persistCardSess()` / `persistMcqSess()`, validated on
+load by `validSess()` (drops a queue whose indices no longer exist or that was
+saved under the other semester). There is also a `visibilitychange`/`pagehide`
+flush, because iOS can kill a backgrounded home-screen app without warning.
+Also added: Back on cards and MCQs (does NOT re-grade or re-score), multi-select
+topic filters, and a `DRUGS` reference pane under Reference built from the ADS
+algorithm of 7 May 2026.
 
 **Duplicates are retired, not deleted — `RETIRED` in `index.html`.** A 14 Sep
 audit of all 594 cards and 264 questions retired **41 cards and 10 questions**
@@ -122,6 +134,26 @@ previously bricked three tabs. `S.viva` is keyed by index into `VIVA`, so **`VIV
 append-only too**, same rule as `cards` and `mcq`.
 
 ### Hard-won lessons — do not relearn these
+
+- **I took the live app down for 12 hours on 19 Sep, and the cause was quoting.**
+  A card edit injected HTML written with double quotes (`class="assessed"`)
+  into a `"..."` JS string in `prescribing-data.js`. The file stopped parsing;
+  autopush committed and pushed it inside its 10-minute window; it was broken
+  01:12–13:51. The service worker's cache-first strategy meant the phone kept
+  working, which is exactly why nobody noticed. **Two rules from this.** Use
+  single quotes for HTML attributes inside these strings, and HTML entities
+  (`&rsquo;` `&lsquo;`) for any quote in prose. And after ANY edit to a data
+  file, run `new Function(fs.readFileSync(f))` on it *before* doing anything
+  else — autopush does not wait for you to finish.
+- **`prescribing-data-ext.js` appends to `COURSE_CARDS`/`COURSE_MCQ` with
+  `.push()`, so growing the literal arrays in `prescribing-data.js` shifts the
+  ext tail and silently reassigns saved progress.** This already fired once:
+  v2026.09.14a added 5 cards and 2 questions to the literals, moving the 58
+  ext-appended cards by +5 and the 20 ext questions by +2. Before the next
+  content addition, either put all new content in the ext file, or fold the
+  ext pushes into the literals once and retire the push mechanism. Adding a
+  *new top-level var* to the ext file (as `DRUGS` and the new `LINKS` category
+  do) is safe — only pushes onto the shared arrays are dangerous.
 
 - **`S.box` entries are objects** `{b, due, seen}`, never bare numbers. A build that
   wrote numbers made cards permanently un-due. There is a repair-on-load in place;
@@ -424,6 +456,10 @@ prescribing packs. Corpus 1208 chunks (ingested 3 Sep 2026).
 
 ## Working style
 
+- **Keep answers SHORT and scannable. This was asked for explicitly on 23 Sep.**
+  No walls of text. Lead with the answer. Use short bullets and bold labels,
+  one idea per line. Cut background he did not ask for. If something needs
+  detail, put the detail in the app or a file — not in the chat reply.
 - Brief and direct. Skip the preamble, don't ask clarifying questions you
   can answer by reading the file.
 - Make the change, bump both version strings, then commit and push unless I
