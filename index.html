@@ -1421,20 +1421,20 @@ R.papers = function(v){
     }
     h2 += '<button type="button" class="' + cls + '" data-popt="' + i + '">' + raw(q[2][i]) + '</button>';
   }
-  h2 += '</div><div id="pexp"></div></div>';
+  /* Nav is rendered up front, not only after answering. Skipping a question you
+     cannot do, and going back to re-read one, both have to work on an unanswered
+     screen — that was the complaint about the Study pane. */
+  h2 += '</div><div id="pexp"></div><div class="row gap" style="margin-top:8px">' +
+        (paper.q > 0 ? '<button type="button" class="btn-g btn-sm" data-pback="1">\u2039 Back</button>' : '') +
+        (paper.q + 1 < idx.length ? '<button type="button" class="btn-g btn-sm" data-pnext="1">Skip \u203a</button>' : '') +
+        '<button type="button" class="btn-g btn-sm" data-pend="1">Finish &amp; score</button></div></div>';
   v.innerHTML = h2;
 
-  function pnav(){
-    var r = '<div class="row gap">';
-    if (paper.q > 0) r += '<button type="button" class="btn-g btn-sm" data-pback="1">\u2039 Back</button>';
-    r += '<button type="button" class="btn-g btn-sm" data-pend="1">Finish &amp; score</button></div>';
-    return r;
-  }
   function showExp(pick){
     var okk = pick === q[3];
     $("pexp").innerHTML = '<div class="explain body"><b>' + (okk ? "Correct." : "Not quite.") + '</b> ' + raw(q[4]) + '</div>' +
       '<button type="button" class="btn-p btn-block" data-pnext="1">' +
-      (paper.q + 1 >= idx.length ? "Finish &amp; score" : "Next") + '</button>' + pnav();
+      (paper.q + 1 >= idx.length ? "Finish &amp; score" : "Next") + '</button>';
   }
   if (typeof prevA === "number"){ showExp(prevA); return; }
   var locked = false;
