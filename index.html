@@ -380,7 +380,7 @@ function blankStore(){
           /* Where he was up to. Held in the store, not in memory, so closing
              the app mid-session resumes instead of starting the queue again —
              that was the "it resets to the beginning" bug. */
-          sess:{cards:null, mcq:null}, savedAt:0};
+          sess:{cards:null, mcq:null}, papers:{}, savedAt:0};
 }
 function repairBox(v){
   var o = {};
@@ -545,13 +545,13 @@ var NAV = [
    still uses its original renderer — the groups below just decide how you
    reach it. Nothing was deleted and no progress key changed. */
 var GROUPS = {
-  practise:  ["cards", "mcq", "viva", "mock", "osce"],
+  practise:  ["cards", "mcq", "papers", "viva", "mock", "osce"],
   myplan:    ["plan", "progress", "sem"],
   reference: ["drugs", "topics", "cram", "exams", "anat", "course", "links", "search"]
 };
 var SUBLABEL = {
   drugs:"Drug classes",
-  cards:"Flashcards", mcq:"MCQs", viva:"Say it out loud", mock:"Timed exam", osce:"OSCE run",
+  cards:"Flashcards", mcq:"MCQs", papers:"Uni papers", viva:"Say it out loud", mock:"Timed exam", osce:"OSCE run",
   plan:"Assessments", progress:"Progress", sem:"Semester",
   topics:"Topic notes", cram:"Cram sheet", exams:"Exams & vitals", anat:"Anatomy", course:"Course weeks",
   links:"Links", search:"Search"
@@ -1288,6 +1288,12 @@ R.mcq = function(v){
     '<button type="button" class="btn-g btn-sm" data-mend="1">End</button></div>';
   renderMcqQuestion(v, head, q[mcqSess.i], sem, "mcq");
 };
+function mcqPoolCount(sem){
+  var n = 0, i;
+  for (i = 0; i < DATA[sem].mcq.length; i++)
+    if (live(sem, "mcq", i) && !isUni(sem, i)) n++;
+  return n;
+}
 function mcqFilter(sem){
   var out = [], i, q;
   for (i = 0; i < DATA[sem].mcq.length; i++){
@@ -1301,12 +1307,131 @@ function mcqFilter(sem){
   return out;
 }
 
+
+/* ---------- UNIVERSITY PAPERS PANE ---------- */
+var paper = {id: null, q: 0, answers: [], done: false};
+R.papers = function(v){
+  var sem = cur.sem, i, j;
+  if (!paper.id){
+    var mine = [], byCourse = {};
+    for (i = 0; i < PAPERS.length; i++) if (PAPERS[i].sem === sem) mine.push(PAPERS[i]);
+    var h = '<h1>Uni papers</h1>';
+    if (!mine.length){
+      h += '<div class="card"><p class="muted">No university papers loaded for this semester yet. ' +
+           'As weekly quizzes arrive they get added here, grouped by course and week.</p></div>';
+      v.innerHTML = h; return;
+    }
+    h += '<p class="muted">Questions issued by the university, kept out of the normal MCQ pool so they stay a clean test. ' +
+         'Sit one end to end, then see your score.</p>';
+    for (i = 0; i < mine.length; i++){
+      var p = mine[i];
+      (byCourse[p.course] = byCourse[p.course] || []).push(p);
+    }
+    for (var course in byCourse){
+      if (!byCourse.hasOwnProperty(course)) continue;
+      h += '<div class="small muted" style="margin:16px 0 6px">' + esc(course) + '</div>';
+      for (j = 0; j < byCourse[course].length; j++){
+        var pp = byCourse[course][j], best = (store.papers && store.papers[pp.id]) || null;
+        h += '<button type="button" class="listrow" data-paper="' + esc(pp.id) + '">' +
+             '<span>' + raw(pp.title) + '<br><span class="small muted">' + esc(pp.week) + ' &middot; ' + pp.count + ' questions</span></span>' +
+             '<span class="small muted">' + (best ? best.right + '/' + best.total : 'not sat') + '</span>' +
+             '<span class="arrow">\u203a</span></button>';
+      }
+    }
+    v.innerHTML = '<div class="card flat">' + h + '</div>';
+    return;
+  }
+
+  var P = paperById(paper.id);
+  if (!P){ paper.id = null; R.papers(v); return; }
+  var idx = paperIdx(P);
+
+  var sh = '<div class="row between"><h1 style="margin:0">' + raw(P.title) + '</h1>' +
+           '<button type="button" class="btn-g btn-sm" data-paper="*exit">Leave</button></div>' +
+           '<div class="small muted" style="margin-bottom:10px">' + esc(P.course) + ' &middot; ' + esc(P.week) + '</div>';
+
+  if (paper.done || paper.q >= idx.length){
+    var right = 0, answered = 0;
+    for (i = 0; i < idx.length; i++){
+      if (typeof paper.answers[i] === "number"){
+        answered++;
+        if (paper.answers[i] === DATA[sem].mcq[idx[i]][3]) right++;
+      }
+    }
+    store.papers = store.papers || {};
+    var prevBest = store.papers[P.id];
+    if (!prevBest || right > prevBest.right) store.papers[P.id] = {right: right, total: idx.length, ts: Date.now()};
+    save();
+    var hh = sh + '<div class="card hero"><div class="k">Paper finished</div><h1>' + right + ' / ' + idx.length + '</h1>' +
+             '<div class="mins">' + Math.round(right / idx.length * 100) + '% &middot; ' + answered + ' answered</div></div>';
+    hh += '<div class="card"><h2>Review</h2>';
+    for (i = 0; i < idx.length; i++){
+      var qq = DATA[sem].mcq[idx[i]], gave = paper.answers[i], okq = gave === qq[3];
+      hh += '<div class="divider"></div><div class="small muted">Q' + (i + 1) + ' &middot; ' +
+            (typeof gave !== "number" ? "skipped" : (okq ? "correct" : "wrong")) + '</div>' +
+            '<div class="body">' + raw(qq[1]) + '</div>' +
+            '<div class="small" style="margin:6px 0"><b>Answer:</b> ' + raw(qq[2][qq[3]]) + '</div>' +
+            (typeof gave === "number" && !okq ? '<div class="small muted">You chose: ' + raw(qq[2][gave]) + '</div>' : '') +
+            '<div class="explain body">' + raw(qq[4]) + '</div>';
+    }
+    hh += '<div class="divider"></div><button type="button" class="btn-p btn-block" data-paper="' + esc(P.id) + '">Sit it again</button>' +
+          '<button type="button" class="btn-g btn-block" data-paper="*exit">Back to papers</button></div>';
+    v.innerHTML = hh;
+    return;
+  }
+
+  var qi = idx[paper.q], q = DATA[sem].mcq[qi];
+  var prevA = paper.answers[paper.q];
+  var h2 = sh + '<div class="card"><div class="small muted">Question ' + (paper.q + 1) + ' of ' + idx.length + '</div>' +
+           '<div class="qbox body">' + raw(q[1]) + '</div><div id="popts">';
+  for (i = 0; i < q[2].length; i++){
+    var cls = "opt";
+    if (typeof prevA === "number"){
+      if (i === q[3]) cls = "opt right";
+      else if (i === prevA) cls = "opt wrong";
+    }
+    h2 += '<button type="button" class="' + cls + '" data-popt="' + i + '">' + raw(q[2][i]) + '</button>';
+  }
+  h2 += '</div><div id="pexp"></div></div>';
+  v.innerHTML = h2;
+
+  function pnav(){
+    var r = '<div class="row gap">';
+    if (paper.q > 0) r += '<button type="button" class="btn-g btn-sm" data-pback="1">\u2039 Back</button>';
+    r += '<button type="button" class="btn-g btn-sm" data-pend="1">Finish &amp; score</button></div>';
+    return r;
+  }
+  function showExp(pick){
+    var okk = pick === q[3];
+    $("pexp").innerHTML = '<div class="explain body"><b>' + (okk ? "Correct." : "Not quite.") + '</b> ' + raw(q[4]) + '</div>' +
+      '<button type="button" class="btn-p btn-block" data-pnext="1">' +
+      (paper.q + 1 >= idx.length ? "Finish &amp; score" : "Next") + '</button>' + pnav();
+  }
+  if (typeof prevA === "number"){ showExp(prevA); return; }
+  var locked = false;
+  $("popts").addEventListener("click", function(ev){
+    var b = ev.target;
+    while (b && b.tagName !== "BUTTON") b = b.parentNode;
+    if (!b || locked) return;
+    locked = true;
+    var pick = +b.getAttribute("data-popt");
+    paper.answers[paper.q] = pick;
+    var opts = $("popts").getElementsByTagName("button"), j2;
+    for (j2 = 0; j2 < opts.length; j2++){
+      if (j2 === q[3]) opts[j2].className = "opt right";
+      else if (j2 === pick) opts[j2].className = "opt wrong";
+      else opts[j2].className = "opt";
+    }
+    showExp(pick);
+  });
+};
+
 /* ---------- MOCK EXAM (timed, self-scored, wall clock) ---------- */
 var mock = {queue: null, q: 0, answers: [], startTs: 0, limitMs: 0, MIN_PER_Q: 1.5};
 R.mock = function(v){
   var sem = cur.sem;
   if (!mock.queue){
-    var n = Math.min(20, liveCount(sem, "mcq"));
+    var n = Math.min(20, mcqPoolCount(sem));
     v.innerHTML = '<h1>Exam</h1><div class="card"><h2>Timed mock paper</h2>' +
       '<p class="muted">' + n + ' questions drawn from across the semester, ' + mock.MIN_PER_Q +
       ' minutes each — ' + Math.round(n * mock.MIN_PER_Q) + ' minutes total. The clock runs on wall time: ' +
@@ -1885,6 +2010,16 @@ document.addEventListener("click", function(ev){
     else learn = {cond: lc, stage: 0, missed: [], q: 0, fixQ: []};
     R.learn(v); return;
   }
+  if (b.getAttribute("data-paper") != null){
+    var pv = b.getAttribute("data-paper");
+    if (pv === "*exit") paper = {id: null, q: 0, answers: [], done: false};
+    else paper = {id: pv, q: 0, answers: [], done: false};
+    R.papers(v); return;
+  }
+  if (b.getAttribute("data-pnext") != null){ paper.q++; R.papers(v); return; }
+  if (b.getAttribute("data-pback") != null){ if (paper.q > 0) paper.q--; R.papers(v); return; }
+  if (b.getAttribute("data-pend") != null){ paper.done = true; R.papers(v); return; }
+  if (b.getAttribute("data-lback") != null){ if (learn.q > 0) learn.q--; R.learn(v); return; }
   if (b.getAttribute("data-lstage") != null){ learn.stage = +b.getAttribute("data-lstage"); learn.q = 0; R.learn(v); return; }
   if (b.getAttribute("data-lcard") != null){
     var got = b.getAttribute("data-lcard") === "1";
@@ -2132,6 +2267,9 @@ document.addEventListener("click", function(ev){
       el2.getAttribute("data-cfwd") != null || el2.getAttribute("data-mpick") != null ||
       el2.getAttribute("data-mresume") != null || el2.getAttribute("data-mdrop") != null ||
       el2.getAttribute("data-mback") != null ||
+      el2.getAttribute("data-paper") != null || el2.getAttribute("data-popt") != null ||
+      el2.getAttribute("data-pback") != null || el2.getAttribute("data-pnext") != null ||
+      el2.getAttribute("data-pend") != null || el2.getAttribute("data-lback") != null ||
       el2.getAttribute("data-mnext") != null || el2.getAttribute("data-mfix") != null ||
       el2.getAttribute("data-mend") != null || el2.getAttribute("data-kstart") != null ||
       el2.getAttribute("data-knext") != null || el2.getAttribute("data-kend") != null ||
