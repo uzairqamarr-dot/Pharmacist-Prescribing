@@ -469,3 +469,17 @@ COURSE_MCQ.push(
  ["The closing phase is omitted because management is elsewhere","The phases are unchanged; explanation and planning covers why referral is the plan, and closing still requires forward planning and safety-netting","Only initiating and gathering apply","Safety-netting becomes the referring clinician&rsquo;s responsibility"],1,
  "The phases do not change. Referral is not the absence of a plan &mdash; it is the plan, and it is marked as one. Safety-netting usually becomes <i>more</i> important, not less, because the patient is leaving without treatment."]
 );
+
+/* ---------- F. University papers index ----------
+   Questions issued by the university, kept OUT of the general practise pool so
+   they stay a clean self-test. `from`/`count` are offsets into COURSE_MCQ, not
+   into DATA[sem].mcq — resolved at runtime as S2_MCQ.length + from + i, which
+   stays correct as long as COURSE_MCQ remains append-only (see CLAUDE.md).
+   To add a paper: push the questions onto COURSE_MCQ, note the offset, add an
+   entry here.                                                                   */
+var PAPERS = [
+  {id:"p6302w12", sem:"s2", course:"PHAR6302", week:"Weeks 1-2",
+   title:"Weeks 1&ndash;2 MCQ quiz", note:"Issued by the university. 20 questions, verbatim.",
+   from:0, count:20}
+];
+if (typeof window !== "undefined") window.PAPERS = PAPERS;

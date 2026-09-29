@@ -1090,6 +1090,28 @@ function pickLabel(sem, list){
   return list.length + " topics";
 }
 /* Cards due now, restricted to a set of topics. Empty list = all topics. */
+/* ---------- UNIVERSITY PAPERS ----------
+   Papers are held back from the general pool so they stay a clean self-test. */
+function paperIdx(p){
+  var base = DATA[p.sem].mcq.length - COURSE_MCQ.length, out = [], i;
+  for (i = 0; i < p.count; i++) out.push(base + p.from + i);
+  return out;
+}
+var _uniCache = {};
+function uniSet(sem){
+  if (_uniCache[sem]) return _uniCache[sem];
+  var m = {}, i, j, idx;
+  for (i = 0; i < PAPERS.length; i++){
+    if (PAPERS[i].sem !== sem) continue;
+    idx = paperIdx(PAPERS[i]);
+    for (j = 0; j < idx.length; j++) m[idx[j]] = PAPERS[i].id;
+  }
+  _uniCache[sem] = m;
+  return m;
+}
+function isUni(sem, i){ return uniSet(sem)[i] != null; }
+function paperById(id){ for (var i = 0; i < PAPERS.length; i++) if (PAPERS[i].id === id) return PAPERS[i]; return null; }
+
 function duePool(sem, picks){
   var out = [], all = dueCards(sem), i;
   for (i = 0; i < all.length; i++){
@@ -1270,6 +1292,7 @@ function mcqFilter(sem){
   var out = [], i, q;
   for (i = 0; i < DATA[sem].mcq.length; i++){
     if (!live(sem, "mcq", i)) continue;
+    if (isUni(sem, i)) continue;   /* university papers live on their own page */
     q = DATA[sem].mcq[i];
     if (mcqSess.topics.length && mcqSess.topics.indexOf(q[0]) < 0) continue;
     if (mcqSess.theme && themeOf(q[1]) !== mcqSess.theme) continue;
