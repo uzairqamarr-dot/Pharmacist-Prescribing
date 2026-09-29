@@ -483,3 +483,16 @@ var PAPERS = [
    from:0, count:20}
 ];
 if (typeof window !== "undefined") window.PAPERS = PAPERS;
+
+/* ---------- G. Which source answers which question ----------
+   Added 30 Sep 2026. The app was presenting Heart Foundation 2016 and the
+   Australian CVD Risk Calculator as rival frameworks and hedging mid-answer,
+   which made revision harder rather than easier. Both ARE examinable: the
+   university Weeks 1-2 quiz used Heart Foundation bands (Q1, Q4) and
+   AusCVDRisk (Q3, Q14) in the same paper. The fix is not to remove one, it is
+   to give each a clear job.                                                    */
+COURSE_CARDS.push(
+["htn","<b>Three sources, three different jobs.</b> Which one answers which question?","<b>&lsquo;What grade is this blood pressure?&rsquo;</b> &rarr; <b>Heart Foundation 2016.</b> Classification (optimal, normal, high-normal, grade 1 to 3) and measurement technique.<br><br><b>&lsquo;What is this patient&rsquo;s 5-year risk?&rsquo;</b> &rarr; <b>Australian CVD Risk Calculator (2023).</b> Low &lt;5%, intermediate 5 to &lt;10%, high &ge;10%.<br><br><b>&lsquo;What may I do as a pharmacist prescriber?&rsquo;</b> &rarr; <b>QLD protocol.</b> Eligibility, treatment thresholds, targets, monitoring, referral triggers.<br><br>They are not rivals. They answer different questions. The QLD protocol cites Heart Foundation only for <i>measurement technique</i> and consumer resources &mdash; never for treatment thresholds."],
+["htn","A question gives you a risk percentage but does not name a framework. How do you decide which bands apply?","Read what the percentage is <i>doing</i>.<br><br>If it is being used to <b>decide whether to treat, and at what BP</b>, and the numbers offered are 160/100 or 140/90 with the words low or moderate, it is <b>Heart Foundation 2016</b> (low &lt;10%, moderate 10 to 15%).<br><br>If it is being used to <b>categorise risk itself</b>, or it appears alongside reclassification factors, the assessment starting ages, or the calculator inputs, it is <b>AusCVDRisk</b> (low &lt;5%, intermediate 5 to &lt;10%, high &ge;10%).<br><br>If it sits next to eligibility or referral criteria, it is the <b>QLD protocol</b>."],
+["htn","Why is carrying a band label between the two frameworks the single most dangerous error on this material?","Because the same patient can hold two different labels, and swapping them invents a disagreement that does not exist.<br><br>A 5-year risk of 7% is <b>intermediate</b> under AusCVDRisk but <b>low</b> under Heart Foundation 2016. Both therefore treat from &ge;160/100 &mdash; they <b>agree</b>. Calling that patient Heart Foundation <i>moderate</i> would wrongly drop the threshold to 140/90.<br><br>Never move a band name across frameworks. Convert the percentage, then read that framework&rsquo;s own table."]
+);
