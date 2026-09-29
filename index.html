@@ -412,6 +412,7 @@ function loadStore(){
         s.days = repairObj(p.days); s.steps = repairObj(p.steps);
         s.right = repairObj(p.right); s.read = repairObj(p.read);
         s.viva = repairObj(p.viva);
+        s.papers = (p.papers && typeof p.papers === "object") ? p.papers : {};
         s.sem = (p.sem === "s1" || p.sem === "s2") ? p.sem : "s2";
         s.savedAt = (typeof p.savedAt === "number") ? p.savedAt : 0;
         /* Restore an unfinished session. Validated hard: a stale queue whose
@@ -728,10 +729,10 @@ R.home = function(v){
 };
 
 /* ---------- LEARN: Read → Recall → Test → Fix ---------- */
-var learn = {cond: null, stage: 0, missed: [], q: 0, fixQ: []};
+var learn = {cond: null, stage: 0, missed: [], q: 0, fixQ: [], deck: null, deckFor: null, deckAll: 0};
 R.learn = function(v, arg){
   var sem = cur.sem;
-  if (arg) { learn = {cond: arg, stage: 0, missed: [], q: 0, fixQ: []}; }
+  if (arg) { learn = {cond: arg, stage: 0, missed: [], q: 0, fixQ: [], deck: null, deckFor: null, deckAll: 0}; }
   if (!learn.cond){
     var h = '<h1>Study</h1><p class="muted">Pick a topic. Each session: read the brief, recall cards, test with MCQs, then fix anything missed. About 15 minutes.</p>';
     var dl = nearestDeadline(), cov = dl && dl.cov ? dl.cov : [];
@@ -773,23 +774,50 @@ R.learn = function(v, arg){
     return;
   }
   if (learn.stage === 1){                     /* RECALL */
-    var cards = [];
-    for (var i = 0; i < DATA[sem].cards.length; i++)
-      if (DATA[sem].cards[i][0] === c.id && live(sem, "cards", i)) cards.push(i);
+    /* A topic can hold 140+ cards. Drilling all of them is not a 15-minute
+       session and is the reason this screen felt like a dumping ground. Cap it,
+       and choose the cards that actually need work: due first, then never seen,
+       then longest since seen. The queue is fixed once per session so Back works. */
+    if (!learn.deck || learn.deckFor !== c.id){
+      var pool = [], i;
+      for (i = 0; i < DATA[sem].cards.length; i++)
+        if (DATA[sem].cards[i][0] === c.id && live(sem, "cards", i)) pool.push(i);
+      var now = Date.now();
+      pool.sort(function(a, b2){
+        var ea = store.box[keyOf(sem, a)], eb = store.box[keyOf(sem, b2)];
+        function rank(e){
+          if (!e) return 1;                       /* never seen  */
+          if (e.due && e.due <= now) return 0;    /* due now     */
+          return 2;                               /* not yet due */
+        }
+        var ra = rank(ea), rb = rank(eb);
+        if (ra !== rb) return ra - rb;
+        return ((ea && ea.seen) || 0) - ((eb && eb.seen) || 0);
+      });
+      learn.deckAll = pool.length;
+      learn.deck = pool.slice(0, 12);
+      learn.deckFor = c.id;
+    }
+    var cards = learn.deck;
     if (!cards.length){ learn.stage = 2; R.learn(v); return; }
     if (learn.q >= cards.length){
-      v.innerHTML = sh + '<div class="card"><h2>Recall done</h2><p class="muted">' + cards.length + ' cards.</p>' +
-        '<button type="button" class="btn-p btn-block" data-lstage="2">Start the MCQs</button></div>';
+      v.innerHTML = sh + '<div class="card"><h2>Recall done</h2><p class="muted">' + cards.length +
+        ' card' + (cards.length === 1 ? '' : 's') +
+        (learn.deckAll > cards.length ? ' of ' + learn.deckAll + ' &mdash; the ones due or unseen. The rest come round on their own schedule.' : '.') +
+        '</p><button type="button" class="btn-p btn-block" data-lstage="2">Start the MCQs</button></div>';
       return;
     }
     var ci = cards[learn.q], card = DATA[sem].cards[ci];
-    v.innerHTML = sh + '<div class="card"><div class="small muted">Card ' + (learn.q + 1) + ' of ' + cards.length + '</div>' +
+    v.innerHTML = sh + '<div class="card"><div class="small muted">Card ' + (learn.q + 1) + ' of ' + cards.length +
+      (learn.deckAll > cards.length ? ' <span class="muted">(' + learn.deckAll + ' in this topic)</span>' : '') + '</div>' +
       '<div class="qbox body">' + raw(card[1]) + '</div>' +
       '<div id="lans" style="display:none"><div class="explain body">' + raw(card[2]) + '</div></div>' +
       '<button type="button" class="btn-p btn-block" id="lrev">Show answer</button>' +
       '<div class="rate-row" id="lrate" style="display:none">' +
       '<button type="button" class="btn-g" data-lcard="0">Missed it</button>' +
-      '<button type="button" class="btn-p" data-lcard="1">Got it</button></div></div>';
+      '<button type="button" class="btn-p" data-lcard="1">Got it</button></div>' +
+      (learn.q > 0 ? '<div class="row gap" style="margin-top:8px"><button type="button" class="btn-g btn-sm" data-lback="1">\u2039 Back</button></div>' : '') +
+      '</div>';
     $("lrev").onclick = function(){
       $("lans").style.display = "block"; $("lrev").style.display = "none"; $("lrate").style.display = "flex";
     };
@@ -847,6 +875,7 @@ function renderMcqQuestion(v, headHtml, qi, sem, mode){
   function navRow(){
     var r = '<div class="row gap">';
     if (mode === "mcq" && mcqSess.i > 0) r += '<button type="button" class="btn-g btn-sm" data-mback="1">\u2039 Back</button>';
+    if (mode === "learn" && learn.q > 0) r += '<button type="button" class="btn-g btn-sm" data-lback="1">\u2039 Back</button>';
     r += '</div>';
     return r;
   }
@@ -1995,7 +2024,7 @@ document.addEventListener("click", function(ev){
   if (b.getAttribute("data-go") != null){
     var arg = b.getAttribute("data-arg");
     if (arg && cur.tab !== b.getAttribute("data-go")){ /* carry arg into target screen */
-      if (b.getAttribute("data-go") === "learn") learn = {cond: arg, stage: 0, missed: [], q: 0, fixQ: []};
+      if (b.getAttribute("data-go") === "learn") learn = {cond: arg, stage: 0, missed: [], q: 0, fixQ: [], deck: null, deckFor: null, deckAll: 0};
       if (b.getAttribute("data-go") === "topics"){ topicOpen = arg; cur.sub.reference = "topics"; }
     }
     var tgt = b.getAttribute("data-go");
