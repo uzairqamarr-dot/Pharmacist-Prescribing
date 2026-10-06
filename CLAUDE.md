@@ -505,6 +505,11 @@ prescribing packs. Corpus 1208 chunks (ingested 3 Sep 2026).
 
 ## Working style
 
+- **Keep usage low (asked 7 Oct).** No subagents/review panels unless he asks
+  or it's clinical content going live. Grep and read file slices, never whole
+  data files. Batch commands. No re-verifying things already verified. Short
+  replies.
+
 - **Keep answers SHORT and scannable. This was asked for explicitly on 23 Sep.**
   No walls of text. Lead with the answer. Use short bullets and bold labels,
   one idea per line. Cut background he did not ask for. If something needs
