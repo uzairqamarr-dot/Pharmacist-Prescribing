@@ -11,7 +11,56 @@ home screen, used often with no signal.
 
 ## Session handover — read this first
 
-**Last worked: 19 September 2026.** Version v2026.09.19b.
+**Last worked: 7 October 2026.** App version **v2026.10.01a** (pushed, clean).
+Model switched Opus 5 → Opus 5.5 on 7 Oct; this block is the handover.
+
+### Live deadlines
+- **PHAR6202 Assessment 2 (GenAI consultation) — due 9 Oct 2026.** Recorded
+  ≤12-min shingles consultation + own SOAP notes + Heidi notes + comparison +
+  800-word reflection. Documents are DONE; Uzair still has to record, write his
+  SOAP **before** opening Heidi, then comparison and reflection.
+- PHAR6302 A2A action plan: submitted-ready (2041 countable words).
+
+### Coursework lives in `coursework/` — gitignored, NEVER commit
+The repo is public. `coursework/` holds assessment files, the CPD log and
+patient scripts. It is in `.gitignore`; check `git check-ignore coursework/x`
+before any change to `.gitignore`. Generators are in `coursework/_build-scripts/`
+(docx npm + python-docx; need `node_modules` from the outputs folder or
+`npm i docx`). **Edit the generator, regenerate, then re-export PDF via
+`soffice --headless --convert-to pdf`** — don't hand-edit the docx.
+
+- `PHAR6202-A2-GenAI-Shingles/` — 1 patient script, 2 pharmacist guide
+  (long reference), **3 cue card (what he performs from)**. Cue card + patient
+  script are line-matched; any edit to one needs the mirror edit in the other.
+  Marked 16.5/20 by a rubric agent; ~11.4 min. Open optional gains: say eGFR
+  aloud, say MHR reviewed, replace the `$X` fee placeholder with a real figure.
+- `PHAR6302-A2A-ActionPlan/`, `CPD/` (996 credits logged vs 40 required),
+  `Source-Gap-List/` (TG/AMH chapters cited by the QLD protocols, 8/~38 held).
+
+### Shingles facts verified against source — don't re-derive
+- Pregnant contact → **emergency department, ZIG within 96 h** (NSW practice
+  standard). An earlier draft said "GP/midwife"; that was wrong.
+- Vaccination after the episode, not during. Shingrix 2 doses 2–6 months apart.
+  health.gov.au's shingles topic page is **stale** (still Zostavax at 70) — use
+  the Immunisation Handbook NIP funding table. T2DM alone is not a funded group.
+- Heidi: SOAP is required for **his** notes only; leave Heidi on its default.
+
+### Script-writing lessons (user-found, repeatedly)
+- Never ask/reference something the patient hasn't said yet (consent to
+  examine "the rash" before the rash was mentioned).
+- Every bullet on the cue card must be a spoken line, not coaching.
+- Keep his lines short; avoid monologues — he flagged it 3 times.
+- Files mix `\uXXXX` escapes and literal Unicode: edit by line index after
+  grepping a distinctive substring; full-string replace silently misses.
+
+### Pending (app) — after 9 Oct
+Drug-class reference pane (HTN/lipid/inhalers; AMH depth blocked on the gap
+list), app flow/layout pass, COPD intensive content + cultural competence +
+physical exam (blocked on his export), retire the ext-file `.push()` hazard.
+
+---
+
+**Previous handover — 19 September 2026.** Version v2026.09.19b.
 
 **19 Sep: session position is now persisted, and progress bugs are fixed.**
 The "it resets to the beginning" complaint was not localStorage loss — the

@@ -4,6 +4,10 @@
 .autopush.lockdir/
 .DS_Store
 
+# Private coursework (assessments, CPD log, patient scripts). The repo is
+# public on GitHub Pages — this folder must NEVER be committed.
+coursework/
+
 # NOTE: /prescribing-data.js used to be ignored here as a local rebuild
 # scratch file. As of 7 Sep 2026 hub/ was promoted to the site root, so this
 # file (plus prescribing-data-ext.js) is now the live dataset the deployed
