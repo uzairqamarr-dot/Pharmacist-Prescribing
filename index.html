@@ -47,6 +47,7 @@ button:active{transform:scale(.98)}
 .btn-a{background:var(--accent);color:#fff}
 .btn-g{background:transparent;border:1.5px solid var(--line);color:var(--ink2)}
 .btn-block{display:block;width:100%;margin:8px 0}
+details.shit{border-bottom:1px solid var(--line);padding:8px 0}details.shit summary{cursor:pointer;list-style:none;font-size:.95rem;line-height:1.4}details.shit summary::-webkit-details-marker{display:none}details.shit[open] summary{font-weight:600}
 .btn-sm{min-height:44px;padding:6px 12px;font-size:.9rem;border-radius:9px}
 input,select,textarea{font-family:inherit;font-size:1rem;color:var(--ink);
   background:var(--surface);border:1.5px solid var(--line);border-radius:10px;
@@ -727,6 +728,7 @@ R.home = function(v){
     }
     h += '</div>';
   }
+  h += '<button type="button" class="btn-g btn-block" data-go="search">\u2315 Search everything &mdash; cards, notes, protocols</button>';
   v.innerHTML = h;
 };
 
@@ -2065,14 +2067,37 @@ function runSearch(q){
     if (sc > 0) scored.push([sc, j]);
   }
   scored.sort(function(a, b){ return b[0] - a[0]; });
-  var h = '<div class="card"><div class="small muted" style="margin-bottom:8px">' + scored.length + ' chunk' +
+  /* Flashcards are the distilled answers, so they are searched too and shown
+     first, each opening in place - the quick-lookup use, years later. */
+  var sem = cur.sem, cs = [], ci, cd, ct, csc;
+  for (ci = 0; ci < DATA[sem].cards.length; ci++){
+    if (!live(sem, "cards", ci)) continue;
+    cd = DATA[sem].cards[ci];
+    ct = (cd[1] + " " + cd[2]).replace(/<[^>]+>/g, " ").toLowerCase(); csc = 0;
+    for (w = 0; w < words.length; w++) if (ct.indexOf(words[w]) >= 0) csc += 2 + (ct.split(words[w]).length - 1);
+    if (csc >= words.length * 2) cs.push([csc, ci]);
+  }
+  cs.sort(function(a, b){ return b[0] - a[0]; });
+  var h = '';
+  if (cs.length){
+    h += '<div class="card"><div class="small muted" style="margin-bottom:8px">' + cs.length + ' flashcard' +
+         (cs.length === 1 ? "" : "s") + ' · tap to open</div>';
+    for (i = 0; i < Math.min(12, cs.length); i++){
+      cd = DATA[sem].cards[cs[i][1]];
+      h += '<details class="shit"><summary><span class="pill">' + esc(condName(sem, cd[0])) + '</span> ' +
+           raw(cd[1]) + '</summary><div class="explain body">' + raw(cd[2]) + '</div></details>';
+    }
+    h += '</div>';
+  }
+  h += '<div class="card"><div class="small muted" style="margin-bottom:8px">' + scored.length + ' course note' +
           (scored.length === 1 ? "" : "s") + ' · top ' + Math.min(15, scored.length) + ' shown</div>';
   var lim = Math.min(15, scored.length);
   for (i = 0; i < lim; i++){
     c = corpus[scored[i][1]];
     var snip = c.t.length > 260 ? c.t.slice(0, 260) + "…" : c.t;
     h += '<div style="padding:10px 0;border-bottom:1px solid var(--line)">' +
-         '<span class="pill">' + esc(condName(cur.sem, c.c) || c.c) + '</span> <b class="small">' + esc(c.s) + '</b>' +
+         (condById(cur.sem, c.c) ? '<button type="button" class="pill" data-go="topics" data-arg="' + esc(c.c) + '">' + esc(condName(cur.sem, c.c)) + ' \u203a</button>'
+                                 : '<span class="pill">' + esc(c.c) + '</span>') + ' <b class="small">' + esc(c.s) + '</b>' +
          '<div class="small" style="margin-top:4px">' + esc(snip) + '</div></div>';
   }
   h += '</div>';
