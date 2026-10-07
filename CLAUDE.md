@@ -31,9 +31,13 @@ before any change to `.gitignore`. Generators are in `coursework/_build-scripts/
 
 - `PHAR6202-A2-GenAI-Shingles/` — 1 patient script, 2 pharmacist guide
   (long reference), **3 cue card (what he performs from)**. Cue card + patient
-  script are line-matched; any edit to one needs the mirror edit in the other.
-  Marked 16.5/20 by a rubric agent; ~11.4 min. Open optional gains: say eGFR
-  aloud, say MHR reviewed, replace the `$X` fee placeholder with a real figure.
+  script are BOTH generated from `_build-scripts/dialogue.js` (8 Oct rebuild) —
+  edit dialogue lines there only, then run script.js + patient2.js. Tick-sheet
+  times are computed from it (timing.js, 145 wpm ≈ 11:45 conservative).
+  Final rubric agent: 18/20, no auto-fail; last 3 suggestions applied. Still
+  open: `[fee]` placeholder. Safety-net routing per standard: spread/face/eye/
+  ear/infected/confused/worse → ED; slow to settle/side effects/neuropathic → GP.
+  Pain is 3/10 on purpose (moderate pain = referral).
 - `PHAR6302-A2A-ActionPlan/`, `CPD/` (996 credits logged vs 40 required),
   `Source-Gap-List/` (TG/AMH chapters cited by the QLD protocols, 8/~38 held).
 
