@@ -14,6 +14,42 @@ home screen, used often with no signal.
 **Last worked: 7 October 2026.** App version **v2026.10.01a** (pushed, clean).
 Model switched Opus 5 → Opus 5.5 on 7 Oct; this block is the handover.
 
+### 8 Oct update — v2026.10.08a (pushed)
+- Oct 7 Canvas exports ingested (PHAR6302 to Wk 8, PHAR6202 to Wk 8). New
+  content is section **I** at the end of `prescribing-data-ext.js` (append-only):
+  new topic **mh** (Mental health, 6302 Wk 8) with cond page + brief; asthma Wk 7;
+  comm (6202 Wk 7 + ISBAR); safe (6202 Wk 8); additions to Wk 1–6. 171 cards,
+  57 MCQs, each drafted by an agent and independently verified against the
+  page; each answer carries a "Source: … Oct 2026 course export" line.
+  Working files: `coursework/_review/` (src/, drafts/*.json + *.verdict.json).
+- Live counts (in play): 761 cards, 324 MCQ. htn 160/90, lipid 120/45, wt 86/32,
+  bgl 85/34, comm 81/32, asthma 64/26, copd 47/24, safe 45/15, mh 36/12,
+  smoke 15/5, reas 14/5, eth 8/4.
+- Safety fixes in existing cards (both data files + study.html): C91 auscultation
+  start, tricuspid 4th/5th ICS, C93 emergency vs urgency (HF 2016; 180/120 is a
+  US figure), PACKS.htn refer line, C285/267/269/271/284/286 flagged as unverified
+  classmate notes, C287 sulfonylureas (SADMANS withhold vs RACGP review), C551
+  eGFR unit, Q82/C331/Q157 "urgent referral" wording, HF-band labels C316-318/Q153,
+  C28 caveat, DRUGS met = M in SADMANS, funding claims dated. Evidence:
+  `coursework/_review/drafts/safety_sources.md`.
+- index.html fixes: Learn graded the WRONG card (now learn.deck[learn.q]); Learn
+  test capped 10 + persisted (store.sess.learn); MCQ fix round re-tests; resume
+  keeps missed; mock excludes uni papers; MCQ chunks of 20, unanswered/wrong first;
+  options shuffled at display (optOrder, data-opt keeps original index); flashcard
+  Revise ahead + overdue-first/interleaved new; readiness = box>=3 / right>0;
+  search covers flashcards; Home search button; 44px tap targets.
+  jsdom harness: `outputs/apptest.js` (24 checks).
+- Viva: Uzair's slot **Wed 28 Oct 1:30 pm**, swaps until 14 Oct (in EVENTS).
+- Still open (need sources or his input): viva practice built from HIS action
+  plan (keep in coursework/, private); lipid + smoking OSCE stations; ACEi
+  counselling (angioedema/NSAIDs) and hypo treatment steps need AMH/NDSS sources;
+  PACKS htn/bgl safety-net "urgent care" wording (protocols don't script 000);
+  ~25% weak MCQ distractors and correct option often the longest.
+- Old export zips: app reads none. Oct 6302 export is a superset of all older
+  6302 zips. Older 6202 zips hold 2 pages Canvas has since removed
+  ("Clinical Practice Guidelines", "Physical Examination Resources") — keep the
+  6202 Sep-02 zip.
+
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
 https://claude.ai/code/artifact/735dfcdb-164c-4b81-a79f-7ebd35429bf4
