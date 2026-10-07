@@ -47,7 +47,7 @@ button:active{transform:scale(.98)}
 .btn-a{background:var(--accent);color:#fff}
 .btn-g{background:transparent;border:1.5px solid var(--line);color:var(--ink2)}
 .btn-block{display:block;width:100%;margin:8px 0}
-.btn-sm{min-height:36px;padding:6px 12px;font-size:.9rem;border-radius:9px}
+.btn-sm{min-height:44px;padding:6px 12px;font-size:.9rem;border-radius:9px}
 input,select,textarea{font-family:inherit;font-size:1rem;color:var(--ink);
   background:var(--surface);border:1.5px solid var(--line);border-radius:10px;
   padding:10px 12px;min-height:44px;width:100%}
@@ -110,7 +110,7 @@ textarea{min-height:120px;font-family:ui-monospace,Menlo,monospace;font-size:.85
   border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:.8rem;
   font-weight:600;color:var(--ink2);min-height:32px}
 .chip.on{background:var(--teal-t);border-color:var(--teal);color:var(--teal)}
-button.chip{min-height:36px}
+button.chip{min-height:40px}
 .muted{color:var(--ink3)} .small{font-size:.85rem}
 .big-n{font-size:2rem;font-weight:750;color:var(--teal);line-height:1.1}
 .prog{height:8px;background:var(--surface2);border-radius:6px;overflow:hidden;margin:6px 0}
@@ -380,7 +380,7 @@ function blankStore(){
           /* Where he was up to. Held in the store, not in memory, so closing
              the app mid-session resumes instead of starting the queue again —
              that was the "it resets to the beginning" bug. */
-          sess:{cards:null, mcq:null}, papers:{}, savedAt:0};
+          sess:{cards:null, mcq:null, learn:null}, papers:{}, savedAt:0};
 }
 function repairBox(v){
   var o = {};
@@ -418,10 +418,11 @@ function loadStore(){
         /* Restore an unfinished session. Validated hard: a stale queue whose
            indices no longer exist, or one saved under the other semester,
            must not resurrect and point at the wrong cards. */
-        s.sess = {cards:null, mcq:null};
+        s.sess = {cards:null, mcq:null, learn:null};
         if (p.sess && typeof p.sess === "object"){
           s.sess.cards = validSess(p.sess.cards, s.sem, "cards");
           s.sess.mcq   = validSess(p.sess.mcq,   s.sem, "mcq");
+          s.sess.learn = (p.sess.learn && typeof p.sess.learn === "object") ? p.sess.learn : null;
         }
       }
     } catch (e) {}
@@ -494,16 +495,17 @@ function mmss(ms){
 }
 function keyOf(sem, i){ return sem + ":" + i; }
 
-/* topic readiness: % of cards seen + mcqs answered for one topic */
+/* topic readiness: % of cards known (box 3+) + MCQs answered correctly. It used to
+   count anything merely seen, so a topic answered entirely wrong read 100%. */
 function topicReadiness(sem, condId){
   var d = DATA[sem], cards = 0, cardsSeen = 0, qs = 0, qsDone = 0, i, k;
   for (i = 0; i < d.cards.length; i++) if (d.cards[i][0] === condId && live(sem, "cards", i)){
     cards++; k = keyOf(sem, i);
-    if (store.box[k] && store.box[k].seen > 0) cardsSeen++;
+    if (store.box[k] && store.box[k].b >= 3) cardsSeen++;   /* recalled correctly at least twice */
   }
   for (i = 0; i < d.mcq.length; i++) if (d.mcq[i][0] === condId && live(sem, "mcq", i)){
     qs++; k = keyOf(sem, i);
-    if (store.mcq[k] > 0) qsDone++;
+    if (store.right[k] > 0) qsDone++;                         /* answered correctly at least once */
   }
   var tot = cards + qs, done = cardsSeen + qsDone;
   return tot ? Math.round(100 * done / tot) : 0;
@@ -729,10 +731,41 @@ R.home = function(v){
 };
 
 /* ---------- LEARN: Read → Recall → Test → Fix ---------- */
-var learn = {cond: null, stage: 0, missed: [], q: 0, fixQ: [], deck: null, deckFor: null, deckAll: 0};
+function newLearn(cond){
+  return {cond: cond, stage: 0, missed: [], q: 0, fixQ: [], deck: null, deckFor: null, deckAll: 0,
+          testQ: null, testFor: null, testAll: 0};
+}
+/* The Study session is persisted like flashcards and MCQs, so iOS killing the
+   app mid-session resumes it instead of starting the topic again. */
+function persistLearn(){
+  store.sess.learn = learn.cond ? {sem: cur.sem, cond: learn.cond, stage: learn.stage, q: learn.q,
+    missed: learn.missed, fixQ: learn.fixQ, deck: learn.deck, deckFor: learn.deckFor, deckAll: learn.deckAll,
+    testQ: learn.testQ, testFor: learn.testFor, testAll: learn.testAll} : null;
+  save();
+}
+function restoreLearn(){
+  var o = store.sess && store.sess.learn, sem = cur.sem;
+  if (!o || o.sem !== sem || !condById(sem, o.cond)) return newLearn(null);
+  function okList(a, kind){
+    if (a == null) return true;
+    if (Object.prototype.toString.call(a) !== "[object Array]") return false;
+    for (var i = 0; i < a.length; i++)
+      if (typeof a[i] !== "number" || a[i] < 0 || a[i] >= DATA[sem][kind].length || !live(sem, kind, a[i])) return false;
+    return true;
+  }
+  if (!okList(o.deck, "cards") || !okList(o.testQ, "mcq") || !okList(o.missed, "mcq") || !okList(o.fixQ, "mcq"))
+    return newLearn(null);
+  var l = newLearn(o.cond);
+  l.stage = (o.stage >= 0 && o.stage <= 3) ? o.stage : 0; l.q = (o.q >= 0) ? o.q : 0;
+  l.missed = o.missed || []; l.fixQ = o.fixQ || []; l.deck = o.deck || null; l.deckFor = o.deckFor || null;
+  l.deckAll = o.deckAll || 0; l.testQ = o.testQ || null; l.testFor = o.testFor || null; l.testAll = o.testAll || 0;
+  return l;
+}
+var learn = restoreLearn();
 R.learn = function(v, arg){
   var sem = cur.sem;
-  if (arg) { learn = {cond: arg, stage: 0, missed: [], q: 0, fixQ: [], deck: null, deckFor: null, deckAll: 0}; }
+  if (arg) { learn = newLearn(arg); }
+  if (learn.cond) persistLearn();
   if (!learn.cond){
     var h = '<h1>Study</h1><p class="muted">Pick a topic. Each session: read the brief, recall cards, test with MCQs, then fix anything missed. About 15 minutes.</p>';
     var dl = nearestDeadline(), cov = dl && dl.cov ? dl.cov : [];
@@ -824,9 +857,21 @@ R.learn = function(v, arg){
     return;
   }
   if (learn.stage === 2){                     /* TEST */
-    var qs = [];
-    for (var m = 0; m < DATA[sem].mcq.length; m++)
-      if (DATA[sem].mcq[m][0] === c.id && live(sem, "mcq", m)) qs.push(m);
+    /* Capped at 10 so a session stays ~15 minutes (htn alone has 90+).
+       Never-attempted and previously-wrong first; uni papers excluded. Fixed
+       once per session so Back and resume point at the same questions. */
+    if (!learn.testQ || learn.testFor !== c.id){
+      var tq = [];
+      for (var m = 0; m < DATA[sem].mcq.length; m++)
+        if (DATA[sem].mcq[m][0] === c.id && live(sem, "mcq", m) && !isUni(sem, m)) tq.push(m);
+      tq.sort(function(a, b2){
+        function rk(i2){ var k2 = keyOf(sem, i2), n2 = store.mcq[k2] || 0, r2 = store.right[k2] || 0;
+          if (!n2) return 0; if (r2 < n2) return 1; return 2; }
+        return rk(a) - rk(b2) || ((store.mcq[keyOf(sem, a)] || 0) - (store.mcq[keyOf(sem, b2)] || 0));
+      });
+      learn.testAll = tq.length; learn.testQ = tq.slice(0, 10); learn.testFor = c.id;
+    }
+    var qs = learn.testQ;
     if (!qs.length){ learn.stage = 3; R.learn(v); return; }
     if (learn.q >= qs.length){
       var nm = learn.missed.length;
@@ -835,7 +880,7 @@ R.learn = function(v, arg){
               '<button type="button" class="btn-p btn-block" data-lstage="3">Fix the missed ones</button>'
            : '<p class="muted">Nothing missed. Solid.</p>' +
               '<button type="button" class="btn-p btn-block" data-lstage="3">Finish session</button>') + '</div>';
-      learn.fixQ = learn.missed.slice();
+      learn.fixQ = learn.missed.slice(); persistLearn();
       return;
     }
     renderMcqQuestion(v, sh, qs[learn.q], sem, "learn");
@@ -846,12 +891,26 @@ R.learn = function(v, arg){
     v.innerHTML = sh + '<div class="card hero"><div class="k">Session complete</div>' +
       '<h1>' + esc(c.name) + '</h1><div class="mins">Brief read · cards recalled · MCQs done · misses fixed</div>' +
       '<button type="button" data-learn="*exit">Back to topics</button></div>';
-    learn = {cond: null, stage: 0, missed: [], q: 0, fixQ: []};
+    learn = newLearn(null); store.sess.learn = null; save();
     return;
   }
   renderMcqQuestion(v, sh, learn.fixQ[0], sem, "fix");
 };
 
+/* Display order for MCQ options. The correct answer sat in position B in
+   ~65% of questions, so position alone gave the answer away. Options are
+   shown in a per-question, per-day shuffled order; buttons keep the ORIGINAL
+   index in data-opt, so scoring and saved answers are unchanged. Questions
+   whose text refers to options by letter keep their written order. */
+function optOrder(sem, qi){
+  var q = DATA[sem].mcq[qi], n = q[2].length, ord = [], i;
+  for (i = 0; i < n; i++) ord.push(i);
+  if (/\b(options?|answers?|choices?)\s*\(?[A-E]\b|\([a-e]\)|of the above|both of these/i.test(q[1] + " " + q[2].join(" ") + " " + q[4])) return ord;
+  var seed = (qi + 1) * 2654435761 + Math.floor(Date.now() / DAY) * 40503;
+  function rnd(){ seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+  for (i = n - 1; i > 0; i--){ var r = Math.floor(rnd() * (i + 1)), t = ord[i]; ord[i] = ord[r]; ord[r] = t; }
+  return ord;
+}
 /* shared MCQ question renderer (Learn test/fix + MCQ screen + mock) */
 function renderMcqQuestion(v, headHtml, qi, sem, mode){
   var q = DATA[sem].mcq[qi];
@@ -861,8 +920,9 @@ function renderMcqQuestion(v, headHtml, qi, sem, mode){
   var prev = (mode === "mcq" && mcqSess.answers && mcqSess.answers[qi] != null)
              ? mcqSess.answers[qi] : null;
   var h = headHtml + '<div class="card"><div class="qbox body">' + raw(q[1]) + '</div><div id="opts">';
-  for (var i = 0; i < q[2].length; i++){
-    var cls = "opt";
+  var ord = optOrder(sem, qi);
+  for (var oi = 0; oi < ord.length; oi++){
+    var i = ord[oi], cls = "opt";
     if (prev != null){
       if (i === q[3]) cls = "opt right";
       else if (i === prev) cls = "opt wrong";
@@ -897,10 +957,11 @@ function renderMcqQuestion(v, headHtml, qi, sem, mode){
     store.mcq[k] = (store.mcq[k] || 0) + 1;
     if (ok) store.right[k] = (store.right[k] || 0) + 1;
     bumpDay(); save();
-    var opts = $("opts").getElementsByTagName("button"), j;
+    var opts = $("opts").getElementsByTagName("button"), j, oj;
     for (j = 0; j < opts.length; j++){
-      if (j === q[3]) opts[j].className = "opt right";
-      else if (j === pick) opts[j].className = "opt wrong";
+      oj = +opts[j].getAttribute("data-opt");
+      if (oj === q[3]) opts[j].className = "opt right";
+      else if (oj === pick) opts[j].className = "opt wrong";
       else opts[j].className = "opt";
     }
     var nxt;
@@ -1148,6 +1209,20 @@ function duePool(sem, picks){
   }
   return out;
 }
+/* Overdue reviews first (most overdue first), then new cards interleaved
+   across topics so later weeks are not stuck behind hundreds of earlier ones. */
+function orderDue(sem, pool){
+  var rev = [], byTopic = {}, order = [], i, k, e, t;
+  for (i = 0; i < pool.length; i++){
+    e = store.box[keyOf(sem, pool[i])];
+    if (e) rev.push(pool[i]);
+    else { t = DATA[sem].cards[pool[i]][0]; if (!byTopic[t]){ byTopic[t] = []; order.push(t); } byTopic[t].push(pool[i]); }
+  }
+  rev.sort(function(a, b2){ return cardDueTs(sem, a) - cardDueTs(sem, b2); });
+  var fresh = [], more = true, r = 0;
+  while (more){ more = false; for (k = 0; k < order.length; k++){ if (byTopic[order[k]][r] != null){ fresh.push(byTopic[order[k]][r]); more = true; } } r++; }
+  return rev.concat(fresh);
+}
 function cardDueTs(sem, i){
   var e = store.box[keyOf(sem, i)];
   return e ? e.due : 0;
@@ -1179,7 +1254,8 @@ R.cards = function(v){
       c2 = DATA[sem].conds[i]; n = 0;
       for (j = 0; j < DATA[sem].cards.length; j++)
         if (DATA[sem].cards[j][0] === c2.id && live(sem, "cards", j) && cardDueTs(sem, j) <= Date.now()) n++;
-      if (!n && cardPick.indexOf(c2.id) < 0) continue;      /* nothing due, not selected — hide it */
+      /* Topics with nothing due stay visible (greyed count) so he can still
+         pick one to revise ahead - the night-before-an-exam use. */
       h += '<button type="button" class="chip' + (cardPick.indexOf(c2.id) >= 0 ? ' chip-on' : '') +
            '" data-cpick="' + esc(c2.id) + '">' + esc(c2.name) + ' <span class="chip-n">' + n + '</span></button>';
     }
@@ -1190,7 +1266,10 @@ R.cards = function(v){
     h += '<div class="row between mt"><div><div class="big-n">' + pool.length + '</div>' +
          '<div class="small muted">due in ' + esc(pickLabel(sem, cardPick).toLowerCase()) +
          (pool.length ? ' — next chunk ' + chunk + ' cards · ' + mins(Math.max(2, chunk * 0.4)) : '') + '</div></div>' +
-         '<button type="button" class="btn-p" data-cstart="1"' + (pool.length ? "" : " disabled") + '>Start</button></div>';
+         (pool.length ? '<button type="button" class="btn-p" data-cstart="1">Start</button>'
+                      : '<button type="button" class="btn-p" data-cahead="1">Revise ahead</button>') + '</div>' +
+         (pool.length ? '<button type="button" class="btn-g btn-block mt" data-cahead="1">Revise ahead instead (not yet due)</button>' :
+          '<p class="small muted mt">Nothing due here. &ldquo;Revise ahead&rdquo; drills the cards that are soonest due, without breaking the schedule.</p>');
     h += '</div>';
 
     /* box distribution */
@@ -1249,9 +1328,14 @@ function gradeCard(sem, ci, got){
 }
 
 /* ---------- MCQs ---------- */
+function missedFrom(sem, ans){
+  var out = [], k;
+  for (k in ans) if (DATA[sem].mcq[+k] && ans[k] !== DATA[sem].mcq[+k][3]) out.push(+k);
+  return out;
+}
 var mcqSess = store.sess.mcq
   ? {topics: store.sess.mcq.filter || [], theme: "", queue: store.sess.mcq.queue,
-     i: store.sess.mcq.i, missed: [], answers: store.sess.mcq.answers || {}}
+     i: store.sess.mcq.i, missed: missedFrom(store.sem, store.sess.mcq.answers || {}), answers: store.sess.mcq.answers || {}}
   : {topics: [], theme: "", queue: null, i: 0, missed: [], answers: {}};
 function persistMcqSess(){
   store.sess.mcq = mcqSess.queue
@@ -1413,8 +1497,9 @@ R.papers = function(v){
   var prevA = paper.answers[paper.q];
   var h2 = sh + '<div class="card"><div class="small muted">Question ' + (paper.q + 1) + ' of ' + idx.length + '</div>' +
            '<div class="qbox body">' + raw(q[1]) + '</div><div id="popts">';
-  for (i = 0; i < q[2].length; i++){
-    var cls = "opt";
+  var pord = optOrder(sem, qi);
+  for (var poi = 0; poi < pord.length; poi++){
+    i = pord[poi]; var cls = "opt";
     if (typeof prevA === "number"){
       if (i === q[3]) cls = "opt right";
       else if (i === prevA) cls = "opt wrong";
@@ -1447,8 +1532,9 @@ R.papers = function(v){
     paper.answers[paper.q] = pick;
     var opts = $("popts").getElementsByTagName("button"), j2;
     for (j2 = 0; j2 < opts.length; j2++){
-      if (j2 === q[3]) opts[j2].className = "opt right";
-      else if (j2 === pick) opts[j2].className = "opt wrong";
+      var oj2 = +opts[j2].getAttribute("data-popt");
+      if (oj2 === q[3]) opts[j2].className = "opt right";
+      else if (oj2 === pick) opts[j2].className = "opt wrong";
       else opts[j2].className = "opt";
     }
     showExp(pick);
@@ -1591,9 +1677,7 @@ function vivaPool(sem){
   var out = [], i;
   for (i = 0; i < VIVA.length; i++){
     if (vivaSess.topic && VIVA[i][0] !== vivaSess.topic) continue;
-    if (!condById(sem, VIVA[i][0]) && vivaSess.topic === "") {
-      /* keep prompts whose topic exists in either semester when "All" */
-    }
+    if (!condById(sem, VIVA[i][0])) continue;   /* only this semester's topics */
     out.push(i);
   }
   return out;
@@ -2013,7 +2097,7 @@ document.addEventListener("click", function(ev){
     renderGroup(parts[0], $("view"));
     return;
   }
-  if (b.getAttribute("data-cond") != null){ condOpen = b.getAttribute("data-cond"); R.cond($("view")); return; }
+  if (b.getAttribute("data-cond") != null){ condOpen = b.getAttribute("data-cond"); R.cond($("view")); try { window.scrollTo(0, 0); } catch (e) {} return; }
   /* Links pane category filter */
   if (b.getAttribute("data-drug") != null){
     var dv = b.getAttribute("data-drug");
@@ -2024,19 +2108,20 @@ document.addEventListener("click", function(ev){
   if (b.getAttribute("data-go") != null){
     var arg = b.getAttribute("data-arg");
     if (arg && cur.tab !== b.getAttribute("data-go")){ /* carry arg into target screen */
-      if (b.getAttribute("data-go") === "learn") learn = {cond: arg, stage: 0, missed: [], q: 0, fixQ: [], deck: null, deckFor: null, deckAll: 0};
+      if (b.getAttribute("data-go") === "learn") learn = newLearn(arg);
       if (b.getAttribute("data-go") === "topics"){ topicOpen = arg; cur.sub.reference = "topics"; }
     }
     var tgt = b.getAttribute("data-go");
     if (tgt === "topics"){ cur.sub.reference = "topics"; tgt = "reference"; }
+    for (var gk in GROUPS) if (GROUPS[gk].indexOf(tgt) >= 0){ cur.sub[gk] = tgt; tgt = gk; break; }
     go(tgt);
     return;
   }
   /* Learn */
   if (b.getAttribute("data-learn") != null){
     var lc = b.getAttribute("data-learn");
-    if (lc === "*exit") learn = {cond: null, stage: 0, missed: [], q: 0, fixQ: []};
-    else learn = {cond: lc, stage: 0, missed: [], q: 0, fixQ: []};
+    if (lc === "*exit"){ learn = newLearn(null); store.sess.learn = null; save(); }
+    else { learn = newLearn(lc); persistLearn(); }
     R.learn(v); return;
   }
   if (b.getAttribute("data-paper") != null){
@@ -2048,17 +2133,18 @@ document.addEventListener("click", function(ev){
   if (b.getAttribute("data-pnext") != null){ paper.q++; R.papers(v); return; }
   if (b.getAttribute("data-pback") != null){ if (paper.q > 0) paper.q--; R.papers(v); return; }
   if (b.getAttribute("data-pend") != null){ paper.done = true; R.papers(v); return; }
-  if (b.getAttribute("data-lback") != null){ if (learn.q > 0) learn.q--; R.learn(v); return; }
-  if (b.getAttribute("data-lstage") != null){ learn.stage = +b.getAttribute("data-lstage"); learn.q = 0; R.learn(v); return; }
+  if (b.getAttribute("data-lback") != null){ if (learn.q > 0) learn.q--; persistLearn(); R.learn(v); return; }
+  if (b.getAttribute("data-lstage") != null){ learn.stage = +b.getAttribute("data-lstage"); learn.q = 0; persistLearn(); R.learn(v); return; }
   if (b.getAttribute("data-lcard") != null){
     var got = b.getAttribute("data-lcard") === "1";
-    var cards = [], i;
-    for (i = 0; i < DATA[sem].cards.length; i++) if (DATA[sem].cards[i][0] === learn.cond && live(sem, "cards", i)) cards.push(i);
-    gradeCard(sem, cards[learn.q], got);
-    learn.q++; R.learn(v); return;
+    /* Grade the card that is on screen. This used to rebuild the unsorted
+       topic list and grade cards[learn.q] - a different card - silently
+       corrupting Leitner state on every Study session. */
+    if (learn.deck && learn.deck[learn.q] != null) gradeCard(sem, learn.deck[learn.q], got);
+    learn.q++; persistLearn(); R.learn(v); return;
   }
-  if (b.getAttribute("data-lnext") != null){ learn.q++; R.learn(v); return; }
-  if (b.getAttribute("data-lfix") != null){ R.learn(v); return; }
+  if (b.getAttribute("data-lnext") != null){ learn.q++; persistLearn(); R.learn(v); return; }
+  if (b.getAttribute("data-lfix") != null){ persistLearn(); R.learn(v); return; }
   /* Plan */
   if (b.getAttribute("data-step") != null){
     var sk = b.getAttribute("data-step");
@@ -2085,10 +2171,24 @@ document.addEventListener("click", function(ev){
     R.cards(v); return;
   }
   if (b.getAttribute("data-cstart") != null){
-    var q = duePool(sem, cardPick);
+    var q = orderDue(sem, duePool(sem, cardPick));
     if (!q.length) return;
     if (q.length > 20) q = q.slice(0, 20);   /* small startable chunks */
     cardSess = {queue: q, i: 0, filter: cardPick.slice()};
+    persistCardSess(); R.cards(v); return;
+  }
+  if (b.getAttribute("data-cahead") != null){
+    /* Not-yet-due cards for the picked topics, soonest due first. Grading
+       still uses gradeCard, so the schedule stays honest. */
+    var ah = [], ia;
+    for (ia = 0; ia < DATA[sem].cards.length; ia++){
+      if (!live(sem, "cards", ia)) continue;
+      if (cardPick.length && cardPick.indexOf(DATA[sem].cards[ia][0]) < 0) continue;
+      if (cardDueTs(sem, ia) > Date.now()) ah.push(ia);
+    }
+    ah.sort(function(a, b2){ return cardDueTs(sem, a) - cardDueTs(sem, b2); });
+    if (!ah.length) return;
+    cardSess = {queue: ah.slice(0, 20), i: 0, filter: cardPick.slice()};
     persistCardSess(); R.cards(v); return;
   }
   if (b.getAttribute("data-cresume") != null){
@@ -2124,13 +2224,21 @@ document.addEventListener("click", function(ev){
   }
   if (b.getAttribute("data-ttheme") != null){ mcqSess.theme = b.getAttribute("data-ttheme"); R.mcq(v); return; }
   if (b.getAttribute("data-mstart") != null){
-    mcqSess.queue = mcqFilter(sem); mcqSess.i = 0; mcqSess.missed = []; mcqSess.answers = {};
+    /* Never-answered first, then ones he has got wrong, then the rest; a
+       20-question chunk rather than one 250-question marathon. */
+    var mq = mcqFilter(sem);
+    mq.sort(function(a, b2){
+      function rk(i2){ var k2 = keyOf(sem, i2), n2 = store.mcq[k2] || 0, r2 = store.right[k2] || 0;
+        if (!n2) return 0; if (r2 < n2) return 1; return 2; }
+      return rk(a) - rk(b2);
+    });
+    mcqSess.queue = mq.slice(0, 20); mcqSess.i = 0; mcqSess.missed = []; mcqSess.answers = {};
     persistMcqSess(); R.mcq(v); return;
   }
   if (b.getAttribute("data-mresume") != null){
     var msv = store.sess.mcq;
     if (msv) mcqSess = {topics: msv.filter || [], theme: "", queue: msv.queue, i: msv.i,
-                        missed: [], answers: msv.answers || {}};
+                        missed: missedFrom(sem, msv.answers || {}), answers: msv.answers || {}};
     R.mcq(v); return;
   }
   if (b.getAttribute("data-mdrop") != null){
@@ -2144,15 +2252,15 @@ document.addEventListener("click", function(ev){
   }
   if (b.getAttribute("data-mnext") != null){ mcqSess.i++; persistMcqSess(); R.mcq(v); return; }
   if (b.getAttribute("data-mfix") != null){
-    mcqSess.queue = mcqSess.missed.slice(); mcqSess.i = 0; mcqSess.missed = [];
-    R.mcq(v); return;
+    mcqSess.queue = mcqSess.missed.slice(); mcqSess.i = 0; mcqSess.missed = []; mcqSess.answers = {};
+    persistMcqSess(); R.mcq(v); return;
   }
   if (b.getAttribute("data-mend") != null){
     mcqSess.queue = null; mcqSess.i = 0; mcqSess.answers = {}; persistMcqSess(); R.mcq(v); return; }
   /* Mock exam */
   if (b.getAttribute("data-kstart") != null){
     var pool = [], i2;
-    for (i2 = 0; i2 < DATA[sem].mcq.length; i2++) if (live(sem, "mcq", i2)) pool.push(i2);
+    for (i2 = 0; i2 < DATA[sem].mcq.length; i2++) if (live(sem, "mcq", i2) && !isUni(sem, i2)) pool.push(i2);
     /* deterministic-ish shuffle */
     for (i2 = pool.length - 1; i2 > 0; i2--){
       var r = Math.floor(Math.random() * (i2 + 1)), tmp = pool[i2]; pool[i2] = pool[r]; pool[r] = tmp;
@@ -2257,6 +2365,7 @@ document.addEventListener("click", function(ev){
           ns.osceRuns = repairObj(p.osceRuns); ns.exams = repairObj(p.exams); ns.days = repairObj(p.days);
           ns.steps = repairObj(p.steps); ns.right = repairObj(p.right); ns.read = repairObj(p.read);
           ns.viva = repairObj(p.viva);
+          ns.papers = repairObj(p.papers);
           ns.sem = (p.sem === "s1" || p.sem === "s2") ? p.sem : cur.sem;
           store = ns; cur.sem = ns.sem; save();
           io2.value = "";
@@ -2310,7 +2419,8 @@ document.addEventListener("click", function(ev){
       el2.getAttribute("data-ofinish") != null || el2.getAttribute("data-omark") != null ||
       el2.getAttribute("data-osave") != null || el2.getAttribute("data-oend") != null ||
       el2.getAttribute("data-export") != null || el2.getAttribute("data-import") != null ||
-      el2.getAttribute("data-reset") != null || el2.getAttribute("data-sug") != null;
+      el2.getAttribute("data-reset") != null || el2.getAttribute("data-sug") != null ||
+      el2.getAttribute("data-cahead") != null || el2.getAttribute("data-shit") != null;
   }
 });
 
