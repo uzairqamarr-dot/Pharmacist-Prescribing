@@ -14,6 +14,12 @@ home screen, used often with no signal.
 **Last worked: 7 October 2026.** App version **v2026.10.01a** (pushed, clean).
 Model switched Opus 5 → Opus 5.5 on 7 Oct; this block is the handover.
 
+### Phone-accessible plan (8 Oct)
+Claude Doc "Semester 2 2026 — Course Plan":
+https://claude.ai/code/artifact/735dfcdb-164c-4b81-a79f-7ebd35429bf4
+Keep it in sync when deadlines/status change. He may leave edit requests as
+doc comments from his phone — apply them to the files here.
+
 ### Live deadlines
 - **PHAR6202 Assessment 2 (GenAI consultation) — due 9 Oct 2026.** Recorded
   ≤12-min shingles consultation + own SOAP notes + Heidi notes + comparison +
