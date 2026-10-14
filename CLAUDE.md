@@ -58,6 +58,9 @@ protocol bands — never mix them. v2026.10.14b adds section **K**: video 2
 (management, COPD-X 2026 stepwise, ICS indications, devices, exacerbations),
 14 cards + 6 MCQ, verified; low-yield specialist items cut. Each item states
 where the QLD Program refers. copd now 75 cards / 35 MCQ (live).
+v2026.10.14c adds section **L**: PHAR6202 Tut 4 pre-work (PDL risk management —
+scope equation, risk cycle, 5 risk categories, risk ratings, QSPP domains,
+Charter of Healthcare Rights, 4 case studies), 14 cards + 5 MCQ. safe 59/20, eth 9/4.
 
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
