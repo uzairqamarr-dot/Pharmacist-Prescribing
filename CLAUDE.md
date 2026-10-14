@@ -54,8 +54,10 @@ Model switched Opus 5 → Opus 5.5 on 7 Oct; this block is the handover.
 Section **J** in ext: COPD pre-tutorial video part 1 (GOLD 2026 diagnosis/ABE),
 14 cards + 5 MCQ, verified against captions (src/6302_COPD_pretutorial_video.txt,
 extracted from the mp4's subtitle track). Cards contrast GOLD grades with QLD
-protocol bands — never mix them. copd now 61 cards / 29 MCQ. Part 2 video
-(management) not yet supplied.
+protocol bands — never mix them. v2026.10.14b adds section **K**: video 2
+(management, COPD-X 2026 stepwise, ICS indications, devices, exacerbations),
+14 cards + 6 MCQ, verified; low-yield specialist items cut. Each item states
+where the QLD Program refers. copd now 75 cards / 35 MCQ (live).
 
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
