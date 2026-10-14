@@ -5,7 +5,7 @@
 
    GitHub Pages serves everything with Cache-Control: max-age=600 and that is
    not configurable, so both the install-time fetch and the background
-   revalidation on every hit use cache:"no-store" to bypass it — otherwise a
+   (the install fetch and cache-miss fetches) use cache:"no-store" to bypass it — otherwise a
    push can take ten minutes to be noticed even on a good connection.
 
    study.html and sem.html are precached too even though this app doesn't
@@ -62,24 +62,20 @@ self.addEventListener("fetch", function(ev){
   try { url = new URL(req.url); } catch(err){ return; }
   if (url.origin !== self.location.origin) return;
 
+  /* Cache-first, version-locked. The old background refresh rewrote files
+     one at a time into the CURRENT version's cache, so a flaky connection
+     could pair a new index.html with old data files. Updates now arrive only
+     as a whole new VERSION (install -> "Update ready"). */
   ev.respondWith(
     caches.match(req, {ignoreSearch: true}).then(function(hit){
-      /* Refresh the cache in the background regardless, so the next launch
-         is current. Failure here is normal and expected when offline. */
-      var net = fetch(new Request(req.url, {cache: "no-store"})).then(function(res){
+      if (hit) return hit;
+      return fetch(new Request(req.url, {cache: "no-store"})).then(function(res){
         if (res && res.ok){
           var copy = res.clone();
           caches.open(CACHE).then(function(c){ c.put(req, copy); });
         }
         return res;
-      })["catch"](function(){ return null; });
-
-      if (hit) return hit;
-
-      return net.then(function(res){
-        if (res) return res;
-        /* Offline and uncached: a navigation still gets something rather
-           than a bare failure. */
+      })["catch"](function(){
         if (req.mode === "navigate") return caches.match("index.html");
         return new Response("", {status: 504, statusText: "Offline"});
       });

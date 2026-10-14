@@ -1315,10 +1315,72 @@ function orderDue(sem, pool){
     if (e) rev.push(pool[i]);
     else { t = DATA[sem].cards[pool[i]][0]; if (!byTopic[t]){ byTopic[t] = []; order.push(t); } byTopic[t].push(pool[i]); }
   }
-  rev.sort(function(a, b2){ return cardDueTs(sem, a) - cardDueTs(sem, b2); });
+  /* Cards missed last time (box 1) first, then most overdue. A just-missed card
+     used to sort behind hundreds of older reviews and never came back. */
+  rev.sort(function(a, b2){
+    var ea = store.box[keyOf(sem, a)], eb = store.box[keyOf(sem, b2)];
+    var pa = (ea.b === 1 && ea.seen > 0) ? 0 : 1, pb = (eb.b === 1 && eb.seen > 0) ? 0 : 1;
+    return (pa - pb) || (ea.due - eb.due);
+  });
   var fresh = [], more = true, r = 0;
   while (more){ more = false; for (k = 0; k < order.length; k++){ if (byTopic[order[k]][r] != null){ fresh.push(byTopic[order[k]][r]); more = true; } } r++; }
   return rev.concat(fresh);
+}
+/* MCQ order: last attempt wrong (oldest first), then never answered mixed
+   across topics, then least practised. */
+function mcqOrder(sem, list){
+  var wrong = [], fresh = {}, order = [], rest = [], i, k, t;
+  for (i = 0; i < list.length; i++){
+    k = keyOf(sem, list[i]);
+    if (store.wrong[k]) wrong.push(list[i]);
+    else if (!store.mcq[k]){ t = DATA[sem].mcq[list[i]][0]; if (!fresh[t]){ fresh[t] = []; order.push(t); } fresh[t].push(list[i]); }
+    else rest.push(list[i]);
+  }
+  wrong.sort(function(a, b2){ return store.wrong[keyOf(sem, a)] - store.wrong[keyOf(sem, b2)]; });
+  var mix = [], more = true, r = 0;
+  while (more){ more = false; for (i = 0; i < order.length; i++){ if (fresh[order[i]][r] != null){ mix.push(fresh[order[i]][r]); more = true; } } r++; }
+  rest.sort(function(a, b2){ return (store.mcq[keyOf(sem, a)] || 0) - (store.mcq[keyOf(sem, b2)] || 0); });
+  return wrong.concat(mix, rest);
+}
+/* Mistakes: cards whose last rating was "Missed it", and questions whose last
+   answer was wrong — uni papers and timed exams included. */
+function missedCards(sem){
+  var out = [], i, e;
+  for (i = 0; i < DATA[sem].cards.length; i++){
+    if (!live(sem, "cards", i)) continue;
+    e = store.box[keyOf(sem, i)];
+    if (e && e.b === 1 && e.seen > 0) out.push(i);
+  }
+  out.sort(function(a, b2){ return cardDueTs(sem, a) - cardDueTs(sem, b2); });
+  return out;
+}
+function wrongMcqs(sem){
+  var out = [], i;
+  for (i = 0; i < DATA[sem].mcq.length; i++)
+    if (live(sem, "mcq", i) && store.wrong[keyOf(sem, i)]) out.push(i);
+  out.sort(function(a, b2){ return store.wrong[keyOf(sem, a)] - store.wrong[keyOf(sem, b2)]; });
+  return out;
+}
+/* Start a flashcard chunk for some topics: due first, else revise ahead. */
+function startCards(sem, picks){
+  var q = orderDue(sem, duePool(sem, picks)), ia;
+  if (!q.length){
+    for (ia = 0; ia < DATA[sem].cards.length; ia++){
+      if (!live(sem, "cards", ia)) continue;
+      if (picks.length && picks.indexOf(DATA[sem].cards[ia][0]) < 0) continue;
+      q.push(ia);
+    }
+    q.sort(function(a, b2){ return cardDueTs(sem, a) - cardDueTs(sem, b2); });
+  }
+  if (!q.length) return false;
+  cardSess = {queue: q.slice(0, 20), i: 0, filter: picks.slice()};
+  persistCardSess(); return true;
+}
+function startMcq(sem){
+  var mq = mcqOrder(sem, mcqFilter(sem));
+  if (!mq.length) return false;
+  mcqSess.queue = mq.slice(0, 20); mcqSess.i = 0; mcqSess.missed = []; mcqSess.answers = {};
+  persistMcqSess(); return true;
 }
 function cardDueTs(sem, i){
   var e = store.box[keyOf(sem, i)];
@@ -1332,7 +1394,7 @@ R.cards = function(v){
 
     /* Resume banner — only when a real unfinished session is on disk. */
     var sv = store.sess.cards;
-    if (sv && sv.i < sv.queue.length){
+    if (sv && sv.sem === sem && sv.i < sv.queue.length){
       h += '<div class="card hero"><div class="k">Picked up where you left off</div>' +
            '<h2>' + (sv.queue.length - sv.i) + ' cards still to go</h2>' +
            '<div class="mins">' + esc(pickLabel(sem, sv.filter || [])) + '</div>' +
@@ -1340,7 +1402,11 @@ R.cards = function(v){
            '<button type="button" class="btn-g btn-block" data-cdrop="1">Start something new instead</button></div>';
     }
 
-    h += '<p class="muted">Leitner spaced repetition — five boxes, intervals 0, 0, 1, 3, 8, 21 days. New cards are due immediately.</p>';
+    var nMiss = missedCards(sem).length;
+    h += '<div class="row gap" style="margin-bottom:12px">' +
+         (nMiss ? '<button type="button" class="btn-g btn-sm" data-review="cards">Review ' + nMiss + ' missed</button>' : '') +
+         '<button type="button" class="btn-g btn-sm" data-swap="mcq">\u21c4 MCQs on these topics</button></div>';
+    h += '<p class="muted">Leitner spaced repetition — five boxes, intervals 0, 0, 1, 3, 8, 21 days. New cards are due immediately. A card you miss comes back at the end of the chunk.</p>';
 
     /* Topic multi-select. Tap as many as you want, then Start. */
     h += '<div class="card"><div class="row between"><h2>Pick your topics</h2>' +
@@ -1389,7 +1455,8 @@ R.cards = function(v){
   if (cardSess.i >= q.length){
     v.innerHTML = '<div class="card hero"><div class="k">Session done</div><h1>' + q.length + ' cards reviewed</h1>' +
       '<div class="mins">Due dates updated</div>' +
-      '<button type="button" data-cend="1">Finish</button>' +
+      '<button type="button" data-swap="mcq">Now MCQs on these topics</button>' +
+      '<button type="button" class="btn-g btn-block" data-cend="1">Finish</button>' +
       '<button type="button" class="btn-g btn-block" data-cback="1">Look back at the last one</button></div>';
     return;
   }
@@ -1397,7 +1464,8 @@ R.cards = function(v){
   var graded = !!store.box[keyOf(sem, ci)];
   v.innerHTML = '<div class="row between"><span class="small muted">Card ' + (cardSess.i + 1) + ' of ' + q.length +
     ' · ' + esc(condName(sem, card[0])) + '</span>' +
-    '<button type="button" class="btn-g btn-sm" data-cend="1">End</button></div>' +
+    '<span class="row gap"><button type="button" class="btn-g btn-sm" data-swap="mcq">\u21c4 MCQs</button>' +
+    '<button type="button" class="btn-g btn-sm" data-cend="1">End</button></span></div>' +
     '<div class="card"><div class="qbox body">' + raw(card[1]) + '</div>' +
     '<div id="cans" style="display:none"><div class="explain body">' + raw(card[2]) + '</div></div>' +
     '<button type="button" class="btn-p btn-block" id="crev">Show answer</button>' +
@@ -1447,7 +1515,7 @@ R.mcq = function(v){
     var h = '<h1>MCQs</h1>';
 
     var sv = store.sess.mcq;
-    if (sv && sv.i < sv.queue.length){
+    if (sv && sv.sem === sem && sv.i < sv.queue.length){
       h += '<div class="card hero"><div class="k">Picked up where you left off</div>' +
            '<h2>' + (sv.queue.length - sv.i) + ' questions still to go</h2>' +
            '<div class="mins">' + esc(pickLabel(sem, sv.filter || [])) + '</div>' +
@@ -1455,7 +1523,11 @@ R.mcq = function(v){
            '<button type="button" class="btn-g btn-block" data-mdrop="1">Start something new instead</button></div>';
     }
 
-    h += '<p class="muted">Pick as many topics as you like, then answer. Explanations appear after you commit.</p>';
+    var nWrong = wrongMcqs(sem).length;
+    h += '<div class="row gap" style="margin-bottom:12px">' +
+         (nWrong ? '<button type="button" class="btn-g btn-sm" data-review="mcq">Review ' + nWrong + ' wrong</button>' : '') +
+         '<button type="button" class="btn-g btn-sm" data-swap="cards">\u21c4 Flashcards on these topics</button></div>';
+    h += '<p class="muted">Pick as many topics as you like, then answer. Ones you last got wrong come first.</p>';
     h += '<div class="card"><div class="row between"><div class="small muted">Topics</div>' +
          '<span class="small muted">' + esc(pickLabel(sem, mcqSess.topics)) + '</span></div>' +
          '<div class="row wrap gap" id="tchips">';
@@ -1488,14 +1560,16 @@ R.mcq = function(v){
       '<div class="mins">' + mcqSess.missed.length + ' missed this set</div>';
     if (mcqSess.missed.length)
       h2 += '<button type="button" data-mfix="1">Fix the missed now</button>';
-    h2 += '<button type="button" data-mend="1" style="margin-left:8px">Back to filters</button>' +
+    h2 += '<button type="button" data-swap="cards" style="margin-left:8px">Flashcards on these topics</button>' +
+          '<button type="button" class="btn-g btn-block" data-mend="1">Back to filters</button>' +
           '<button type="button" class="btn-g btn-block" data-mback="1">Look back at the last one</button></div>';
     v.innerHTML = h2;
     return;
   }
   var head = '<div class="row between"><span class="small muted">Question ' + (mcqSess.i + 1) + ' of ' + q.length +
     ' \u00b7 ' + esc(condName(sem, DATA[sem].mcq[q[mcqSess.i]][0])) + ' \u00b7 ' + esc(themeLabel(themeOf(DATA[sem].mcq[q[mcqSess.i]][1]))) + '</span>' +
-    '<button type="button" class="btn-g btn-sm" data-mend="1">End</button></div>';
+    '<span class="row gap"><button type="button" class="btn-g btn-sm" data-swap="cards">\u21c4 Cards</button>' +
+    '<button type="button" class="btn-g btn-sm" data-mend="1">End</button></span></div>';
   renderMcqQuestion(v, head, q[mcqSess.i], sem, "mcq");
 };
 function mcqPoolCount(sem){
@@ -1519,7 +1593,13 @@ function mcqFilter(sem){
 
 
 /* ---------- UNIVERSITY PAPERS PANE ---------- */
-var paper = {id: null, q: 0, answers: [], done: false};
+var paper = (store.sess.paper && paperById(store.sess.paper.id))
+  ? {id: store.sess.paper.id, q: store.sess.paper.q || 0, answers: store.sess.paper.answers || [], done: !!store.sess.paper.done}
+  : {id: null, q: 0, answers: [], done: false};
+function persistPaper(){
+  store.sess.paper = (paper.id && !paper.done) ? {sem: cur.sem, id: paper.id, q: paper.q, answers: paper.answers, done: paper.done} : null;
+  save();
+}
 R.papers = function(v){
   var sem = cur.sem, i, j;
   if (!paper.id){
@@ -1627,6 +1707,9 @@ R.papers = function(v){
     locked = true;
     var pick = +b.getAttribute("data-popt");
     paper.answers[paper.q] = pick;
+    var pk = keyOf(sem, qi);
+    if (pick === q[3]) delete store.wrong[pk]; else store.wrong[pk] = Date.now();
+    persistPaper();
     var opts = $("popts").getElementsByTagName("button"), j2;
     for (j2 = 0; j2 < opts.length; j2++){
       var oj2 = +opts[j2].getAttribute("data-popt");
@@ -1639,7 +1722,15 @@ R.papers = function(v){
 };
 
 /* ---------- MOCK EXAM (timed, self-scored, wall clock) ---------- */
-var mock = {queue: null, q: 0, answers: [], startTs: 0, limitMs: 0, MIN_PER_Q: 1.5};
+var mock = store.sess.mock
+  ? {queue: store.sess.mock.queue, q: store.sess.mock.q || 0, answers: store.sess.mock.answers || [],
+     startTs: store.sess.mock.startTs || 0, limitMs: store.sess.mock.limitMs || 0, MIN_PER_Q: 1.5}
+  : {queue: null, q: 0, answers: [], startTs: 0, limitMs: 0, MIN_PER_Q: 1.5};
+function persistMock(){
+  store.sess.mock = mock.queue ? {sem: cur.sem, queue: mock.queue, q: mock.q, answers: mock.answers,
+                                  startTs: mock.startTs, limitMs: mock.limitMs} : null;
+  save();
+}
 R.mock = function(v){
   var sem = cur.sem;
   if (!mock.queue){
@@ -1685,7 +1776,7 @@ function startMockClock(){
     var left = mock.limitMs - (Date.now() - mock.startTs);
     c.textContent = mmss(left);
     if (left < 60000) c.className = "timer low";
-    if (left <= 0){ stopMockClock(); R.mock($("view")); }
+    if (left <= 0){ stopMockClock(); R.mock($("subview") || $("view")); }
   };
   tick();
   mockTimer = setInterval(tick, 1000);
@@ -2228,7 +2319,9 @@ document.addEventListener("click", function(ev){
   if (b.getAttribute("data-go") != null){
     var arg = b.getAttribute("data-arg");
     if (arg && cur.tab !== b.getAttribute("data-go")){ /* carry arg into target screen */
-      if (b.getAttribute("data-go") === "learn") learn = newLearn(arg);
+      /* Only start a fresh Study session if it is a different topic — Home's
+         "Start now" used to restart one already in progress. */
+      if (b.getAttribute("data-go") === "learn" && learn.cond !== arg){ learn = newLearn(arg); persistLearn(); }
       if (b.getAttribute("data-go") === "topics"){ topicOpen = arg; cur.sub.reference = "topics"; }
     }
     var tgt = b.getAttribute("data-go");
@@ -2248,19 +2341,30 @@ document.addEventListener("click", function(ev){
     var pv = b.getAttribute("data-paper");
     if (pv === "*exit") paper = {id: null, q: 0, answers: [], done: false};
     else paper = {id: pv, q: 0, answers: [], done: false};
-    R.papers(v); return;
+    persistPaper(); R.papers(v); return;
   }
-  if (b.getAttribute("data-pnext") != null){ paper.q++; R.papers(v); return; }
-  if (b.getAttribute("data-pback") != null){ if (paper.q > 0) paper.q--; R.papers(v); return; }
-  if (b.getAttribute("data-pend") != null){ paper.done = true; R.papers(v); return; }
+  if (b.getAttribute("data-pnext") != null){ paper.q++; persistPaper(); R.papers(v); return; }
+  if (b.getAttribute("data-pback") != null){ if (paper.q > 0) paper.q--; persistPaper(); R.papers(v); return; }
+  if (b.getAttribute("data-pend") != null){ paper.done = true; persistPaper(); R.papers(v); return; }
   if (b.getAttribute("data-lback") != null){ if (learn.q > 0) learn.q--; persistLearn(); R.learn(v); return; }
-  if (b.getAttribute("data-lstage") != null){ learn.stage = +b.getAttribute("data-lstage"); learn.q = 0; persistLearn(); R.learn(v); return; }
+  if (b.getAttribute("data-lstage") != null){
+    var nst = +b.getAttribute("data-lstage");
+    learn.pos = learn.pos || {}; learn.pos[learn.stage] = learn.q;
+    if (nst === 3 && !learn.fixQ.length) learn.fixQ = learn.missed.slice();
+    learn.stage = nst; learn.q = (nst === 1 || nst === 2) ? (learn.pos[nst] || 0) : 0;
+    persistLearn(); R.learn(v); try { window.scrollTo(0, 0); } catch (e) {} return;
+  }
   if (b.getAttribute("data-lcard") != null){
     var got = b.getAttribute("data-lcard") === "1";
     /* Grade the card that is on screen. This used to rebuild the unsorted
        topic list and grade cards[learn.q] - a different card - silently
        corrupting Leitner state on every Study session. */
-    if (learn.deck && learn.deck[learn.q] != null) gradeCard(sem, learn.deck[learn.q], got);
+    var lci = learn.deck ? learn.deck[learn.q] : null;
+    if (lci != null){
+      gradeCard(sem, lci, got);
+      /* missed: it comes back at the end of this recall round */
+      if (!got && learn.deck.indexOf(lci, learn.q + 1) < 0) learn.deck.push(lci);
+    }
     learn.q++; persistLearn(); R.learn(v); return;
   }
   if (b.getAttribute("data-lnext") != null){ learn.q++; persistLearn(); R.learn(v); return; }
@@ -2291,11 +2395,38 @@ document.addEventListener("click", function(ev){
     R.cards(v); return;
   }
   if (b.getAttribute("data-cstart") != null){
-    var q = orderDue(sem, duePool(sem, cardPick));
-    if (!q.length) return;
-    if (q.length > 20) q = q.slice(0, 20);   /* small startable chunks */
-    cardSess = {queue: q, i: 0, filter: cardPick.slice()};
-    persistCardSess(); R.cards(v); return;
+    if (!duePool(sem, cardPick).length) return;
+    startCards(sem, cardPick); R.cards(v); return;
+  }
+  /* One tap from Home: start (or resume) a flashcard chunk across all topics. */
+  if (b.getAttribute("data-qstart") != null){
+    if (!(cardSess.queue && cardSess.i < cardSess.queue.length)) startCards(sem, []);
+    cur.sub.practise = "cards"; save(); go("practise"); return;
+  }
+  /* Flashcards <-> MCQs in one tap, same topics. An open session on the
+     other side is resumed rather than replaced. */
+  if (b.getAttribute("data-swap") != null){
+    var sto = b.getAttribute("data-swap");
+    if (sto === "mcq"){
+      var tpc = cardSess.queue ? (cardSess.filter || []) : cardPick;
+      if (!(mcqSess.queue && mcqSess.i < mcqSess.queue.length)){ mcqSess.topics = tpc.slice(); mcqSess.theme = ""; startMcq(sem); }
+    } else {
+      var tpm = mcqSess.topics || [];
+      if (!(cardSess.queue && cardSess.i < cardSess.queue.length)){ cardPick = tpm.slice(); startCards(sem, cardPick); }
+    }
+    cur.sub.practise = sto; save(); go("practise"); return;
+  }
+  /* Review my mistakes */
+  if (b.getAttribute("data-review") != null){
+    if (b.getAttribute("data-review") === "cards"){
+      var mcl = missedCards(sem); if (!mcl.length) return;
+      cardSess = {queue: mcl.slice(0, 20), i: 0, filter: []}; persistCardSess(); cur.sub.practise = "cards";
+    } else {
+      var mwl = wrongMcqs(sem); if (!mwl.length) return;
+      mcqSess = {topics: [], theme: "", queue: mwl.slice(0, 20), i: 0, missed: [], answers: {}};
+      persistMcqSess(); cur.sub.practise = "mcq";
+    }
+    save(); go("practise"); return;
   }
   if (b.getAttribute("data-cahead") != null){
     /* Not-yet-due cards for the picked topics, soonest due first. Grading
@@ -2333,7 +2464,10 @@ document.addEventListener("click", function(ev){
     persistCardSess(); R.cards(v); return;
   }
   if (b.getAttribute("data-cgot") != null){
-    gradeCard(sem, cardSess.queue[cardSess.i], b.getAttribute("data-cgot") === "1");
+    var gci = cardSess.queue[cardSess.i], gotc = b.getAttribute("data-cgot") === "1";
+    gradeCard(sem, gci, gotc);
+    /* A missed card comes back at the end of this chunk (once). */
+    if (!gotc && cardSess.queue.indexOf(gci, cardSess.i + 1) < 0){ cardSess.queue = cardSess.queue.slice(); cardSess.queue.push(gci); }
     cardSess.i++; persistCardSess(); R.cards(v); return;
   }
   /* MCQs */
@@ -2344,16 +2478,9 @@ document.addEventListener("click", function(ev){
   }
   if (b.getAttribute("data-ttheme") != null){ mcqSess.theme = b.getAttribute("data-ttheme"); R.mcq(v); return; }
   if (b.getAttribute("data-mstart") != null){
-    /* Never-answered first, then ones he has got wrong, then the rest; a
-       20-question chunk rather than one 250-question marathon. */
-    var mq = mcqFilter(sem);
-    mq.sort(function(a, b2){
-      function rk(i2){ var k2 = keyOf(sem, i2), n2 = store.mcq[k2] || 0, r2 = store.right[k2] || 0;
-        if (!n2) return 0; if (r2 < n2) return 1; return 2; }
-      return rk(a) - rk(b2);
-    });
-    mcqSess.queue = mq.slice(0, 20); mcqSess.i = 0; mcqSess.missed = []; mcqSess.answers = {};
-    persistMcqSess(); R.mcq(v); return;
+    /* Last-wrong first, then never answered (mixed across topics), then the
+       least practised; 20-question chunks. */
+    startMcq(sem); R.mcq(v); return;
   }
   if (b.getAttribute("data-mresume") != null){
     var msv = store.sess.mcq;
@@ -2388,10 +2515,10 @@ document.addEventListener("click", function(ev){
     pool = pool.slice(0, Math.min(20, pool.length));
     mock = {queue: pool, q: 0, answers: [], startTs: Date.now(),
             limitMs: Math.round(pool.length * mock.MIN_PER_Q * 60000), MIN_PER_Q: mock.MIN_PER_Q};
-    R.mock(v); return;
+    persistMock(); R.mock(v); return;
   }
-  if (b.getAttribute("data-knext") != null){ mock.q++; R.mock(v); return; }
-  if (b.getAttribute("data-kend") != null){ stopMockClock(); mock.queue = null; R.mock(v); return; }
+  if (b.getAttribute("data-knext") != null){ mock.q++; persistMock(); R.mock(v); return; }
+  if (b.getAttribute("data-kend") != null){ stopMockClock(); mock.queue = null; persistMock(); R.mock(v); return; }
   /* Exams */
   if (b.getAttribute("data-exam") != null){
     var es = b.getAttribute("data-exam");
@@ -2486,6 +2613,8 @@ document.addEventListener("click", function(ev){
           ns.steps = repairObj(p.steps); ns.right = repairObj(p.right); ns.read = repairObj(p.read);
           ns.viva = repairObj(p.viva);
           ns.papers = repairObj(p.papers);
+          ns.wrong = repairObj(p.wrong); ns.ui = repairObj(p.ui); if (!ns.ui.sub) ns.ui.sub = {};
+          cur.sub = ns.ui.sub;
           ns.sem = (p.sem === "s1" || p.sem === "s2") ? p.sem : cur.sem;
           store = ns; cur.sem = ns.sem; save();
           io2.value = "";
@@ -2497,7 +2626,7 @@ document.addEventListener("click", function(ev){
   }
   if (b.getAttribute("data-reset") != null){
     if (window.confirm("Reset ALL progress for both semesters? This cannot be undone.")){
-      store = blankStore(); store.sem = cur.sem; save();
+      store = blankStore(); store.sem = cur.sem; cur.sub = store.ui.sub; save();
       go(cur.tab);
     }
     return;
@@ -2508,40 +2637,14 @@ document.addEventListener("click", function(ev){
     if (sq){ sq.value = b.getAttribute("data-sug"); runSearch(sq.value); }
     return;
   }
+  /* Any data-* attribute marks an actionable button. The old hand-kept
+     whitelist silently ignored every new button nobody remembered to add. */
   function hasData(el2){
-    return el2.getAttribute("data-lkf") != null || el2.getAttribute("data-sub") != null ||
-      el2.getAttribute("data-cond") != null ||
-      el2.getAttribute("data-go") != null || el2.getAttribute("data-more") != null ||
-      el2.getAttribute("data-learn") != null || el2.getAttribute("data-lstage") != null ||
-      el2.getAttribute("data-lcard") != null || el2.getAttribute("data-lnext") != null ||
-      el2.getAttribute("data-lfix") != null || el2.getAttribute("data-step") != null ||
-      el2.getAttribute("data-week") != null || el2.getAttribute("data-topic") != null ||
-      el2.getAttribute("data-cstart") != null || el2.getAttribute("data-cend") != null ||
-      el2.getAttribute("data-cgot") != null || el2.getAttribute("data-tpic") != null ||
-      el2.getAttribute("data-ttheme") != null || el2.getAttribute("data-mstart") != null ||
-      el2.getAttribute("data-drug") != null ||
-      el2.getAttribute("data-cpick") != null || el2.getAttribute("data-cresume") != null ||
-      el2.getAttribute("data-cdrop") != null || el2.getAttribute("data-cback") != null ||
-      el2.getAttribute("data-cfwd") != null || el2.getAttribute("data-mpick") != null ||
-      el2.getAttribute("data-mresume") != null || el2.getAttribute("data-mdrop") != null ||
-      el2.getAttribute("data-mback") != null ||
-      el2.getAttribute("data-paper") != null || el2.getAttribute("data-popt") != null ||
-      el2.getAttribute("data-pback") != null || el2.getAttribute("data-pnext") != null ||
-      el2.getAttribute("data-pend") != null || el2.getAttribute("data-lback") != null ||
-      el2.getAttribute("data-mnext") != null || el2.getAttribute("data-mfix") != null ||
-      el2.getAttribute("data-mend") != null || el2.getAttribute("data-kstart") != null ||
-      el2.getAttribute("data-knext") != null || el2.getAttribute("data-kend") != null ||
-      el2.getAttribute("data-exam") != null || el2.getAttribute("data-exstep") != null ||
-      el2.getAttribute("data-spot") != null || el2.getAttribute("data-aopt") != null ||
-      el2.getAttribute("data-vtopic") != null || el2.getAttribute("data-vstart") != null ||
-      el2.getAttribute("data-vcommit") != null || el2.getAttribute("data-vrate") != null ||
-      el2.getAttribute("data-vend") != null || el2.getAttribute("data-ostart") != null ||
-      el2.getAttribute("data-ofinish") != null || el2.getAttribute("data-omark") != null ||
-      el2.getAttribute("data-osave") != null || el2.getAttribute("data-oend") != null ||
-      el2.getAttribute("data-export") != null || el2.getAttribute("data-import") != null ||
-      el2.getAttribute("data-reset") != null || el2.getAttribute("data-sug") != null ||
-      el2.getAttribute("data-cahead") != null || el2.getAttribute("data-shit") != null;
+    var at = el2.attributes, n;
+    for (n = 0; n < at.length; n++) if (at[n].name.indexOf("data-") === 0) return true;
+    return false;
   }
+
 });
 
 /* sheet + semester buttons */
