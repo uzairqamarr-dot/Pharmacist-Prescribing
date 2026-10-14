@@ -31,7 +31,7 @@ COURSE_MCQ.push(
   "60 for both",
   "65 for both"],1,
  "First-degree female relative under 65, or first-degree male relative under 55. The asymmetry catches people out — a father with a myocardial infarction at 60 does not meet the definition, but a mother with a stroke at 60 does."],
-["htn","A patient's calculated 5-year CVD risk is 4%. Which single factor would most appropriately move them down a category?",
+["htn","A patient's calculated 5-year CVD risk is 11%. Which single factor would most appropriately move them down a category?",
  ["Coronary artery calcium score of 0",
   "South Asian background",
   "eGFR of 55 mL/min/1.73m²",
@@ -83,8 +83,8 @@ COURSE_MCQ.push(
  ["Underestimate blood pressure","Overestimate blood pressure","Have no consistent effect","Only affect the diastolic reading"],1,
  "A cuff that is too small overestimates blood pressure; one that is too large underestimates it. This is one of the commonest sources of measurement error, along with unsupported arms, crossed legs and insufficient rest."],
 ["htn","An inter-arm systolic difference of 25 mmHg is found at a first visit. This should raise concern about:",
- ["White-coat hypertension","Aortic dissection or subclavian stenosis","Atrial fibrillation","An incorrectly calibrated device"],1,
- "A difference above 20 mmHg is abnormal and can suggest aortic dissection or subclavian stenosis, warranting prompt medical assessment. A smaller difference above 5 mmHg is common and simply means you use the arm with the higher reading for all subsequent measurements."],
+ ["White-coat hypertension","Aortic dissection","Atrial fibrillation","An incorrectly calibrated device"],1,
+ "A difference above 20 mmHg is abnormal and can suggest aortic dissection (Week 2 page), warranting prompt medical assessment. A smaller difference above 5 mmHg is common and simply means you use the arm with the higher reading for all subsequent measurements."],
 ["htn","The mitral (apex) auscultation area is located at the:",
  ["2nd intercostal space, right sternal border",
   "2nd intercostal space, left sternal border",
@@ -96,7 +96,7 @@ COURSE_MCQ.push(
   "Beta-blocker and thiazide diuretic",
   "ARB and thiazide diuretic",
   "Dihydropyridine CCB and beta-blocker"],1,
- "Beta-blockers are contraindicated in asthma and are not first-line for uncomplicated hypertension anyway. Thiazides cause dose-dependent hyperuricaemia and can precipitate gout. That still leaves three suitable first-line options: ACE inhibitor, ARB and dihydropyridine calcium channel blocker."],
+ "Beta-blockers are contraindicated in asthma and are not first-line for uncomplicated hypertension anyway. Thiazides are avoided in gout (Heart Foundation / TG). That still leaves three suitable first-line options: ACE inhibitor, ARB and dihydropyridine calcium channel blocker."],
 ["htn","A patient develops bilateral ankle oedema 6 weeks after starting amlodipine. The most appropriate action is:",
  ["Add a thiazide diuretic",
   "Add frusemide",
@@ -114,7 +114,7 @@ COURSE_MCQ.push(
   "A patient with eGFR 54 mL/min/1.73m²",
   "A patient with LDL-C 4.2 mmol/L",
   "A patient reviewed 4 weeks after a dose increase"],1,
- "An eGFR below 60 (or uACR ≥3 mg/mmol) is an immediate referral trigger. Others include BP ≥180/110, HbA1c ≥10% or BGL ≥20, total cholesterol ≥7.5 / LDL ≥5.0 / triglycerides ≥6, suspected secondary hypertension, and failure to reach target after 4–6 weeks on two maximum-dose first-line agents. LDL-C 4.2 is below the referral threshold, and age 72 is within the 18–79 eligibility range."],
+ "An eGFR below 60 (or uACR ≥3 mg/mmol) is an immediate referral trigger. Others include BP ≥180 systolic and/or ≥110 diastolic, HbA1c ≥10% or BGL ≥20, total cholesterol ≥7.5 / LDL ≥5.0 / triglycerides ≥6, suspected secondary hypertension, and failure to reach target after 4–6 weeks on two maximum-dose first-line agents. LDL-C 4.2 is below the referral threshold, and age 72 is within the 18–79 eligibility range."],
 ["htn","A 62-year-old presents with BP 196/120, sudden slurred speech and facial droop. The correct interpretation and action is:",
  ["Hypertensive urgency — oral therapy and GP review in 24–72 hours",
   "Grade 3 hypertension — arrange ambulatory monitoring",
@@ -492,7 +492,7 @@ if (typeof window !== "undefined") window.PAPERS = PAPERS;
    AusCVDRisk (Q3, Q14) in the same paper. The fix is not to remove one, it is
    to give each a clear job.                                                    */
 COURSE_CARDS.push(
-["htn","<b>Three sources, three different jobs.</b> Which one answers which question?","<b>&lsquo;What grade is this blood pressure?&rsquo;</b> &rarr; <b>Heart Foundation 2016.</b> Classification (optimal, normal, high-normal, grade 1 to 3) and measurement technique.<br><br><b>&lsquo;What is this patient&rsquo;s 5-year risk?&rsquo;</b> &rarr; <b>Australian CVD Risk Calculator (2023).</b> Low &lt;5%, intermediate 5 to &lt;10%, high &ge;10%.<br><br><b>&lsquo;What may I do as a pharmacist prescriber?&rsquo;</b> &rarr; <b>QLD protocol.</b> Eligibility, treatment thresholds, targets, monitoring, referral triggers.<br><br>They are not rivals. They answer different questions. The QLD protocol cites Heart Foundation only for <i>measurement technique</i> and consumer resources &mdash; never for treatment thresholds."],
+["htn","<b>Three sources, three different jobs.</b> Which one answers which question?","<b>&lsquo;What grade is this blood pressure?&rsquo;</b> &rarr; <b>Heart Foundation 2016.</b> Classification (optimal, normal, high-normal, grade 1 to 3) and measurement technique.<br><br><b>&lsquo;What is this patient&rsquo;s 5-year risk?&rsquo;</b> &rarr; <b>Australian CVD Risk Calculator (2023).</b> Low &lt;5%, intermediate 5 to &lt;10%, high &ge;10%.<br><br><b>&lsquo;What may I do as a pharmacist prescriber?&rsquo;</b> &rarr; <b>QLD protocol.</b> Eligibility, treatment thresholds, targets, monitoring, referral triggers.<br><br>They are not rivals. They answer different questions. The QLD protocol cites Heart Foundation 2016 for measurement and classification, and among the references for its Table 2 treatment thresholds &mdash; but its risk <i>bands</i> are AusCVDRisk."],
 ["htn","A question gives you a risk percentage but does not name a framework. How do you decide which bands apply?","Read what the percentage is <i>doing</i>.<br><br>If it is being used to <b>decide whether to treat, and at what BP</b>, and the numbers offered are 160/100 or 140/90 with the words low or moderate, it is <b>Heart Foundation 2016</b> (low &lt;10%, moderate 10 to 15%).<br><br>If it is being used to <b>categorise risk itself</b>, or it appears alongside reclassification factors, the assessment starting ages, or the calculator inputs, it is <b>AusCVDRisk</b> (low &lt;5%, intermediate 5 to &lt;10%, high &ge;10%).<br><br>If it sits next to eligibility or referral criteria, it is the <b>QLD protocol</b>."],
 ["htn","Why is carrying a band label between the two frameworks the single most dangerous error on this material?","Because the same patient can hold two different labels, and swapping them invents a disagreement that does not exist.<br><br>A 5-year risk of 7% is <b>intermediate</b> under AusCVDRisk but <b>low</b> under Heart Foundation 2016. Both therefore treat from &ge;160/100 &mdash; they <b>agree</b>. Calling that patient Heart Foundation <i>moderate</i> would wrongly drop the threshold to 140/90.<br><br>Never move a band name across frameworks. Convert the percentage, then read that framework&rsquo;s own table."]
 );
