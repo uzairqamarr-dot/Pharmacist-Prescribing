@@ -268,7 +268,7 @@ button.chip{min-height:44px}
    Prescribing Study Hub — app script (ES5, no dependencies)
    ================================================================ */
 "use strict";
-var VERSION = "v2026.10.14g";
+var VERSION = "v2026.10.15a";
 var LSKEY = "phar-hub-v1";
 var DAY = 86400000;
 var INT = [0, 0, 1, 3, 8, 21];          /* Leitner intervals (days), boxes 1..5 */
@@ -1794,7 +1794,9 @@ R.mock = function(v){
       '<p class="muted">' + n + ' questions drawn from across the semester, ' + mock.MIN_PER_Q +
       ' minutes each — ' + Math.round(n * mock.MIN_PER_Q) + ' minutes total. The clock runs on wall time: ' +
       'locking your phone does not pause it. Answers are revealed as you go; you score yourself at the end.</p>' +
-      '<button type="button" class="btn-p btn-block" data-kstart="1">Start the clock</button></div>';
+      '<button type="button" class="btn-p btn-block" data-kstart="1">Start the clock</button>' +
+      (sem === "s2" ? '<button type="button" class="btn-g btn-block" data-kstart="q2">Quiz 2 practice &mdash; Weeks 5&ndash;8 only (smoking, COPD, asthma, mental health)</button>' : '') +
+      '</div>';
     return;
   }
   var q = mock.queue;
@@ -2562,7 +2564,9 @@ document.addEventListener("click", function(ev){
   /* Mock exam */
   if (b.getAttribute("data-kstart") != null){
     var pool = [], i2;
-    for (i2 = 0; i2 < DATA[sem].mcq.length; i2++) if (live(sem, "mcq", i2) && !isUni(sem, i2)) pool.push(i2);
+    var kOnly = b.getAttribute("data-kstart") === "q2" ? ["smoke", "copd", "asthma", "mh"] : null;
+    for (i2 = 0; i2 < DATA[sem].mcq.length; i2++)
+      if (live(sem, "mcq", i2) && !isUni(sem, i2) && (!kOnly || kOnly.indexOf(DATA[sem].mcq[i2][0]) >= 0)) pool.push(i2);
     /* deterministic-ish shuffle */
     for (i2 = pool.length - 1; i2 > 0; i2--){
       var r = Math.floor(Math.random() * (i2 + 1)), tmp = pool[i2]; pool[i2] = pool[r]; pool[r] = tmp;
