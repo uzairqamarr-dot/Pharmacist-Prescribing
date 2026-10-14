@@ -111,7 +111,7 @@ textarea{min-height:120px;font-family:ui-monospace,Menlo,monospace;font-size:.85
   border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:.8rem;
   font-weight:600;color:var(--ink2);min-height:32px}
 .chip.on{background:var(--teal-t);border-color:var(--teal);color:var(--teal)}
-button.chip{min-height:40px}
+button.chip{min-height:44px}
 .muted{color:var(--ink3)} .small{font-size:.85rem}
 .big-n{font-size:2rem;font-weight:750;color:var(--teal);line-height:1.1}
 .prog{height:8px;background:var(--surface2);border-radius:6px;overflow:hidden;margin:6px 0}
@@ -377,11 +377,11 @@ function raw(s){ return String(s == null ? "" : s); }   /* trusted course HTML *
 /* ---------- store: single localStorage key, repair-on-load ---------- */
 function blankStore(){
   return {box:{}, mcq:{}, osce:{}, osceRuns:{}, exams:{}, days:{},
-          sem:"s2", steps:{}, right:{}, read:{}, viva:{},
+          sem:"s2", steps:{}, right:{}, read:{}, viva:{}, wrong:{}, ui:{sub:{}},
           /* Where he was up to. Held in the store, not in memory, so closing
              the app mid-session resumes instead of starting the queue again —
              that was the "it resets to the beginning" bug. */
-          sess:{cards:null, mcq:null, learn:null}, papers:{}, savedAt:0};
+          sess:{cards:null, mcq:null, learn:null, paper:null, mock:null}, papers:{}, savedAt:0};
 }
 function repairBox(v){
   var o = {};
@@ -413,17 +413,31 @@ function loadStore(){
         s.days = repairObj(p.days); s.steps = repairObj(p.steps);
         s.right = repairObj(p.right); s.read = repairObj(p.read);
         s.viva = repairObj(p.viva);
+        /* store.wrong = the LAST attempt at a question was wrong (key -> ts).
+           Lifetime counts alone could not tell "wrong once, right since" from
+           "still wrong", so wrong answers did not reliably come back. Seeded
+           once from the old counts for existing progress. */
+        s.wrong = repairObj(p.wrong);
+        if (!p.wrong){ for (var wk in s.mcq) if ((s.right[wk] || 0) < s.mcq[wk]) s.wrong[wk] = 1; }
+        s.ui = repairObj(p.ui); if (!s.ui.sub || typeof s.ui.sub !== "object") s.ui.sub = {};
         s.papers = (p.papers && typeof p.papers === "object") ? p.papers : {};
         s.sem = (p.sem === "s1" || p.sem === "s2") ? p.sem : "s2";
         s.savedAt = (typeof p.savedAt === "number") ? p.savedAt : 0;
         /* Restore an unfinished session. Validated hard: a stale queue whose
            indices no longer exist, or one saved under the other semester,
            must not resurrect and point at the wrong cards. */
-        s.sess = {cards:null, mcq:null, learn:null};
+        s.sess = {cards:null, mcq:null, learn:null, paper:null, mock:null};
         if (p.sess && typeof p.sess === "object"){
           s.sess.cards = validSess(p.sess.cards, s.sem, "cards");
           s.sess.mcq   = validSess(p.sess.mcq,   s.sem, "mcq");
           s.sess.learn = (p.sess.learn && typeof p.sess.learn === "object") ? p.sess.learn : null;
+          var pp0 = p.sess.paper;
+          s.sess.paper = (pp0 && typeof pp0 === "object" && typeof pp0.id === "string" && pp0.sem === s.sem) ? pp0 : null;
+          var mk0 = p.sess.mock, mkOk = mk0 && typeof mk0 === "object" && mk0.sem === s.sem &&
+                    Object.prototype.toString.call(mk0.queue) === "[object Array]" && mk0.queue.length;
+          if (mkOk) for (var mi0 = 0; mi0 < mk0.queue.length; mi0++)
+            if (typeof mk0.queue[mi0] !== "number" || !DATA[s.sem].mcq[mk0.queue[mi0]]) mkOk = false;
+          s.sess.mock = mkOk ? mk0 : null;
         }
       }
     } catch (e) {}
@@ -435,23 +449,46 @@ function loadStore(){
 function validSess(o, sem, kind){
   if (!o || typeof o !== "object" || o.sem !== sem) return null;
   if (Object.prototype.toString.call(o.queue) !== "[object Array]" || !o.queue.length) return null;
-  var arr = DATA[sem] && DATA[sem][kind], i;
+  var arr = DATA[sem] && DATA[sem][kind], i, q2 = [], shift = 0;
   if (!arr) return null;
+  var i0 = (typeof o.i === "number" && o.i >= 0) ? o.i : 0;
   for (i = 0; i < o.queue.length; i++){
     var n = o.queue[i];
-    if (typeof n !== "number" || n < 0 || n >= arr.length || !live(sem, kind, n)) return null;
+    if (typeof n !== "number" || n < 0 || n >= arr.length) return null;
+    /* A card retired since the session was saved is dropped, not the whole queue. */
+    if (!live(sem, kind, n)){ if (i < i0) shift++; continue; }
+    q2.push(n);
   }
-  var idx = (typeof o.i === "number" && o.i >= 0) ? Math.min(o.i, o.queue.length) : 0;
-  return {sem: sem, queue: o.queue, i: idx,
+  if (!q2.length) return null;
+  var idx = Math.min(Math.max(0, i0 - shift), q2.length);
+  return {sem: sem, queue: q2, i: idx,
           filter: (Object.prototype.toString.call(o.filter) === "[object Array]") ? o.filter : [],
           answers: (o.answers && typeof o.answers === "object") ? o.answers : {},
           ts: (typeof o.ts === "number") ? o.ts : 0};
 }
 var store = loadStore();
+/* A failed save used to be swallowed silently. Now it says so, once. */
+var saveFailed = false;
 function save(){
   store.savedAt = Date.now();
-  try { localStorage.setItem(LSKEY, JSON.stringify(store)); } catch (e) {}
+  try {
+    localStorage.setItem(LSKEY, JSON.stringify(store));
+    if (saveFailed){ saveFailed = false; saveWarn(false); }
+  } catch (e) { saveFailed = true; saveWarn(true); }
 }
+function saveWarn(on){
+  var w = document.getElementById("savewarn");
+  if (!w){
+    if (!on) return;
+    w = document.createElement("div"); w.id = "savewarn"; w.setAttribute("role", "alert");
+    w.style.cssText = "position:fixed;left:8px;right:8px;top:8px;z-index:99;padding:10px 12px;border-radius:10px;background:var(--warn);color:#fff;font-size:14px";
+    w.textContent = "Progress could not be saved on this device (storage full or blocked). Export a backup from Plan \u203a Progress.";
+    document.body.appendChild(w);
+  }
+  w.style.display = on ? "block" : "none";
+}
+/* Ask the browser not to evict our storage under pressure (iOS 15.2+ honours it for home-screen apps). */
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
 /* iOS can kill a backgrounded home-screen app without warning, and "hidden"
    is the last event guaranteed to fire. Every state change already saves
    synchronously; this is the belt to that braces. */
@@ -572,7 +609,7 @@ var PROTO_URL = {
   smoke: "https://www.health.qld.gov.au/__data/assets/pdf_file/0023/1304249/smoking-cessation-guideline.pdf"
 };
 var MOBILE_MAIN = ["home", "learn", "cond", "practise"];
-var cur = {tab: "home", sub: {}};
+var cur = {tab: "home", sub: store.ui.sub};   /* sub-tab per group is remembered across launches */
 
 function navButton(item, onMob){
   var on = cur.tab === item[0] ? " on" : "";
@@ -2118,7 +2155,7 @@ document.addEventListener("click", function(ev){
   if (b.getAttribute("data-more") != null){ openSheet(); return; }
   if (b.getAttribute("data-sub") != null){
     var parts = b.getAttribute("data-sub").split(":");
-    cur.sub[parts[0]] = parts[1];
+    cur.sub[parts[0]] = parts[1]; save();
     renderGroup(parts[0], $("view"));
     return;
   }
