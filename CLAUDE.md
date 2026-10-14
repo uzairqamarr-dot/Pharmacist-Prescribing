@@ -76,6 +76,19 @@ v2026.10.14f adds section **O**: Tut 4 (Wk 8) COPD breakout cases (Brian/Helen/J
 — 12 cards + 6 MCQ. Slides gave questions only; answers built from QLD COPD protocol
 + COPD videos 1–2 and labelled so. copd now 87/41.
 
+### 15 Oct — full-app audit, v2026.10.14g → v2026.10.15a (pushed)
+Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it first.
+- New store keys: `wrong` (key→ts, last attempt wrong; seeded from counts), `ui.sub`
+  (remembered sub-tabs), `sess.paper`, `sess.mock`. Any store rebuild must keep them.
+- `hasData` is now "any data-* attribute" — no whitelist to maintain.
+- sw.js is cache-first and version-locked: updates only arrive via a VERSION bump.
+- Edit content with `/tmp/fix.py`-style substring replace across prescribing-data.js,
+  prescribing-data-ext.js AND study.html; `audit/dump.js` regenerates readable dumps.
+- Section **P** in ext: 26 smoking cards + 12 MCQ for Quiz 2 (quotes machine-checked).
+- RETIRED now 91 cards / 15 MCQ ("audit 15 Oct" entries). Live: htn 155/99, lipid 110/48,
+  copd 79/41, wt 80/32, bgl 79/39, comm 71/31, asthma 61/26, safe 60/21, smoke 41/17,
+  mh 36/12, eth 18/7, reas 14/5 (MCQ counts include uni papers).
+
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
 https://claude.ai/code/artifact/735dfcdb-164c-4b81-a79f-7ebd35429bf4
