@@ -72,6 +72,9 @@ Week 3 check-up (10), verbatim, COURSE_MCQ 328–348, pushed onto PAPERS. Source
 in coursework/_review/src/QUIZ_*.txt (recovered from old transcripts). **Assessment
 Quiz 1 (graded, 10%) deliberately NOT put in the public app** — saved privately as
 QUIZ_A1_quiz1.txt; no official answer key was ever shown.
+v2026.10.14f adds section **O**: Tut 4 (Wk 8) COPD breakout cases (Brian/Helen/John)
+— 12 cards + 6 MCQ. Slides gave questions only; answers built from QLD COPD protocol
++ COPD videos 1–2 and labelled so. copd now 87/41.
 
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
