@@ -669,8 +669,20 @@ function renderGroup(tab, v){
 }
 function setSem(s){
   if (s !== "s1" && s !== "s2") return;
-  store.sem = s; save();
+  store.sem = s;
   cur.sem = s;
+  /* In-memory sessions belong to one semester. Carrying an S2 queue into S1
+     graded S1 cards at S2 index numbers. */
+  var sc = store.sess.cards, sm = store.sess.mcq;
+  cardSess = (sc && sc.sem === s) ? {queue: sc.queue, i: sc.i, filter: sc.filter || []} : {queue: null, i: 0, filter: []};
+  mcqSess = (sm && sm.sem === s) ? {topics: sm.filter || [], theme: "", queue: sm.queue, i: sm.i,
+             missed: missedFrom(s, sm.answers || {}), answers: sm.answers || {}}
+           : {topics: [], theme: "", queue: null, i: 0, missed: [], answers: {}};
+  cardPick = [];
+  learn = restoreLearn();
+  paper = {id: null, q: 0, answers: [], done: false};
+  stopMockClock(); mock = {queue: null, q: 0, answers: [], startTs: 0, limitMs: 0, MIN_PER_Q: 1.5};
+  save();
   go(cur.tab);          /* re-render the pane we are on */
 }
 cur.sem = store.sem;
@@ -700,12 +712,16 @@ var R = {};
 
 /* ---------- HOME: one next action ---------- */
 function nextAction(){
-  var sem = cur.sem, due = dueCards(sem), dl = nearestDeadline();
-  /* 1. due flashcards, when no deadline is imminent */
-  if (due.length && (!dl || dl.days > 2)){
-    var chunk = Math.min(due.length, 15);
-    return {tab: "cards", label: "Clear " + chunk + " due flashcards",
-            detail: due.length + " waiting — just a " + chunk + "-card chunk",
+  var sem = cur.sem, due = dueCards(sem), dl = nearestDeadline(), revDue = [], newDue = [], di;
+  /* Never-seen cards count as "due" in the Leitner sense, which made this
+     always say "Clear 15 due flashcards" and hid every deadline suggestion.
+     Only real reviews come first now. */
+  for (di = 0; di < due.length; di++) (store.box[keyOf(sem, due[di])] ? revDue : newDue).push(due[di]);
+  /* 1. reviews due, when no deadline is imminent */
+  if (revDue.length && (!dl || dl.days > 2)){
+    var chunk = Math.min(revDue.length, 20);
+    return {tab: "cards", start: "cards", label: "Review " + chunk + " due flashcards",
+            detail: revDue.length + " due for review — a " + chunk + "-card chunk",
             mins: Math.max(2, Math.ceil(chunk * 0.4))};
   }
   /* 2. weakest topic covered by the nearest deadline */
@@ -725,7 +741,12 @@ function nextAction(){
               mins: b ? b.mins + 8 : 15};
     }
   }
-  /* 3. plan step due soonest that is unticked */
+  /* 3. new cards */
+  if (newDue.length){
+    return {tab: "cards", start: "cards", label: "Learn 20 new flashcards",
+            detail: newDue.length + " not seen yet · mixed across topics", mins: 8};
+  }
+  /* 4. plan step due soonest that is unticked */
   var bi = null, bd = 1e9, bi2 = null;
   for (var i2 = 0; i2 < PLAN.length; i2++){
     var dd = daysUntil(PLAN[i2].due);
@@ -748,7 +769,30 @@ R.home = function(v){
   h += '<div class="card hero"><div class="k">Next action</div>' +
        '<h1>' + esc(na.label) + '</h1>' +
        '<div class="mins">' + esc(na.detail) + ' · ' + mins(na.mins) + '</div>' +
-       '<button type="button" data-go="' + na.tab + '"' + (na.arg ? ' data-arg="' + esc(na.arg) + '"' : '') + '>Start now</button></div>';
+       (na.start ? '<button type="button" data-qstart="' + na.start + '">Start now</button></div>'
+                 : '<button type="button" data-go="' + na.tab + '"' + (na.arg ? ' data-arg="' + esc(na.arg) + '"' : '') + '>Start now</button></div>');
+  /* Anything unfinished is one tap away from Home. The app always opens on
+     Home, so an open MCQ set used to look lost. */
+  var rs = [];
+  if (learn.cond && condById(sem, learn.cond)) rs.push(['learn', 'Study: ' + condName(sem, learn.cond), 'step ' + (learn.stage + 1) + ' of 4']);
+  if (cardSess.queue && cardSess.i < cardSess.queue.length) rs.push(['cards', 'Flashcards', (cardSess.queue.length - cardSess.i) + ' to go']);
+  if (mcqSess.queue && mcqSess.i < mcqSess.queue.length) rs.push(['mcq', 'MCQs', (mcqSess.queue.length - mcqSess.i) + ' to go']);
+  if (paper.id && !paper.done && paperById(paper.id)) rs.push(['papers', 'Uni paper', 'question ' + (paper.q + 1)]);
+  if (mock.queue && mock.q < mock.queue.length && Date.now() - mock.startTs < mock.limitMs) rs.push(['mock', 'Timed exam', 'clock running']);
+  if (rs.length){
+    h += '<div class="card"><h2>Pick up where you left off</h2>';
+    for (var ri = 0; ri < rs.length; ri++)
+      h += '<button type="button" class="listrow" data-go="' + rs[ri][0] + '"><span>' + esc(rs[ri][1]) +
+           '<br><span class="small muted">' + esc(rs[ri][2]) + '</span></span><span class="arrow">\u203a</span></button>';
+    h += '</div>';
+  }
+  var mc = missedCards(sem).length, mw = wrongMcqs(sem).length;
+  if (mc || mw){
+    h += '<div class="card"><h2>Review my mistakes</h2><p class="small muted">Cards you missed and questions you last got wrong. They drop off once you get them right.</p><div class="row gap">' +
+         (mc ? '<button type="button" class="btn-g" data-review="cards">' + mc + ' card' + (mc === 1 ? '' : 's') + '</button>' : '') +
+         (mw ? '<button type="button" class="btn-g" data-review="mcq">' + mw + ' MCQ' + (mw === 1 ? '' : 's') + '</button>' : '') +
+         '</div></div>';
+  }
   if (dl){
     h += '<div class="card"><div class="row between"><h2 style="margin:0">' + esc(dl.title) + '</h2>' +
          '<span class="pill' + (dl.days <= 7 ? " warn" : "") + '">' + dl.days + ' day' + (dl.days === 1 ? "" : "s") + '</span></div>' +
@@ -772,14 +816,14 @@ R.home = function(v){
 /* ---------- LEARN: Read → Recall → Test → Fix ---------- */
 function newLearn(cond){
   return {cond: cond, stage: 0, missed: [], q: 0, fixQ: [], deck: null, deckFor: null, deckAll: 0,
-          testQ: null, testFor: null, testAll: 0};
+          testQ: null, testFor: null, testAll: 0, pos: {}, answers: {}};
 }
 /* The Study session is persisted like flashcards and MCQs, so iOS killing the
    app mid-session resumes it instead of starting the topic again. */
 function persistLearn(){
   store.sess.learn = learn.cond ? {sem: cur.sem, cond: learn.cond, stage: learn.stage, q: learn.q,
     missed: learn.missed, fixQ: learn.fixQ, deck: learn.deck, deckFor: learn.deckFor, deckAll: learn.deckAll,
-    testQ: learn.testQ, testFor: learn.testFor, testAll: learn.testAll} : null;
+    testQ: learn.testQ, testFor: learn.testFor, testAll: learn.testAll, pos: learn.pos, answers: learn.answers} : null;
   save();
 }
 function restoreLearn(){
@@ -798,6 +842,8 @@ function restoreLearn(){
   l.stage = (o.stage >= 0 && o.stage <= 3) ? o.stage : 0; l.q = (o.q >= 0) ? o.q : 0;
   l.missed = o.missed || []; l.fixQ = o.fixQ || []; l.deck = o.deck || null; l.deckFor = o.deckFor || null;
   l.deckAll = o.deckAll || 0; l.testQ = o.testQ || null; l.testFor = o.testFor || null; l.testAll = o.testAll || 0;
+  l.pos = (o.pos && typeof o.pos === "object") ? o.pos : {};
+  l.answers = (o.answers && typeof o.answers === "object") ? o.answers : {};
   return l;
 }
 var learn = restoreLearn();
@@ -827,7 +873,17 @@ R.learn = function(v, arg){
            '<div class="steps-head">';
   for (var s = 0; s < 4; s++)
     sh += '<div class="st' + (s < learn.stage ? " done" : (s === learn.stage ? " now" : "")) + '"></div>';
-  sh += '</div><div class="small muted" style="margin-bottom:10px">Step ' + (learn.stage + 1) + ' of 4 — ' + stages[learn.stage] + '</div>';
+  sh += '</div>';
+  /* Stages are tappable: jump straight from cards to MCQs (or back) without
+     finishing the stage. Each stage keeps its own place. */
+  var short = ["Read", "Cards", "MCQs", "Fix"];
+  sh += '<div class="row wrap gap" style="margin-bottom:10px">';
+  for (var s2 = 0; s2 < 4; s2++){
+    var dis = (s2 === 3 && !learn.missed.length && learn.stage !== 3);
+    sh += '<button type="button" class="chip' + (s2 === learn.stage ? ' chip-on' : '') + '"' +
+          (dis ? ' disabled title="Nothing missed yet"' : ' data-lstage="' + s2 + '"') + '>' + short[s2] + '</button>';
+  }
+  sh += '</div>';
 
   if (learn.stage === 0){                     /* READ */
     var b = BRIEFS[c.id];
@@ -903,11 +959,7 @@ R.learn = function(v, arg){
       var tq = [];
       for (var m = 0; m < DATA[sem].mcq.length; m++)
         if (DATA[sem].mcq[m][0] === c.id && live(sem, "mcq", m) && !isUni(sem, m)) tq.push(m);
-      tq.sort(function(a, b2){
-        function rk(i2){ var k2 = keyOf(sem, i2), n2 = store.mcq[k2] || 0, r2 = store.right[k2] || 0;
-          if (!n2) return 0; if (r2 < n2) return 1; return 2; }
-        return rk(a) - rk(b2) || ((store.mcq[keyOf(sem, a)] || 0) - (store.mcq[keyOf(sem, b2)] || 0));
-      });
+      tq = mcqOrder(sem, tq);   /* last-wrong first, then unseen, then least practised */
       learn.testAll = tq.length; learn.testQ = tq.slice(0, 10); learn.testFor = c.id;
     }
     var qs = learn.testQ;
@@ -941,11 +993,11 @@ R.learn = function(v, arg){
    shown in a per-question, per-day shuffled order; buttons keep the ORIGINAL
    index in data-opt, so scoring and saved answers are unchanged. Questions
    whose text refers to options by letter keep their written order. */
-function optOrder(sem, qi){
+function optOrder(sem, qi, att){
   var q = DATA[sem].mcq[qi], n = q[2].length, ord = [], i;
   for (i = 0; i < n; i++) ord.push(i);
   if (/\b(options?|answers?|choices?)\s*\(?[A-E]\b|\([a-e]\)|of the above|both of these/i.test(q[1] + " " + q[2].join(" ") + " " + q[4])) return ord;
-  var seed = (qi + 1) * 2654435761 + Math.floor(Date.now() / DAY) * 40503;
+  var seed = (qi + 1) * 2654435761 + Math.floor(Date.now() / DAY) * 40503 + (att || 0) * 7919;
   function rnd(){ seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
   for (i = n - 1; i > 0; i--){ var r = Math.floor(rnd() * (i + 1)), t = ord[i]; ord[i] = ord[r]; ord[r] = t; }
   return ord;
@@ -956,10 +1008,12 @@ function renderMcqQuestion(v, headHtml, qi, sem, mode){
   /* If he has already answered this one in this session, re-show the result
      rather than letting him answer twice — Back is for re-reading, and a
      second answer would double-count in store.mcq. */
-  var prev = (mode === "mcq" && mcqSess.answers && mcqSess.answers[qi] != null)
-             ? mcqSess.answers[qi] : null;
+  var prev = (mode === "mcq" && mcqSess.answers && mcqSess.answers[qi] != null) ? mcqSess.answers[qi]
+           : (mode === "learn" && learn.answers && learn.answers[qi] != null) ? learn.answers[qi] : null;
   var h = headHtml + '<div class="card"><div class="qbox body">' + raw(q[1]) + '</div><div id="opts">';
-  var ord = optOrder(sem, qi);
+  var att = store.mcq[keyOf(sem, qi)] || 0;
+  if (prev != null) att = Math.max(0, att - 1);
+  var ord = optOrder(sem, qi, att);   /* re-shuffled on each new attempt, so a retry can't be answered by position */
   for (var oi = 0; oi < ord.length; oi++){
     var i = ord[oi], cls = "opt";
     if (prev != null){
@@ -982,8 +1036,10 @@ function renderMcqQuestion(v, headHtml, qi, sem, mode){
     var okp = prev === q[3];
     $("mexp").innerHTML = '<div class="explain body"><b>' + (okp ? "Correct." : "Not quite.") + '</b> ' + raw(q[4]) + '</div>' +
       '<button type="button" class="btn-p btn-block" data-mnext="1">Next</button>' + navRow();
+    if (mode === "learn") $("mexp").innerHTML = $("mexp").innerHTML.replace('data-mnext="1"', 'data-lnext="1"');
     return;
   }
+  $("mexp").innerHTML = navRow();   /* Back works before answering too */
 
   var done = false;
   $("opts").addEventListener("click", function(ev){
@@ -995,6 +1051,7 @@ function renderMcqQuestion(v, headHtml, qi, sem, mode){
     var k = keyOf(sem, qi);
     store.mcq[k] = (store.mcq[k] || 0) + 1;
     if (ok) store.right[k] = (store.right[k] || 0) + 1;
+    if (ok) delete store.wrong[k]; else store.wrong[k] = Date.now();
     bumpDay(); save();
     var opts = $("opts").getElementsByTagName("button"), j, oj;
     for (j = 0; j < opts.length; j++){
@@ -1005,7 +1062,8 @@ function renderMcqQuestion(v, headHtml, qi, sem, mode){
     }
     var nxt;
     if (mode === "learn"){
-      if (!ok) learn.missed.push(qi);
+      if (!ok && learn.missed.indexOf(qi) < 0) learn.missed.push(qi);
+      learn.answers[qi] = pick; persistLearn();
       nxt = '<button type="button" class="btn-p btn-block" data-lnext="1">Next</button>';
     } else if (mode === "fix"){
       if (ok) learn.fixQ.shift();
@@ -1018,7 +1076,7 @@ function renderMcqQuestion(v, headHtml, qi, sem, mode){
       persistMcqSess();
       nxt = '<button type="button" class="btn-p btn-block" data-mnext="1">Next</button>';
     } else if (mode === "mock"){
-      mock.answers[mock.q] = pick;
+      mock.answers[mock.q] = pick; persistMock();
       nxt = '<button type="button" class="btn-p btn-block" data-knext="1">Next</button>';
     }
     $("mexp").innerHTML = '<div class="explain body"><b>' + (ok ? "Correct." : "Not quite.") + '</b> ' + raw(q[4]) + '</div>' +
