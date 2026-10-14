@@ -50,6 +50,13 @@ Model switched Opus 5 → Opus 5.5 on 7 Oct; this block is the handover.
   ("Clinical Practice Guidelines", "Physical Examination Resources") — keep the
   6202 Sep-02 zip.
 
+### 14 Oct — v2026.10.14a
+Section **J** in ext: COPD pre-tutorial video part 1 (GOLD 2026 diagnosis/ABE),
+14 cards + 5 MCQ, verified against captions (src/6302_COPD_pretutorial_video.txt,
+extracted from the mp4's subtitle track). Cards contrast GOLD grades with QLD
+protocol bands — never mix them. copd now 61 cards / 29 MCQ. Part 2 video
+(management) not yet supplied.
+
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
 https://claude.ai/code/artifact/735dfcdb-164c-4b81-a79f-7ebd35429bf4
