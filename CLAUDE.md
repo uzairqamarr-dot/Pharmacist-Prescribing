@@ -67,6 +67,12 @@ eth 18/7, safe 63/21. Also a Claude Doc "Prescribing Consultation Safety
 Checklist" (prescriber before/during/after + patient checklist):
 https://claude.ai/code/artifact/3ddc0788-cf89-470f-9a57-aa4c34310342
 
+v2026.10.14e adds section **N**: Uni papers — Week 2 check-up (8), Fig 6.2 Qs (3),
+Week 3 check-up (10), verbatim, COURSE_MCQ 328–348, pushed onto PAPERS. Source texts
+in coursework/_review/src/QUIZ_*.txt (recovered from old transcripts). **Assessment
+Quiz 1 (graded, 10%) deliberately NOT put in the public app** — saved privately as
+QUIZ_A1_quiz1.txt; no official answer key was ever shown.
+
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
 https://claude.ai/code/artifact/735dfcdb-164c-4b81-a79f-7ebd35429bf4
