@@ -61,6 +61,11 @@ where the QLD Program refers. copd now 75 cards / 35 MCQ (live).
 v2026.10.14c adds section **L**: PHAR6202 Tut 4 pre-work (PDL risk management —
 scope equation, risk cycle, 5 risk categories, risk ratings, QSPP domains,
 Charter of Healthcare Rights, 4 case studies), 14 cards + 5 MCQ. safe 59/20, eth 9/4.
+v2026.10.14d adds section **M**: NPCF 3rd ed (2025) 7 areas, PSA Code of Ethics
+(May 2026) values/principles, PDL scope checklist + risk guide — 13 cards, 4 MCQ.
+eth 18/7, safe 63/21. Also a Claude Doc "Prescribing Consultation Safety
+Checklist" (prescriber before/during/after + patient checklist):
+https://claude.ai/code/artifact/3ddc0788-cf89-470f-9a57-aa4c34310342
 
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
