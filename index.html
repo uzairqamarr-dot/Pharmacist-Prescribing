@@ -268,7 +268,7 @@ button.chip{min-height:44px}
    Prescribing Study Hub — app script (ES5, no dependencies)
    ================================================================ */
 "use strict";
-var VERSION = "v2026.10.14f";
+var VERSION = "v2026.10.14g";
 var LSKEY = "phar-hub-v1";
 var DAY = 86400000;
 var INT = [0, 0, 1, 3, 8, 21];          /* Leitner intervals (days), boxes 1..5 */
@@ -720,7 +720,7 @@ function nextAction(){
   /* 1. reviews due, when no deadline is imminent */
   if (revDue.length && (!dl || dl.days > 2)){
     var chunk = Math.min(revDue.length, 20);
-    return {tab: "cards", start: "cards", label: "Review " + chunk + " due flashcards",
+    return {tab: "cards", start: "cards", label: "Review " + chunk + " due flashcard" + (chunk === 1 ? "" : "s"),
             detail: revDue.length + " due for review — a " + chunk + "-card chunk",
             mins: Math.max(2, Math.ceil(chunk * 0.4))};
   }
