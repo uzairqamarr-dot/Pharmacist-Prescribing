@@ -89,6 +89,15 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   copd 79/41, wt 80/32, bgl 79/39, comm 71/31, asthma 61/26, safe 60/21, smoke 41/17,
   mh 36/12, eth 18/7, reas 14/5 (MCQ counts include uni papers).
 
+### 19 Oct — v2026.10.19a/b
+- Section **Q**: Quiz 2 practice set (20 MCQ, PAPERS id p6302q2mock).
+- Section **R**: eTG respiratory + NRT — 20 cards, 8 MCQ (COPD exacerbations, antibiotic
+  mgmt, pulmonary function testing, asthma maintenance, stable COPD, NRT). PACKS asthma/copd
+  updated with eTG steps, step-down, exacerbation regimen (pred 30–50 mg × 5 days), antibiotic
+  referral detail. eTG PDFs as text in `coursework/_review/audit/pdf/`.
+- Known conflict, now taught: eTG Step 1 allows SABA alone; QLD protocol (AAH) says never.
+- Source checklist: `coursework/Source-Gap-List/SOURCES-TO-SEND.md`.
+
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
 https://claude.ai/code/artifact/735dfcdb-164c-4b81-a79f-7ebd35429bf4
