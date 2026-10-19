@@ -2283,7 +2283,7 @@ var EVENTS=[
  {id:"is", d:"2026-10-23", k:"as",   t:"ISBAR handover due",    lead:18, w:"30% · must submit",
   cov:["asthma","copd","comm"], note:"Patient must have asthma OR COPD. 800-word ISBAR + 400-word reflection."},
  {id:"t5", d:"2026-10-27", k:"tut",  t:"Tutorial 5",            lead:4,
-  cov:[], note:"Tue 27 Oct 7:30pm. Week 10 — injectable medicines and pharmacist administration. Not in the app yet — send the Week 10 export when it is released."},
+  cov:["mh","wt","inj"], note:"Tue 27 Oct 7:30pm (6302) — pre-recorded content: Mental Health 1 and 2, Obesity Assessment. 6202 Tutorial 5 is the same day, 6:30pm."},
  {id:"vv", d:"2026-10-28", k:"as",   t:"Viva voce",             lead:14, w:"30% · must pass",
   cov:["htn","lipid","bgl","reas"], note:"Your slot: Wed 28 Oct, 1:30 pm (Examiner 1 column of the run sheet). Swaps allowed until Wed 14 Oct. 15 min, online, CLOSED BOOK. You defend your action plan. No guidelines, no notes beyond your submitted case."},
  {id:"i2", d:"2026-10-31", k:"int",  t:"November intensive",    lead:10,
@@ -2293,7 +2293,7 @@ var EVENTS=[
  {id:"pf", d:"2026-11-13", k:"as",   t:"Portfolio + reflections due", lead:60, w:"30% · must submit",
   cov:["eth","reas"], note:"Five case reflections must cover referral/triage, legal and ethical, deprescribing, culturally responsive prescribing, and clinical reasoning. Your DPP must submit the OPU diary via Sonia."},
  {id:"os", d:"2026-11-26", k:"exam", t:"Multi-station OSCE",    lead:35, w:"50% · must pass",
-  cov:["htn","asthma","copd","lipid","bgl","smoke","wt","mh","eth","comm","reas","safe"],
+  cov:["pa","htn","asthma","copd","lipid","bgl","smoke","wt","mh","opioid","inj","eth","comm","reas","safe"],
   note:"26 or 27 Nov, one day. Everything is examinable — both courses, the intensives, and your placement."}
 ];
 
@@ -2788,7 +2788,7 @@ var EVENTS=[
  {id:"is", d:"2026-10-23", k:"as",   t:"ISBAR handover due",    lead:18, w:"30% · must submit",
   cov:["asthma","copd","comm"], note:"Patient must have asthma OR COPD. 800-word ISBAR + 400-word reflection."},
  {id:"t5", d:"2026-10-27", k:"tut",  t:"Tutorial 5",            lead:4,
-  cov:[], note:"Tue 27 Oct 7:30pm. Week 10 — injectable medicines and pharmacist administration. Not in the app yet — send the Week 10 export when it is released."},
+  cov:["mh","wt","inj"], note:"Tue 27 Oct 7:30pm (6302) — pre-recorded content: Mental Health 1 and 2, Obesity Assessment. 6202 Tutorial 5 is the same day, 6:30pm."},
  {id:"vv", d:"2026-10-28", k:"as",   t:"Viva voce",             lead:14, w:"30% · must pass",
   cov:["htn","lipid","bgl","reas"], note:"Your slot: Wed 28 Oct, 1:30 pm (Examiner 1 column of the run sheet). Swaps allowed until Wed 14 Oct. 15 min, online, CLOSED BOOK. You defend your action plan. No guidelines, no notes beyond your submitted case."},
  {id:"i2", d:"2026-10-31", k:"int",  t:"November intensive",    lead:10,
@@ -2798,7 +2798,7 @@ var EVENTS=[
  {id:"pf", d:"2026-11-13", k:"as",   t:"Portfolio + reflections due", lead:60, w:"30% · must submit",
   cov:["eth","reas"], note:"Five case reflections must cover referral/triage, legal and ethical, deprescribing, culturally responsive prescribing, and clinical reasoning. Your DPP must submit the OPU diary via Sonia."},
  {id:"os", d:"2026-11-26", k:"exam", t:"Multi-station OSCE",    lead:35, w:"50% · must pass",
-  cov:["htn","asthma","copd","lipid","bgl","smoke","wt","mh","eth","comm","reas","safe"],
+  cov:["pa","htn","asthma","copd","lipid","bgl","smoke","wt","mh","opioid","inj","eth","comm","reas","safe"],
   note:"26 or 27 Nov, one day. Everything is examinable — both courses, the intensives, and your placement."}
 ];
 
