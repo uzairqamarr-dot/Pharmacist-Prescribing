@@ -268,7 +268,7 @@ button.chip{min-height:44px}
    Prescribing Study Hub — app script (ES5, no dependencies)
    ================================================================ */
 "use strict";
-var VERSION = "v2026.10.19b";
+var VERSION = "v2026.10.19c";
 var LSKEY = "phar-hub-v1";
 var DAY = 86400000;
 var INT = [0, 0, 1, 3, 8, 21];          /* Leitner intervals (days), boxes 1..5 */
@@ -2198,21 +2198,32 @@ R.sem = function(v){
    so the pane itself works with no signal. */
 var linkCat = "all";
 /* ---------- DRUG CLASSES ---------- */
-var drugOpen = null;
+var drugOpen = null, drugGrp = "";
 R.drugs = function(v){
   var L = (typeof DRUGS !== "undefined") ? DRUGS : [];
   if (!L.length){ v.innerHTML = '<h1>Drug classes</h1><p class="muted">No drug data loaded.</p>'; return; }
   var i, d;
   if (drugOpen == null){
-    var h = '<h1>Drug classes</h1><p class="muted">What each class does, what is in it, what to watch for, and what you may actually prescribe. Built from the ADS Australian Type 2 Diabetes Glycaemic Management Algorithm (7 May 2026) and the Queensland protocols.</p>';
-    h += '<div class="card">';
-    for (i = 0; i < L.length; i++){
-      d = L[i];
-      h += '<button type="button" class="listrow" data-drug="' + esc(d.id) + '">' +
-           '<span><b>' + esc(d.cls) + '</b><br><span class="small muted">' + esc(d.agents.join(" \u00b7 ")) + '</span></span>' +
-           '<span class="arrow">\u203a</span></button>';
+    var h = '<h1>Drug classes</h1><p class="muted">What each class does, what is in it, what to watch for, and what you may actually prescribe under the QLD Programs. Every entry names its sources.</p>';
+    /* Grouped by area; area chips jump straight to a group. */
+    var groups = [], gm = {}, g;
+    for (i = 0; i < L.length; i++){ g = L[i].grp || "Diabetes"; if (!gm[g]){ gm[g] = []; groups.push(g); } gm[g].push(L[i]); }
+    h += '<div class="row wrap gap" style="margin-bottom:12px">';
+    for (i = 0; i < groups.length; i++) h += '<button type="button" class="chip' + (drugGrp === groups[i] ? ' chip-on' : '') + '" data-dgrp="' + esc(groups[i]) + '">' + esc(groups[i]) + ' <span class="chip-n">' + gm[groups[i]].length + '</span></button>';
+    h += '</div>';
+    for (var gi = 0; gi < groups.length; gi++){
+      if (drugGrp && drugGrp !== groups[gi]) continue;
+      h += '<h2>' + esc(groups[gi]) + '</h2><div class="card">';
+      for (i = 0; i < gm[groups[gi]].length; i++){
+        d = gm[groups[gi]][i];
+        h += '<button type="button" class="listrow" data-drug="' + esc(d.id) + '">' +
+             '<span><b>' + raw(d.cls) + '</b>' + (d.tag ? ' <span class="small muted">' + raw(d.tag) + '</span>' : '') +
+             '<br><span class="small muted">' + raw(d.agents.join(" \u00b7 ")) + '</span></span>' +
+             '<span class="arrow">\u203a</span></button>';
+      }
+      h += '</div>';
     }
-    h += '</div><div class="card"><h2>How to read the cost column</h2><p class="small muted">$ = $0\u2013499 \u00b7 $$ = $500\u2013999 \u00b7 $$$ = over $1,000 per annum cost to the PBS. From the ADS table \u2014 not the patient co-payment.</p></div>';
+    h += '<div class="card"><h2>How to read the cost column (diabetes)</h2><p class="small muted">$ = $0\u2013499 \u00b7 $$ = $500\u2013999 \u00b7 $$$ = over $1,000 per annum cost to the PBS. From the ADS table \u2014 not the patient co-payment.</p></div>';
     v.innerHTML = h; return;
   }
   d = null;
@@ -2222,14 +2233,14 @@ R.drugs = function(v){
     return val ? '<div class="drow"><div class="dlbl">' + esc(lbl) + '</div><div class="body">' + raw(val) + '</div></div>' : "";
   }
   var h2 = '<button type="button" class="btn-g btn-sm" data-drug="*back">\u2039 All classes</button>' +
-    '<div class="card"><div class="k">' + esc(d.tag) + '</div><h1>' + esc(d.cls) + '</h1><div class="row wrap gap">';
-  for (i = 0; i < d.agents.length; i++) h2 += '<span class="chip">' + esc(d.agents[i]) + '</span>';
+    '<div class="card"><div class="k">' + raw(d.tag) + '</div><h1>' + raw(d.cls) + '</h1><div class="row wrap gap">';
+  for (i = 0; i < d.agents.length; i++) h2 += '<span class="chip">' + raw(d.agents[i]) + '</span>';
   h2 += '</div></div><div class="card">' +
     row("How it works", d.moa) + row("Contraindications", d.ci) + row("Precautions", d.cautions) +
     row("Side effects", d.se) + row("Administration", d.admin) + '</div>';
   h2 += '<div class="card"><h2>Prescribing and counselling</h2><div class="body">' + raw(d.prog) + '</div></div>';
   h2 += '<div class="card">' + row("PBS and access", d.pbs) + row("Cost", d.cost) + row("Outcome trials", d.outcomes) +
-    '<p class="small muted mt">Source: ADS Australian Type 2 Diabetes Glycaemic Management Algorithm, updated 7 May 2026.</p></div>';
+    '<p class="small muted mt">Source: ' + (d.src ? raw(d.src) : 'ADS Australian Type 2 Diabetes Glycaemic Management Algorithm, updated 7 May 2026.') + '</p></div>';
   v.innerHTML = h2;
 };
 
@@ -2372,6 +2383,7 @@ document.addEventListener("click", function(ev){
     drugOpen = (dv === "*back") ? null : dv;
     R.drugs(v); return;
   }
+  if (b.getAttribute("data-dgrp") != null){ var dg = b.getAttribute("data-dgrp"); drugGrp = (drugGrp === dg) ? "" : dg; drugOpen = null; R.drugs(v); return; }
   if (b.getAttribute("data-lkf") != null){ linkCat = b.getAttribute("data-lkf"); R.links(v); return; }
   if (b.getAttribute("data-go") != null){
     var arg = b.getAttribute("data-arg");
