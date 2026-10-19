@@ -97,6 +97,11 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   referral detail. eTG PDFs as text in `coursework/_review/audit/pdf/`.
 - Known conflict, now taught: eTG Step 1 allows SABA alone; QLD protocol (AAH) says never.
 - Source checklist: `coursework/Source-Gap-List/SOURCES-TO-SEND.md`.
+- v2026.10.19c, section **S**: DRUGS now 38 classes in 6 groups (`grp` field; old T2D
+  entries default "Diabetes"; per-entry `src`). Respiratory 11, HTN 5, lipids 3, smoking 6,
+  vaccines 4 — agent-drafted, all evidence quotes machine-checked (drafts/drugs_*.json).
+  Varenicline/bupropion rewritten from the eTG pages. + 17 COPD-X/LFA cards, 8 MCQ.
+  Drug pane has group chips (`data-dgrp`, `drugGrp`). copd now 110/62.
 
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
