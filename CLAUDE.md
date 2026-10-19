@@ -103,6 +103,21 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   Varenicline/bupropion rewritten from the eTG pages. + 17 COPD-X/LFA cards, 8 MCQ.
   Drug pane has group chips (`data-dgrp`, `drugGrp`). copd now 110/62.
 
+### 19–20 Oct — v2026.10.19d → v2026.10.20a
+- T: diabetes diagnosis/monitoring (eTG, QLD CCM, Diabetes Aus, DDS2) + KHA CKD handbook
+  (44 cards, 21 MCQ); bgl pack checks extended. U: PACKS.smoke from QLD Smoking CPG (smoking
+  now in Conditions) + 16 cards/8 MCQ; LINKS "smoke" (Quit plan, QuitHQ). V: new topics
+  **opioid** (6302 Wk 9), **inj** (6302 Wk 10), **pa** (6202 Wk 9 physical assessment) with
+  cond pages + briefs. Oct-19 export pages as text in `coursework/_review/src/oct19/`.
+- W: **OSCE prep** — 20 new stations (ids v*: vc1–6 CVD/cultural/CV exam, vr1–7
+  respiratory, vx1–7 other), each with `type`, `patient` (revealed after) and `model`
+  (model performance) — 390 evidence quotes machine-checked (drafts/osce_stations.json).
+  OSCE pane: type filter chips, Random station, 4-station circuit (`osceCircuit`),
+  `SAFETY:` mark prefix (isSafetyMark/markText). New sub-tab **OSCE guide** (`R.oprep`,
+  `OSCE_GUIDE` in ext) built from the Assessment 3 brief.
+- Still open: eTG Acute asthma drafting (agent hit rate limit); OSCE rubric/mock stations
+  not yet released; 6202 Week 10 (Advanced Physical Assessment II) not yet exported.
+
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
 https://claude.ai/code/artifact/735dfcdb-164c-4b81-a79f-7ebd35429bf4
