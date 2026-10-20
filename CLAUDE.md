@@ -117,6 +117,8 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   `OSCE_GUIDE` in ext) built from the Assessment 3 brief.
 - v2026.10.20b, section **X**: eTG Acute asthma — 18 cards, 7 MCQ (quotes machine-checked,
   drafts/acute_asthma.py) + PACKS.asthma safety/refer lines. asthma now 84/38.
+- v2026.10.20c: **How to study** guide — `R.guide`, Plan → How to study (GROUPS.myplan),
+  Home button `data-go="guide"`. UI help only. Test: outputs/guidetest.js.
 - Still open: OSCE rubric/mock stations
   not yet released; 6202 Week 10 (Advanced Physical Assessment II) not yet exported.
 
