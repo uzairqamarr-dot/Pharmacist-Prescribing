@@ -268,7 +268,7 @@ button.chip{min-height:44px}
    Prescribing Study Hub — app script (ES5, no dependencies)
    ================================================================ */
 "use strict";
-var VERSION = "v2026.10.20b";
+var VERSION = "v2026.10.20c";
 var LSKEY = "phar-hub-v1";
 var DAY = 86400000;
 var INT = [0, 0, 1, 3, 8, 21];          /* Leitner intervals (days), boxes 1..5 */
@@ -642,13 +642,13 @@ var NAV = [
    reach it. Nothing was deleted and no progress key changed. */
 var GROUPS = {
   practise:  ["cards", "mcq", "papers", "viva", "mock", "osce", "oprep"],
-  myplan:    ["plan", "progress", "sem"],
+  myplan:    ["plan", "progress", "sem", "guide"],
   reference: ["drugs", "topics", "cram", "exams", "anat", "course", "links", "search"]
 };
 var SUBLABEL = {
   drugs:"Drug classes",
   cards:"Flashcards", mcq:"MCQs", papers:"Uni papers", viva:"Say it out loud", mock:"Timed exam", osce:"OSCE run", oprep:"OSCE guide",
-  plan:"Assessments", progress:"Progress", sem:"Semester",
+  plan:"Assessments", progress:"Progress", sem:"Semester", guide:"How to study",
   topics:"Topic notes", cram:"Cram sheet", exams:"Exams & vitals", anat:"Anatomy", course:"Course weeks",
   links:"Links", search:"Search"
 };
@@ -826,6 +826,7 @@ R.home = function(v){
        '<div class="mins">' + esc(na.detail) + ' · ' + mins(na.mins) + '</div>' +
        (na.start ? '<button type="button" data-qstart="' + na.start + '">Start now</button></div>'
                  : '<button type="button" data-go="' + na.tab + '"' + (na.arg ? ' data-arg="' + esc(na.arg) + '"' : '') + '>Start now</button></div>');
+  h += '<button type="button" class="btn-g btn-sm" data-go="guide" style="margin:0 0 12px">How to study with this app \u203a</button>';
   /* Anything unfinished is one tap away from Home. The app always opens on
      Home, so an open MCQ set used to look lost. */
   var rs = [];
@@ -2032,6 +2033,49 @@ function startOsce(sem, id){
   return true;
 }
 function shuffled(a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--){ var r = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[r]; a[r] = t; } return a; }
+/* How-to-study guide (UI help, not clinical content). Buttons use data-go so
+   every step is one tap away. */
+R.guide = function(v){
+  function go(t, label, arg){ return '<button type="button" class="btn-g btn-sm" data-go="' + t + '"' + (arg ? ' data-arg="' + arg + '"' : '') + '>' + label + ' \u203a</button>'; }
+  function step(n, title, body, btn){ return '<div class="listrow" style="display:block"><b>' + n + '. ' + title + '</b><div class="small" style="margin:4px 0 6px">' + body + '</div>' + (btn || '') + '</div>'; }
+  var h = '<h1>How to study</h1><p class="muted">One route for every topic. Follow it in order the first time; after that, the app brings back what you miss.</p>';
+
+  h += '<div class="card"><h2>Learning a topic &mdash; in this order</h2>';
+  h += step(1, 'Study &rarr; pick the topic &rarr; Read', 'The must-know brief (5&ndash;7 min). Read it before any testing.', go('learn', 'Study'));
+  h += step(2, 'Same session: Cards &rarr; MCQs &rarr; Fix', 'About 15 min. Missed cards come back at the end of the set; wrong MCQs come first next time. Use the stage chips to jump between Cards and MCQs.', '');
+  h += step(3, 'Conditions &rarr; that condition', 'The prescribing pack in protocol order: eligibility &rarr; refer &rarr; what you can prescribe &rarr; checks &rarr; counselling &rarr; safety net &rarr; review. <b>This is your consult and viva script.</b> Only for Program conditions: hypertension, lipids, blood glucose, asthma, COPD, weight, smoking.', go('cond', 'Conditions'));
+  h += step(4, 'Reference &rarr; Drug classes', 'Tap the group chip for the topic (Respiratory, Hypertension, Lipids, Diabetes, Smoking, Vaccines). Know the class, key cautions and monitoring.', go('drugs', 'Drug classes'));
+  h += step(5, 'Reference &rarr; Topic notes / Course weeks', 'Only for gaps &mdash; go deeper on whatever you missed in step 2. Exams &amp; vitals has normal ranges for physical assessment.', go('topics', 'Topic notes') + ' ' + go('course', 'Course weeks'));
+  h += step(6, 'Practise &rarr; Say it out loud', 'Answer the prompts aloud, reveal the model answer, rate yourself 0/1/2. Best viva practice.', go('viva', 'Say it out loud'));
+  h += step(7, 'Practise &rarr; OSCE run', 'Do one station on the topic, timed, out loud. Fix every <b>SAFETY</b> miss before moving on.', go('osce', 'OSCE run'));
+  h += step(8, 'Next days: Flashcards + MCQs (topic filter)', 'Spaced repetition brings cards back when they are due. Then Home &rarr; <b>Review my mistakes</b>.', go('cards', 'Flashcards') + ' ' + go('mcq', 'MCQs'));
+  h += '<p class="small muted" style="margin-top:8px"><b>Topic is done</b> when its readiness on the Study list is &ge;80% and you can do its OSCE station without a safety miss.</p></div>';
+
+  h += '<div class="card"><h2>Topics without a Conditions pack</h2><p class="small">Ethics, communication, clinical reasoning, safety, physical assessment, mental health, opioids, injectables: use steps 1, 2, 5, 6, 7 and 8. For physical assessment, add Exams &amp; vitals and the Anatomy pane.</p>' + go('exams', 'Exams & vitals') + ' ' + go('anat', 'Anatomy') + '</div>';
+
+  h += '<div class="card"><h2>Every day (20&ndash;40 min)</h2><ol class="small" style="margin:0;padding-left:18px">' +
+       '<li>Home &rarr; <b>Next action</b> (it picks the most urgent thing).</li>' +
+       '<li>Home &rarr; <b>Review my mistakes</b>.</li>' +
+       '<li>Flashcards that are due.</li>' +
+       '<li>One Study session on a topic marked <b>due soon</b>.</li>' +
+       '<li>From November: one OSCE station out loud.</li></ol></div>';
+
+  h += '<div class="card"><h2>Before each assessment</h2><div class="small">' +
+       '<p><b>ISBAR handover &mdash; 23 Oct</b>: Conditions &rarr; Asthma / COPD; Study &rarr; Communication (ISBAR cards).</p>' +
+       '<p><b>Viva &mdash; Wed 28 Oct 1:30 pm</b>: Conditions &rarr; Hypertension, Lipids, Blood glucose (say each pack aloud) &rarr; Say it out loud &rarr; Study &rarr; Clinical reasoning.</p>' +
+       '<p><b>Intensive &mdash; 31 Oct &amp; 1 Nov</b>: Study &rarr; COPD, Asthma, Physical assessment. Bring questions.</p>' +
+       '<p><b>Portfolio &mdash; 13 Nov</b>: Study &rarr; Ethics, Clinical reasoning; Plan &rarr; Assessments for the steps.</p>' +
+       '<p><b>OSCE &mdash; 26/27 Nov (must pass)</b>: Practise &rarr; OSCE guide &rarr; 4-station circuit every second day; Random station on other days.</p></div>' +
+       go('oprep', 'OSCE guide') + ' ' + go('plan', 'Assessments') + '</div>';
+
+  h += '<div class="card flat"><h2>Good to know</h2><ul class="small" style="margin:0;padding-left:18px">' +
+       '<li>Progress saves automatically, even if the phone kills the app. Home shows <b>Pick up where you left off</b>.</li>' +
+       '<li>Back on a card or MCQ does not re-score it.</li>' +
+       '<li>Uni papers and the Quiz 2 set are under Practise &rarr; Uni papers; Timed exam mixes everything.</li>' +
+       '<li>Tap the version badge at the bottom to check for updates.</li>' +
+       '<li>Only use the home-screen app &mdash; the old study.html page can overwrite newer progress.</li></ul></div>';
+  v.innerHTML = h;
+};
 R.oprep = function(v){
   v.innerHTML = '<h1>OSCE guide</h1>' + (typeof OSCE_GUIDE !== "undefined" ? '<div class="card"><div class="body">' + raw(OSCE_GUIDE) + '</div></div>' : '<p class="muted">Guide not loaded.</p>') +
     '<button type="button" class="btn-p btn-block" data-ocirc="1">Start a 4-station circuit</button>';
