@@ -632,7 +632,11 @@ prescribing packs. Corpus 1208 chunks (ingested 3 Sep 2026).
   QLD protocols (or a source they link to), PHAR6302/6202 course material, or a
   reputable source the course names (eTG, AMH, NHMRC, ADS, NDSS). Name the source
   and page/table/file every time. If it isn't in those, say so; never fill the gap
-  from general knowledge.
+  from general knowledge. **Where a protocol says "in line with eTG", read the
+  linked eTG topic (texts in `coursework/_review/audit/pdf/`) and cite it as the
+  primary source; prefer it over ADS. Flag where eTG and the protocol differ**
+  (e.g. protocol Table 2 says baseline LFT + CK; eTG says routine ALT/CK
+  monitoring after that isn't needed unless muscle symptoms).
 - **Assessments:** before helping with ANY assessment, read the brief's AI rule
   and state it to him up front in one line. Don't write submission text for any
   assessment whose brief prohibits AI. Teach, quiz, explain and check facts instead. Where AI is allowed,
