@@ -159,6 +159,11 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   Removed `.body>b:first-child{display:block}` (split questions with a mid-sentence bold). Drug list rows restyled
   (`lr-main/lr-t/lr-tag/lr-sub`); sub-tab chips are one swipeable line on phones (`.subtabs`). Live-browser crawl at
   375px: 0 horizontal overflows across all drugs, conds, briefs, panes, 1,184 cards, 538 MCQs.
+- v2026.10.30d: **OSCE plan** — `OSCE_PLAN` (section AC in ext, built by `drafts/osce_plan.py`): 6 stages, 28 days
+  (30 Oct → 26 Nov), 130 tasks. Ticks in **new store key `store.oplan`** (task id → ts; in blankStore, loadStore and
+  import — keep it in any store rebuild). Task ids are permanent. UI: `R.oplan` (Plan → OSCE plan, first sub-tab) +
+  Home card; links via `data-oplink` (learn:/cond:/drug:/station:/sub:) and existing `data-ocirc`/`data-review`.
+  Test: `outputs/oplantest.js` (12 checks).
 - **Autopush commits within seconds of a save** (seen 30 Oct) — every intermediate save goes live; keep each save valid.
 
 ### Phone-accessible plan (8 Oct)
