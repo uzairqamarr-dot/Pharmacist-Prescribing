@@ -137,6 +137,13 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   Oct-29 6202 export = Oct-19 + Week 10 + intensive files only. Per-week 6202 PDFs for Gemini:
   `coursework/NotebookLM-OSCE-Pack/PHAR6202-weeks/`.
 
+- v2026.10.30a, section **Z** in ext: **EPA scope** (EPA 'Pharmacists – Community pharmacy chronic conditions
+  management pilot' v1, Appendix 1 = CLASSES + indication + age: CVD 18–79, asthma 16–65, COPD 35+; ≤12 months'
+  supply) + Explanatory Guide. 11 cards, 7 MCQ (drafts/epa_scope.py, quote-checked); PACKS.*.rxnote prefixed with
+  legal scope; DRUGS.prog prefixed for su/ins/tzd/agi/bb/mont/ics/ocs/abx; OSCE_GUIDE gets a scope checklist.
+  Layering: EPA class → eTG section → protocol (narrower: COPD Steps 1–3 so no ICS; no montelukast initiation).
+  Smoking cessation is NOT in this EPA (separate CPG / EPA-Pharmacists, not held). Texts: audit/pdf/EPA-*.txt.
+
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
 https://claude.ai/code/artifact/735dfcdb-164c-4b81-a79f-7ebd35429bf4
