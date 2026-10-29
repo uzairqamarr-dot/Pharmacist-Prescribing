@@ -151,6 +151,16 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   asthma steps, CVD risk tables, SGLT2i/metformin eGFR cut-offs — every item says protocol/eTG win. NOT photographed:
   ezetimibe monograph, beta-blocker monographs, oral corticosteroids, montelukast, sulfonylureas.
 
+- v2026.10.30c: section **AB** (AMH ezetimibe p300 + corticosteroids p670–675 → DRUGS ezet/ocs `.amh`, 4 cards, 2 MCQ;
+  photos in `src/AMH-extra/`). **Layout tidy**: `tidyBody()` in index.html (MutationObserver on #view) restructures
+  `<br>`-separated course HTML at display time — `<b>Label:</b>` runs → `.kv` blocks, `&bull;`/`1.` runs → `ul.tl`
+  (marker kept as `span.bl`), other runs → `.tp`, tables wrapped in `.tw` (scroll), `<wbr>` after `/` `+` in long words.
+  Data files untouched. `outputs/tidytest.js` proves textContent + element counts identical for all 4,737 strings.
+  Removed `.body>b:first-child{display:block}` (split questions with a mid-sentence bold). Drug list rows restyled
+  (`lr-main/lr-t/lr-tag/lr-sub`); sub-tab chips are one swipeable line on phones (`.subtabs`). Live-browser crawl at
+  375px: 0 horizontal overflows across all drugs, conds, briefs, panes, 1,184 cards, 538 MCQs.
+- **Autopush commits within seconds of a save** (seen 30 Oct) — every intermediate save goes live; keep each save valid.
+
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
 https://claude.ai/code/artifact/735dfcdb-164c-4b81-a79f-7ebd35429bf4
