@@ -225,6 +225,64 @@ button.chip{min-height:44px}
   .subtabs::-webkit-scrollbar{display:none}
   .subtabs .chip{flex:0 0 auto}
 }
+
+/* ---------- OSCE plan (30 Oct) ---------- */
+.op-hero .op-bigbar{height:10px;background:rgba(255,255,255,.28);border-radius:6px;overflow:hidden;margin:12px 0 10px}
+.op-hero .op-bigbar>i{display:block;height:100%;background:#fff;border-radius:6px;transition:width .5s ease}
+.op-stats{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.88rem;opacity:.95}
+.op-stats b{font-size:1.05rem}
+.op-date{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--teal)}
+.op-dhead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.op-dhead h2{margin:4px 0 2px}
+.op-focus{font-size:.88rem;color:var(--ink3)}
+.op-count{font-size:.9rem;color:var(--ink3);white-space:nowrap;padding-top:2px}
+.op-count b{font-size:1.5rem;color:var(--teal);font-weight:750}
+.op-prog{margin:12px 0 4px}
+.op-prog>i{transition:width .4s ease}
+.op-task{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
+.op-task:last-of-type{border-bottom:0}
+.op-cb{flex:0 0 32px;width:32px;height:32px;min-height:32px;padding:0;border-radius:50%;
+  border:2px solid var(--ink3);background:transparent;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.op-cb .op-tick{color:#fff;font-weight:800;font-size:1rem;opacity:0;transform:scale(.4);transition:all .2s ease}
+.op-task.done .op-cb{background:var(--teal);border-color:var(--teal)}
+.op-task.done .op-cb .op-tick{opacity:1;transform:scale(1)}
+.op-task.just .op-cb{animation:opPop .45s ease}
+@keyframes opPop{0%{transform:scale(1)}40%{transform:scale(1.28)}100%{transform:scale(1)}}
+.op-txt{flex:1;min-width:0}
+.op-b{font-weight:650;line-height:1.35}
+.op-t{font-size:.88rem;color:var(--ink2);line-height:1.45;margin-top:3px}
+.op-m{font-size:.75rem;color:var(--ink3);margin-top:4px}
+.op-task.done .op-b{color:var(--ink3);text-decoration:line-through;text-decoration-color:var(--ink3)}
+.op-task.done .op-t{color:var(--ink3)}
+.op-go{flex:0 0 auto;min-height:36px;padding:6px 12px;font-size:.82rem;border-radius:18px;background:var(--teal-t);color:var(--teal);margin-top:-2px}
+.op-cheer{margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--teal-t);color:var(--teal);font-weight:700;animation:opIn .5s ease}
+.op-cheer[hidden]{display:none}
+.op-star{color:var(--accent);font-size:1.1rem}
+@keyframes opIn{from{opacity:0;transform:translateY(6px) scale(.97)}to{opacity:1;transform:none}}
+.op-day.today{border:2px solid var(--teal)}
+.op-day.complete{background:linear-gradient(180deg,var(--teal-t),var(--surface) 140px)}
+.op-catch summary{cursor:pointer;list-style:none;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.op-catch summary::-webkit-details-marker{display:none}
+.op-h{margin:22px 0 10px}
+.op-phase{margin:0 0 18px}
+.op-ph{display:flex;gap:12px;align-items:center;margin:0 0 6px}
+.op-badge{flex:0 0 34px;height:34px;border-radius:50%;background:var(--surface2);border:1.5px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-weight:750;color:var(--ink3)}
+.op-phase.won .op-badge{background:var(--accent);border-color:var(--accent);color:#fff}
+.op-pname{font-weight:700}
+.op-pgoal{font-size:.84rem;color:var(--ink3);line-height:1.4}
+.op-pc{margin-left:auto;font-size:.85rem;color:var(--ink3);white-space:nowrap}
+.op-dd{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin:6px 0;padding:0 14px}
+.op-dd summary{cursor:pointer;list-style:none;display:flex;gap:10px;align-items:center;min-height:50px}
+.op-dd summary::-webkit-details-marker{display:none}
+.op-dd[open]{padding-bottom:4px}
+.op-dd.today{border-color:var(--teal)}
+.op-ddate{flex:0 0 86px;font-size:.8rem;font-weight:700;color:var(--ink3)}
+.op-dtitle{flex:1;min-width:0;font-weight:600}
+.op-dn{font-size:.8rem;font-weight:700;color:var(--ink3);background:var(--surface2);border-radius:12px;padding:3px 9px}
+.op-dn.ok{background:var(--teal);color:#fff}
+.op-dn.late{background:var(--accent-t);color:var(--accent)}
+.op-home .op-next{margin-top:8px;line-height:1.4}
 /* selected state for the new multi-select chips */
 .chip-on{background:var(--teal-t);border-color:var(--teal);color:var(--teal)}
 .chip-n{display:inline-block;background:var(--surface);border-radius:20px;padding:0 6px;
@@ -573,7 +631,7 @@ function tidyAll(root){
 /* ---------- store: single localStorage key, repair-on-load ---------- */
 function blankStore(){
   return {box:{}, mcq:{}, osce:{}, osceRuns:{}, exams:{}, days:{},
-          sem:"s2", steps:{}, right:{}, read:{}, viva:{}, wrong:{}, ui:{sub:{}},
+          sem:"s2", steps:{}, right:{}, read:{}, viva:{}, wrong:{}, ui:{sub:{}}, oplan:{},
           /* Where he was up to. Held in the store, not in memory, so closing
              the app mid-session resumes instead of starting the queue again —
              that was the "it resets to the beginning" bug. */
@@ -614,6 +672,7 @@ function loadStore(){
            "still wrong", so wrong answers did not reliably come back. Seeded
            once from the old counts for existing progress. */
         s.wrong = repairObj(p.wrong);
+        s.oplan = repairObj(p.oplan);   /* OSCE plan ticks (30 Oct) */
         if (!p.wrong){ for (var wk in s.mcq) if ((s.right[wk] || 0) < s.mcq[wk]) s.wrong[wk] = 1; }
         s.ui = repairObj(p.ui); if (!s.ui.sub || typeof s.ui.sub !== "object") s.ui.sub = {};
         s.papers = (p.papers && typeof p.papers === "object") ? p.papers : {};
@@ -783,13 +842,13 @@ var NAV = [
    reach it. Nothing was deleted and no progress key changed. */
 var GROUPS = {
   practise:  ["cards", "mcq", "papers", "viva", "mock", "osce", "oprep"],
-  myplan:    ["plan", "progress", "sem", "guide"],
+  myplan:    ["oplan", "plan", "progress", "sem", "guide"],
   reference: ["drugs", "topics", "cram", "exams", "anat", "course", "links", "search"]
 };
 var SUBLABEL = {
   drugs:"Drug classes",
   cards:"Flashcards", mcq:"MCQs", papers:"Uni papers", viva:"Say it out loud", mock:"Timed exam", osce:"OSCE run", oprep:"OSCE guide",
-  plan:"Assessments", progress:"Progress", sem:"Semester", guide:"How to study",
+  oplan:"OSCE plan", plan:"Assessments", progress:"Progress", sem:"Semester", guide:"How to study",
   topics:"Topic notes", cram:"Cram sheet", exams:"Exams & vitals", anat:"Anatomy", course:"Course weeks",
   links:"Links", search:"Search"
 };
@@ -971,6 +1030,20 @@ R.home = function(v){
        (na.start ? '<button type="button" data-qstart="' + na.start + '">Start now</button></div>'
                  : '<button type="button" data-go="' + na.tab + '"' + (na.arg ? ' data-arg="' + esc(na.arg) + '"' : '') + '>Start now</button></div>');
   h += '<button type="button" class="btn-g btn-sm" data-go="guide" style="margin:0 0 12px">How to study with this app \u203a</button>';
+  if (typeof OSCE_PLAN !== "undefined" && OSCE_PLAN.length && cur.sem === "s2"){
+    if (!store.oplan) store.oplan = {};
+    var opa = opAllDays(), opi = opCurrentIndex(), ops = opStats();
+    if (opi >= 0){
+      var opd = opa[opi].day, opn = opDayCount(opd), opt = opd.tasks.length, opNext = null, oq;
+      for (oq = 0; oq < opt; oq++) if (!opDone(opd.tasks[oq].id)){ opNext = opd.tasks[oq]; break; }
+      h += '<div class="card op-home"><div class="row between"><div><div class="op-date">OSCE plan \u00b7 ' + (opd.d === opToday() ? 'today' : opFmt(opd.d)) + '</div>' +
+           '<h2 style="margin:2px 0 0">' + esc(opd.title) + '</h2></div><div class="op-count"><b>' + opn + '</b>/' + opt + '</div></div>' +
+           '<div class="prog op-prog"><i style="width:' + (opt ? Math.round(100 * opn / opt) : 0) + '%"></i></div>' +
+           (opNext ? '<div class="op-next"><span class="small muted">Next:</span> ' + esc(opNext.b) + '</div>' : '<div class="op-next"><span class="op-star">\u2605</span> Today\u2019s plan is done.</div>') +
+           '<div class="row between mt"><span class="small muted">' + ops.done + ' of ' + ops.tot + ' tasks \u00b7 ' + ops.streak + ' day streak</span>' +
+           '<button type="button" class="btn-p btn-sm" data-go="oplan">Open plan \u203a</button></div></div>';
+    }
+  }
   /* Anything unfinished is one tap away from Home. The app always opens on
      Home, so an open MCQ set used to look lost. */
   var rs = [];
@@ -2179,6 +2252,139 @@ function startOsce(sem, id){
 function shuffled(a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--){ var r = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[r]; a[r] = t; } return a; }
 /* How-to-study guide (UI help, not clinical content). Buttons use data-go so
    every step is one tap away. */
+/* ---------- OSCE preparation plan (30 Oct) ----------
+   Day-by-day tick list from OSCE_PLAN (ext file). Ticks live in
+   store.oplan (task id -> timestamp). Ids are permanent, so editing a
+   task's wording keeps its tick; never reuse an id for a different task. */
+var OP_DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], OP_MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function opToday(){ var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+function opFmt(iso){ var p = iso.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2]); return OP_DAYS[d.getDay()] + " " + d.getDate() + " " + OP_MON[d.getMonth()]; }
+function opAllDays(){
+  var out = [], i, j, P = (typeof OSCE_PLAN !== "undefined") ? OSCE_PLAN : [];
+  for (i = 0; i < P.length; i++) for (j = 0; j < P[i].days.length; j++) out.push({day: P[i].days[j], phase: P[i]});
+  return out;
+}
+function opDone(id){ return !!(store.oplan && store.oplan[id]); }
+function opDayCount(day){ var n = 0, i; for (i = 0; i < day.tasks.length; i++) if (opDone(day.tasks[i].id)) n++; return n; }
+function opCurrentIndex(){
+  var all = opAllDays(), t = opToday(), i;
+  if (!all.length) return -1;
+  for (i = 0; i < all.length; i++) if (all[i].day.d >= t) return i;
+  return all.length - 1;
+}
+function opStats(){
+  var all = opAllDays(), t = opToday(), tot = 0, done = 0, i, streak = 0, badges = 0, P = (typeof OSCE_PLAN !== "undefined") ? OSCE_PLAN : [];
+  for (i = 0; i < all.length; i++){ tot += all[i].day.tasks.length; done += opDayCount(all[i].day); }
+  /* streak: consecutive days up to today on which at least one task was ticked */
+  var dk = {}, k; for (k in store.oplan) { var dt = new Date(store.oplan[k]); dk[dt.getFullYear() + "-" + ("0" + (dt.getMonth() + 1)).slice(-2) + "-" + ("0" + dt.getDate()).slice(-2)] = 1; }
+  var c = new Date(); c.setHours(12, 0, 0, 0);
+  var key = function(x){ return x.getFullYear() + "-" + ("0" + (x.getMonth() + 1)).slice(-2) + "-" + ("0" + x.getDate()).slice(-2); };
+  if (!dk[key(c)]) c.setDate(c.getDate() - 1);   /* today not started yet doesn't break the streak */
+  while (dk[key(c)]){ streak++; c.setDate(c.getDate() - 1); }
+  for (i = 0; i < P.length; i++){
+    var pt = 0, pd = 0, j; for (j = 0; j < P[i].days.length; j++){ pt += P[i].days[j].tasks.length; pd += opDayCount(P[i].days[j]); }
+    if (pt && pd === pt) badges++;
+  }
+  return {tot: tot, done: done, pct: tot ? Math.round(100 * done / tot) : 0, streak: streak, badges: badges, phases: P.length};
+}
+function opDaysToGo(){
+  var p = "2026-11-26".split("-"), a = new Date(+p[0], +p[1] - 1, +p[2]), n = new Date(); n.setHours(0, 0, 0, 0);
+  return Math.round((a - n) / 86400000);
+}
+function opLinkBtn(go){
+  if (!go) return "";
+  var lbl = "Open \u203a";
+  if (go === "circuit") return '<button type="button" class="op-go" data-ocirc="1">Start \u203a</button>';
+  if (go === "review:cards") return '<button type="button" class="op-go" data-review="cards">Open \u203a</button>';
+  if (go === "review:mcq") return '<button type="button" class="op-go" data-review="mcq">Open \u203a</button>';
+  return '<button type="button" class="op-go" data-oplink="' + esc(go) + '">' + lbl + '</button>';
+}
+function opTaskRow(t){
+  var d = opDone(t.id);
+  return '<div class="op-task' + (d ? ' done' : '') + '" data-optask="' + esc(t.id) + '">' +
+    '<button type="button" class="op-cb" data-optk="' + esc(t.id) + '" aria-pressed="' + (d ? 'true' : 'false') + '" aria-label="Tick off: ' + esc(t.b) + '"><span class="op-tick">\u2713</span></button>' +
+    '<div class="op-txt"><div class="op-b">' + esc(t.b) + '</div>' +
+      (t.t ? '<div class="op-t">' + esc(t.t) + '</div>' : '') +
+      (t.m ? '<div class="op-m">' + t.m + ' min</div>' : '') + '</div>' +
+    opLinkBtn(t.go) + '</div>';
+}
+function opDayBlock(entry, isToday){
+  var day = entry.day, n = opDayCount(day), tot = day.tasks.length, all = n === tot, i;
+  var h = '<div class="card op-day' + (isToday ? ' today' : '') + (all ? ' complete' : '') + '" data-opday="' + day.d + '">' +
+    '<div class="op-dhead"><div><div class="op-date">' + (isToday ? 'Today \u00b7 ' : '') + opFmt(day.d) + '</div>' +
+    '<h2>' + esc(day.title) + '</h2>' + (day.focus ? '<div class="op-focus">' + esc(day.focus) + '</div>' : '') + '</div>' +
+    '<div class="op-count"><b data-opn="' + day.d + '">' + n + '</b>/' + tot + '</div></div>' +
+    '<div class="prog op-prog"><i data-opbar="' + day.d + '" style="width:' + (tot ? Math.round(100 * n / tot) : 0) + '%"></i></div>';
+  for (i = 0; i < tot; i++) h += opTaskRow(day.tasks[i]);
+  h += '<div class="op-cheer" data-opcheer="' + day.d + '"' + (all ? '' : ' hidden') + '><span class="op-star">\u2605</span> Day complete. Nice work.</div>';
+  return h + '</div>';
+}
+R.oplan = function(v){
+  if (typeof OSCE_PLAN === "undefined" || !OSCE_PLAN.length){ v.innerHTML = '<h1>OSCE plan</h1><p class="muted">Plan not loaded.</p>'; return; }
+  if (!store.oplan) store.oplan = {};
+  var all = opAllDays(), ci = opCurrentIndex(), s = opStats(), t = opToday(), i, togo = opDaysToGo();
+  var h = '<div class="card hero op-hero"><div class="k">OSCE \u00b7 Thu 26 Nov \u00b7 MSW105, 8:30 am</div>' +
+    '<h1>' + (togo > 1 ? togo + ' days to go' : togo === 1 ? 'Tomorrow' : togo === 0 ? 'Today. You\u2019ve got this.' : 'Done') + '</h1>' +
+    '<div class="op-bigbar"><i id="opAllBar" style="width:' + s.pct + '%"></i></div>' +
+    '<div class="op-stats"><span><b id="opDone">' + s.done + '</b> of ' + s.tot + ' tasks</span>' +
+    '<span><b id="opStreak">' + s.streak + '</b> day streak</span>' +
+    '<span><b id="opBadges">' + s.badges + '</b>/' + s.phases + ' stages</span></div></div>';
+  /* catch-up: unticked tasks on days before today */
+  var miss = [];
+  for (i = 0; i < all.length; i++) if (all[i].day.d < t) for (var j = 0; j < all[i].day.tasks.length; j++) if (!opDone(all[i].day.tasks[j].id)) miss.push(all[i].day.tasks[j]);
+  if (ci >= 0) h += opDayBlock(all[ci], all[ci].day.d === t);
+  if (miss.length){
+    h += '<details class="card op-catch"><summary><b>Catch-up</b> <span class="pill warn">' + miss.length + '</span><span class="small muted"> unticked from earlier days</span></summary>';
+    for (i = 0; i < miss.length; i++) h += opTaskRow(miss[i]);
+    h += '</details>';
+  }
+  /* whole plan, by stage */
+  var P = OSCE_PLAN;
+  h += '<h2 class="op-h">The whole plan</h2>';
+  for (i = 0; i < P.length; i++){
+    var pt = 0, pd = 0, k; for (k = 0; k < P[i].days.length; k++){ pt += P[i].days[k].tasks.length; pd += opDayCount(P[i].days[k]); }
+    h += '<div class="op-phase' + (pt && pd === pt ? ' won' : '') + '"><div class="op-ph"><span class="op-badge">' + (pt && pd === pt ? '\u2605' : (i + 1)) + '</span>' +
+      '<div><div class="op-pname">' + esc(P[i].name) + '</div><div class="op-pgoal">' + esc(P[i].goal) + '</div></div>' +
+      '<span class="op-pc">' + pd + '/' + pt + '</span></div>';
+    for (k = 0; k < P[i].days.length; k++){
+      var dy = P[i].days[k], n = opDayCount(dy), past = dy.d < t, isT = dy.d === t;
+      h += '<details class="op-dd' + (n === dy.tasks.length ? ' complete' : '') + (isT ? ' today' : '') + '">' +
+        '<summary><span class="op-ddate">' + opFmt(dy.d) + '</span><span class="op-dtitle">' + esc(dy.title) + '</span>' +
+        '<span class="op-dn' + (n === dy.tasks.length ? ' ok' : (past && n < dy.tasks.length ? ' late' : '')) + '">' + (n === dy.tasks.length ? '\u2713' : n + '/' + dy.tasks.length) + '</span></summary>';
+      for (var m = 0; m < dy.tasks.length; m++) h += opTaskRow(dy.tasks[m]);
+      h += '</details>';
+    }
+    h += '</div>';
+  }
+  h += '<p class="small muted mt">Ticks are saved on this phone with the rest of your progress. Gemini tasks happen in the Gemini notebook; tick them here when done.</p>';
+  v.innerHTML = h;
+};
+function opRefreshCounts(){
+  var s = opStats(), all = opAllDays(), i, e;
+  if ((e = $("opDone"))) e.textContent = s.done;
+  if ((e = $("opStreak"))) e.textContent = s.streak;
+  if ((e = $("opBadges"))) e.textContent = s.badges;
+  if ((e = $("opAllBar"))) e.style.width = s.pct + "%";
+  for (i = 0; i < all.length; i++){
+    var d = all[i].day, n = opDayCount(d), tot = d.tasks.length, q, j;
+    q = document.querySelectorAll('[data-opn="' + d.d + '"]'); for (j = 0; j < q.length; j++) q[j].textContent = n;
+    q = document.querySelectorAll('[data-opbar="' + d.d + '"]'); for (j = 0; j < q.length; j++) q[j].style.width = (tot ? Math.round(100 * n / tot) : 0) + "%";
+    q = document.querySelectorAll('[data-opcheer="' + d.d + '"]'); for (j = 0; j < q.length; j++) q[j].hidden = n !== tot;
+    q = document.querySelectorAll('[data-opday="' + d.d + '"]'); for (j = 0; j < q.length; j++) q[j].className = q[j].className.replace(/\s*complete/g, "") + (n === tot ? " complete" : "");
+  }
+}
+function opToggle(id){
+  if (!store.oplan) store.oplan = {};
+  var was = !!store.oplan[id];
+  if (was) delete store.oplan[id]; else store.oplan[id] = Date.now();
+  bumpDay(); save();
+  var rows = document.querySelectorAll('[data-optask="' + id + '"]'), i;
+  for (i = 0; i < rows.length; i++){
+    rows[i].className = "op-task" + (was ? "" : " done just");
+    var cb = rows[i].querySelector(".op-cb"); if (cb) cb.setAttribute("aria-pressed", was ? "false" : "true");
+  }
+  opRefreshCounts();
+}
 R.guide = function(v){
   function go(t, label, arg){ return '<button type="button" class="btn-g btn-sm" data-go="' + t + '"' + (arg ? ' data-arg="' + arg + '"' : '') + '>' + label + ' \u203a</button>'; }
   function step(n, title, body, btn){ return '<div class="listrow" style="display:block"><b>' + n + '. ' + title + '</b><div class="small" style="margin:4px 0 6px">' + body + '</div>' + (btn || '') + '</div>'; }
@@ -2665,6 +2871,17 @@ document.addEventListener("click", function(ev){
   }
   if (b.getAttribute("data-lnext") != null){ learn.q++; persistLearn(); R.learn(v); return; }
   if (b.getAttribute("data-lfix") != null){ persistLearn(); R.learn(v); return; }
+  /* OSCE plan */
+  if (b.getAttribute("data-optk") != null){ opToggle(b.getAttribute("data-optk")); return; }
+  if (b.getAttribute("data-oplink") != null){
+    var ol = b.getAttribute("data-oplink"), oc = ol.indexOf(":"), okd = ol.slice(0, oc), oa = ol.slice(oc + 1);
+    if (okd === "learn"){ if (learn.cond !== oa){ learn = newLearn(oa); persistLearn(); } go("learn"); return; }
+    if (okd === "cond"){ condOpen = oa; go("cond"); return; }
+    if (okd === "drug"){ drugOpen = oa; cur.sub.reference = "drugs"; go("reference"); return; }
+    if (okd === "station"){ osceCircuit = {left: [], total: 0}; if (startOsce(sem, oa)){ cur.sub.practise = "osce"; go("practise"); } return; }
+    if (okd === "sub"){ for (var ogk in GROUPS) if (GROUPS[ogk].indexOf(oa) >= 0){ cur.sub[ogk] = oa; go(ogk); return; } }
+    return;
+  }
   /* Plan */
   if (b.getAttribute("data-step") != null){
     var sk = b.getAttribute("data-step");
@@ -2928,6 +3145,7 @@ document.addEventListener("click", function(ev){
           ns.viva = repairObj(p.viva);
           ns.papers = repairObj(p.papers);
           ns.wrong = repairObj(p.wrong); ns.ui = repairObj(p.ui); if (!ns.ui.sub) ns.ui.sub = {};
+          ns.oplan = repairObj(p.oplan);
           cur.sub = ns.ui.sub;
           ns.sem = (p.sem === "s1" || p.sem === "s2") ? p.sem : cur.sem;
           store = ns; cur.sem = ns.sem; save();
