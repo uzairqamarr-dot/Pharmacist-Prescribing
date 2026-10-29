@@ -194,6 +194,25 @@ button.chip{min-height:44px}
 .body .alt .lbl{display:block;font-size:.72rem;font-weight:700;letter-spacing:.06em;
   text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
 
+
+/* ---------- LAYOUT TIDY (30 Oct) — see tidyBody() ---------- */
+.body,.explain,.qbox{overflow-wrap:break-word;word-wrap:break-word;min-width:0}
+.body .tp{margin:0 0 .75em}
+.body .tp:last-child{margin-bottom:0}
+.body .kv{margin:0 0 .9em;padding:0 0 .9em;border-bottom:1px solid var(--line)}
+.body .kv:last-child,.body .kv:last-of-type{border-bottom:0;padding-bottom:0}
+.body .kv+div.small{margin-top:.9em}
+.body .kv-l{font-size:.86rem;line-height:1.35;margin:0 0 .3em;color:var(--teal);letter-spacing:.01em}
+.body .kv-l b,.body .kv-l strong{color:inherit;font-weight:700;display:inline;font-size:inherit;margin:0}
+.body .kv-v{line-height:1.6}
+.body ul.tl{list-style:none;padding:0;margin:.2em 0 .9em}
+.body ul.tl li{position:relative;padding-left:1.25em;margin:.45em 0;line-height:1.55}
+.body ul.tl.num li{padding-left:1.7em}
+.body ul.tl .bl{position:absolute;left:0;top:0;color:var(--teal);font-weight:700}
+.body .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}
+.body .tw table{margin:0}
+.body h3:first-child{margin-top:0}
+.body .small.muted{line-height:1.45}
 /* selected state for the new multi-select chips */
 .chip-on{background:var(--teal-t);border-color:var(--teal);color:var(--teal)}
 .chip-n{display:inline-block;background:var(--surface);border-radius:20px;padding:0 6px;
@@ -428,6 +447,116 @@ function esc(s){
     .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 function raw(s){ return String(s == null ? "" : s); }   /* trusted course HTML */
+
+/* ---------- LAYOUT TIDY (30 Oct) ----------
+   Course HTML is written as runs of text separated by <br>, with bold
+   "Label:" openers and "&bull;" bullets. Rendered raw, that is one dense
+   block. tidyBody() restructures it at display time WITHOUT touching a
+   single character of text: it only moves existing nodes into wrappers
+   (labelled blocks, paragraphs, bullet lists), drops the <br>s that
+   separated them, inserts <wbr> break points after "/" and "+" inside long
+   words, and wraps tables so they scroll sideways instead of overflowing.
+   Data files are untouched. Verified by outputs/tidytest.js: textContent
+   of all ~6,500 content strings is identical before and after. */
+var TIDY_INLINE = {"#text":1, B:1, STRONG:1, I:1, EM:1, SPAN:1, A:1, SUB:1, SUP:1, SMALL:1, CODE:1, U:1, WBR:1, MARK:1, ABBR:1, S:1, Q:1, KBD:1, TIME:1, IMG:1};
+function tidyWbr(el){
+  var tw = document.createTreeWalker(el, 4, null, false), list = [], n;
+  while ((n = tw.nextNode())) if (/[\/+]/.test(n.nodeValue) && /\S{17,}/.test(n.nodeValue)) list.push(n);
+  for (var i = 0; i < list.length; i++){
+    var t = list[i], parts = t.nodeValue.split(/(\S{17,})/), frag = document.createDocumentFragment();
+    for (var j = 0; j < parts.length; j++){
+      if (j % 2 === 0){ if (parts[j]) frag.appendChild(document.createTextNode(parts[j])); continue; }
+      var bits = parts[j].split(/([\/+])/);
+      for (var k = 0; k < bits.length; k++){
+        if (!bits[k]) continue;
+        frag.appendChild(document.createTextNode(bits[k]));
+        if ((bits[k] === "/" || bits[k] === "+") && k < bits.length - 1) frag.appendChild(document.createElement("wbr"));
+      }
+    }
+    t.parentNode.replaceChild(frag, t);
+  }
+}
+function tidyRunText(nodes){ var s = "", i; for (i = 0; i < nodes.length; i++) s += nodes[i].textContent; return s; }
+function tidyFlow(el){
+  /* only restructure a container whose own flow is broken up by <br> */
+  var kids = Array.prototype.slice.call(el.childNodes), i, hasBr = false;
+  for (i = 0; i < kids.length; i++) if (kids[i].nodeName === "BR"){ hasBr = true; break; }
+  if (!hasBr) return;
+  var out = [], run = [];
+  function flush(){ if (run.length){ out.push({run: run}); run = []; } }
+  for (i = 0; i < kids.length; i++){
+    var k = kids[i];
+    if (k.nodeName === "BR"){ flush(); el.removeChild(k); continue; }
+    if (TIDY_INLINE[k.nodeName] && !(k.nodeName === "SPAN" && /\b(src|lbl)\b/.test(k.className || ""))) run.push(k);
+    else { flush(); out.push({block: k}); }
+  }
+  flush();
+  var list = null;
+  for (i = 0; i < out.length; i++){
+    var o = out[i];
+    if (o.block){ list = null; el.appendChild(o.block); continue; }
+    var r = o.run, txt = tidyRunText(r);
+    if (!/\S/.test(txt)){ for (var z = 0; z < r.length; z++) el.appendChild(r[z]); continue; }
+    var lead = txt.replace(/^\s+/, ""), m = /^(•|\d{1,2}[.)](?=\s))/.exec(lead);
+    if (m){
+      var kind = m[1] === "•" ? "tl" : "tl num";
+      if (!list || list.className !== kind){ list = document.createElement("ul"); list.className = kind; el.appendChild(list); }
+      var li = document.createElement("li");
+      /* move the marker text into its own span so it hangs in the margin */
+      var first = r[0];
+      if (first.nodeType === 3){
+        var fv = first.nodeValue, idx = fv.indexOf(m[1]);
+        if (idx >= 0 && !/\S/.test(fv.slice(0, idx))){
+          var mk = document.createElement("span"); mk.className = "bl";
+          mk.appendChild(document.createTextNode(fv.slice(0, idx + m[1].length)));
+          first.nodeValue = fv.slice(idx + m[1].length);
+          li.appendChild(mk);
+        }
+      }
+      for (z = 0; z < r.length; z++) li.appendChild(r[z]);
+      list.appendChild(li);
+      continue;
+    }
+    list = null;
+    /* a bold opener ending in ":" becomes a small heading for its block */
+    var j0 = 0; while (j0 < r.length && r[j0].nodeType === 3 && !/\S/.test(r[j0].nodeValue)) j0++;
+    var lb = r[j0];
+    if (lb && (lb.nodeName === "B" || lb.nodeName === "STRONG") && /:\s*$/.test(lb.textContent) && lb.textContent.length <= 60 && j0 < r.length - 1){
+      var kv = document.createElement("div"), kl = document.createElement("div"), kvv = document.createElement("div");
+      kv.className = "kv"; kl.className = "kv-l"; kvv.className = "kv-v";
+      for (z = 0; z < j0; z++) kl.appendChild(r[z]);
+      kl.appendChild(lb);
+      for (z = j0 + 1; z < r.length; z++) kvv.appendChild(r[z]);
+      kv.appendChild(kl); kv.appendChild(kvv); el.appendChild(kv);
+      continue;
+    }
+    var p = document.createElement("div"); p.className = "tp";
+    for (z = 0; z < r.length; z++) p.appendChild(r[z]);
+    el.appendChild(p);
+  }
+}
+function tidyBody(el){
+  if (!el || el.__tidy) return;
+  el.__tidy = 1;
+  if (el.nodeName === "SPAN") { tidyWbr(el); return; }   /* inline bodies: break points only */
+  /* nested containers that carry their own <br>-separated flow */
+  var subs = el.querySelectorAll("div,li,td"), i;
+  for (i = subs.length - 1; i >= 0; i--) tidyFlow(subs[i]);
+  tidyFlow(el);
+  var tbs = el.querySelectorAll("table");
+  for (i = 0; i < tbs.length; i++){
+    var t = tbs[i];
+    if (t.parentNode && !/\btw\b/.test(t.parentNode.className || "")){
+      var wrap = document.createElement("div"); wrap.className = "tw";
+      t.parentNode.insertBefore(wrap, t); wrap.appendChild(t);
+    }
+  }
+  tidyWbr(el);
+}
+function tidyAll(root){
+  var bs = (root || document).querySelectorAll(".body,.explain,.qbox");
+  for (var i = 0; i < bs.length; i++) tidyBody(bs[i]);
+}
 
 /* ---------- store: single localStorage key, repair-on-load ---------- */
 function blankStore(){
@@ -2872,7 +3001,15 @@ $("verbadge").addEventListener("click", function(){
 /* ================================================================
    Boot
    ================================================================ */
+/* tidy every content block as it appears in the view (renders, reveals, re-renders) */
+(function(){
+  var view = $("view");
+  try {
+    new MutationObserver(function(){ tidyAll(view); }).observe(view, {childList: true, subtree: true});
+  } catch (e) {}
+})();
 go("home");
+tidyAll($("view"));
 </script>
 </body>
 </html>
