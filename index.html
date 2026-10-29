@@ -177,7 +177,7 @@ button.chip{min-height:44px}
 /* A bold run that opens a line reads as a heading for what follows. */
 .body b,.body strong{font-weight:680;color:var(--ink)}
 .body i,.body em{color:var(--ink2)}
-.body>b:first-child,.body>strong:first-child{display:block;margin-bottom:.35em;font-size:1.04rem}
+/* (30 Oct) removed .body>b:first-child{display:block} - it split questions whose first ELEMENT was a mid-sentence bold word. tidyBody() now gives openers their own line. */
 .explain .body{font-size:.98rem}
 .explain{line-height:1.62}
 /* Source attribution, wherever a card names where its answer comes from. */
@@ -218,6 +218,13 @@ button.chip{min-height:44px}
 .listrow .lr-t{font-weight:700;line-height:1.3}
 .listrow .lr-tag{font-size:.78rem;font-weight:600;color:var(--teal);line-height:1.35}
 .listrow .lr-sub{font-size:.82rem;font-weight:500;color:var(--ink3);line-height:1.45;overflow-wrap:anywhere}
+@media (max-width:820px){
+  .subtabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+    margin-left:-16px!important;margin-right:-16px!important;padding:2px 16px;
+    -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+  .subtabs::-webkit-scrollbar{display:none}
+  .subtabs .chip{flex:0 0 auto}
+}
 /* selected state for the new multi-select chips */
 .chip-on{background:var(--teal-t);border-color:var(--teal);color:var(--teal)}
 .chip-n{display:inline-block;background:var(--surface);border-radius:20px;padding:0 6px;
@@ -848,12 +855,15 @@ function go(tab){
    targets #subview when it exists, so a sub-pane re-rendering itself cannot
    wipe out the chip row above it. */
 function renderGroup(tab, v){
-  var subs = GROUPS[tab], active = cur.sub[tab] || subs[0], i, h = '<div class="row" style="margin:0 0 16px">';
+  var subs = GROUPS[tab], active = cur.sub[tab] || subs[0], i, h = '<div class="row subtabs" style="margin:0 0 16px">';
   for (i = 0; i < subs.length; i++)
     h += '<button type="button" class="chip' + (subs[i] === active ? " on" : "") +
          '" data-sub="' + tab + ':' + subs[i] + '">' + esc(SUBLABEL[subs[i]] || subs[i]) + '</button>';
   h += '</div><div id="subview"></div>';
   v.innerHTML = h;
+  /* on a phone the sub-tabs are one swipeable line; keep the active one in view */
+  try { var st = v.querySelector(".subtabs"), on = st && st.querySelector(".chip.on");
+        if (on && st.scrollWidth > st.clientWidth) st.scrollLeft = Math.max(0, on.offsetLeft - st.offsetLeft - 24); } catch (e) {}
   (R[active] || R.home)($("subview"));
 }
 function setSem(s){
