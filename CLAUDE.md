@@ -130,6 +130,13 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
 - NotebookLM/Gemini Notebook pack: `coursework/NotebookLM-OSCE-Pack/` (24 PDFs: QLD protocols +
   referenced sources merged by topic, link index of all 369 protocol links, URL batches).
 
+- v2026.10.29b, section **Y** in ext: new topic **lab** (Pathology & investigations, 6202 Wk 10) — cond page,
+  BRIEFS.lab, 38 cards, 12 MCQ, OSCE stations vy1 (resp exam), vy2 (euDKA), vy3 (K 6.1). Built by
+  `coursework/_review/drafts/week10_lab.py` (quote-checks every item vs `src/oct29/`). `lab` added to EVENTS
+  os + i2 cov. Week 10 K range 3.5–5.0 vs HTN protocol 3.5–5.2 is taught as a difference (card).
+  Oct-29 6202 export = Oct-19 + Week 10 + intensive files only. Per-week 6202 PDFs for Gemini:
+  `coursework/NotebookLM-OSCE-Pack/PHAR6202-weeks/`.
+
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
 https://claude.ai/code/artifact/735dfcdb-164c-4b81-a79f-7ebd35429bf4
