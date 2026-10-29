@@ -268,7 +268,7 @@ button.chip{min-height:44px}
    Prescribing Study Hub — app script (ES5, no dependencies)
    ================================================================ */
 "use strict";
-var VERSION = "v2026.10.30a";
+var VERSION = "v2026.10.30b";
 var LSKEY = "phar-hub-v1";
 var DAY = 86400000;
 var INT = [0, 0, 1, 3, 8, 21];          /* Leitner intervals (days), boxes 1..5 */
@@ -2321,6 +2321,7 @@ R.drugs = function(v){
     row("How it works", d.moa) + row("Contraindications", d.ci) + row("Precautions", d.cautions) +
     row("Side effects", d.se) + row("Administration", d.admin) + '</div>';
   h2 += '<div class="card"><h2>Prescribing and counselling</h2><div class="body">' + raw(d.prog) + '</div></div>';
+  if (d.amh) h2 += '<div class="card"><h2>AMH 2021 &mdash; counselling, adverse effects, practice points</h2><div class="body">' + raw(d.amh) + '</div></div>';
   h2 += '<div class="card">' + row("PBS and access", d.pbs) + row("Cost", d.cost) + row("Outcome trials", d.outcomes) +
     '<p class="small muted mt">Source: ' + (d.src ? raw(d.src) : 'ADS Australian Type 2 Diabetes Glycaemic Management Algorithm, updated 7 May 2026.') + '</p></div>';
   v.innerHTML = h2;
