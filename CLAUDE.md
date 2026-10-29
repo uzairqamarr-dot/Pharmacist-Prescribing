@@ -144,6 +144,13 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   Layering: EPA class → eTG section → protocol (narrower: COPD Steps 1–3 so no ICS; no montelukast initiation).
   Smoking cessation is NOT in this EPA (separate CPG / EPA-Pharmacists, not held). Texts: audit/pdf/EPA-*.txt.
 
+- v2026.10.30b, section **AA** in ext: **AMH 2021 (print)** from Uzair's 72 phone photos (`coursework/_review/src/AMH Semester 2 pages.pdf`).
+  `DRUGS[].amh` for 25 classes (rendered as its own card in the drug pane), + 30 cards, 11 MCQ. Built by
+  `drafts/amh2021.py`; notes `drafts/amh_notes.md`; OCR in `audit/pdf/AMH2021/` is noisy (curved two-column photos) —
+  149/203 quotes machine-matched ≥0.80, rest read visually (log: `drafts/amh2021.verify.txt`). AMH 2021 is stale for
+  asthma steps, CVD risk tables, SGLT2i/metformin eGFR cut-offs — every item says protocol/eTG win. NOT photographed:
+  ezetimibe monograph, beta-blocker monographs, oral corticosteroids, montelukast, sulfonylureas.
+
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
 https://claude.ai/code/artifact/735dfcdb-164c-4b81-a79f-7ebd35429bf4
