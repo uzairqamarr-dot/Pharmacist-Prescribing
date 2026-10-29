@@ -2287,13 +2287,13 @@ var EVENTS=[
  {id:"vv", d:"2026-10-28", k:"as",   t:"Viva voce",             lead:14, w:"30% · must pass",
   cov:["htn","lipid","bgl","reas"], note:"Your slot: Wed 28 Oct, 1:30 pm (Examiner 1 column of the run sheet). Swaps allowed until Wed 14 Oct. 15 min, online, CLOSED BOOK. You defend your action plan. No guidelines, no notes beyond your submitted case."},
  {id:"i2", d:"2026-10-31", k:"int",  t:"November intensive",    lead:10,
-  cov:["copd","asthma"], note:"Sat 31 Oct + Sun 1 Nov. Compulsory. Respiratory assessment · lung function and spirometry · interpreting pathology · injectable medicines · travel health · Advanced OSCE Preparation."},
+  cov:["copd","asthma","lab"], note:"Sat 31 Oct + Sun 1 Nov. Compulsory. Respiratory assessment · lung function and spirometry · interpreting pathology · injectable medicines · travel health · Advanced OSCE Preparation."},
  {id:"t6", d:"2026-11-10", k:"tut",  t:"Tutorial 6",            lead:4,
   cov:[], note:"6302 T6 is oral health, the final tutorial. Nothing in this app maps to it yet — tell me when the week is released and I will build it."},
  {id:"pf", d:"2026-11-13", k:"as",   t:"Portfolio + reflections due", lead:60, w:"30% · must submit",
   cov:["eth","reas"], note:"Five case reflections must cover referral/triage, legal and ethical, deprescribing, culturally responsive prescribing, and clinical reasoning. Your DPP must submit the OPU diary via Sonia."},
  {id:"os", d:"2026-11-26", k:"exam", t:"OSCE · report 8:30am MSW105",    lead:35, w:"50% · must pass",
-  cov:["pa","htn","asthma","copd","lipid","bgl","smoke","wt","mh","opioid","inj","eth","comm","reas","safe"],
+  cov:["pa","lab","htn","asthma","copd","lipid","bgl","smoke","wt","mh","opioid","inj","eth","comm","reas","safe"],
   note:"Your slot: Thu 26 Nov. Report to holding room MSW105 (David Maddison Building, Callaghan) by 8:30 am; your OSCE starts 11:00 am. Late arrivals cannot sit. No phone, smartwatch or calculator; bring student ID. Schedule is preliminary until Fri of Week 12. Everything is examinable — both courses, the intensives, and your placement."}
 ];
 
@@ -2792,13 +2792,13 @@ var EVENTS=[
  {id:"vv", d:"2026-10-28", k:"as",   t:"Viva voce",             lead:14, w:"30% · must pass",
   cov:["htn","lipid","bgl","reas"], note:"Your slot: Wed 28 Oct, 1:30 pm (Examiner 1 column of the run sheet). Swaps allowed until Wed 14 Oct. 15 min, online, CLOSED BOOK. You defend your action plan. No guidelines, no notes beyond your submitted case."},
  {id:"i2", d:"2026-10-31", k:"int",  t:"November intensive",    lead:10,
-  cov:["copd","asthma"], note:"Sat 31 Oct + Sun 1 Nov. Compulsory. Respiratory assessment · lung function and spirometry · interpreting pathology · injectable medicines · travel health · Advanced OSCE Preparation."},
+  cov:["copd","asthma","lab"], note:"Sat 31 Oct + Sun 1 Nov. Compulsory. Respiratory assessment · lung function and spirometry · interpreting pathology · injectable medicines · travel health · Advanced OSCE Preparation."},
  {id:"t6", d:"2026-11-10", k:"tut",  t:"Tutorial 6",            lead:4,
   cov:[], note:"6302 T6 is oral health, the final tutorial. Nothing in this app maps to it yet — tell me when the week is released and I will build it."},
  {id:"pf", d:"2026-11-13", k:"as",   t:"Portfolio + reflections due", lead:60, w:"30% · must submit",
   cov:["eth","reas"], note:"Five case reflections must cover referral/triage, legal and ethical, deprescribing, culturally responsive prescribing, and clinical reasoning. Your DPP must submit the OPU diary via Sonia."},
  {id:"os", d:"2026-11-26", k:"exam", t:"OSCE · report 8:30am MSW105",    lead:35, w:"50% · must pass",
-  cov:["pa","htn","asthma","copd","lipid","bgl","smoke","wt","mh","opioid","inj","eth","comm","reas","safe"],
+  cov:["pa","lab","htn","asthma","copd","lipid","bgl","smoke","wt","mh","opioid","inj","eth","comm","reas","safe"],
   note:"Your slot: Thu 26 Nov. Report to holding room MSW105 (David Maddison Building, Callaghan) by 8:30 am; your OSCE starts 11:00 am. Late arrivals cannot sit. No phone, smartwatch or calculator; bring student ID. Schedule is preliminary until Fri of Week 12. Everything is examinable — both courses, the intensives, and your placement."}
 ];
 
