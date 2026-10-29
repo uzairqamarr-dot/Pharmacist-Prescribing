@@ -122,6 +122,14 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
 - Still open: OSCE rubric/mock stations
   not yet released; 6202 Week 10 (Advanced Physical Assessment II) not yet exported.
 
+### 29 Oct — v2026.10.29a
+- Viva done 28 Oct. OSCE slot: **Thu 26 Nov, report MSW105 (David Maddison, Callaghan) 8:30 am,
+  starts 11:00 am** (preliminary until Fri Wk 12). EVENTS `os` t/note updated (prescribing-data.js has
+  TWO identical `var EVENTS` blocks — edit both; study.html escapes `ev.note`, so plain text only).
+  OSCE rubric still not released.
+- NotebookLM/Gemini Notebook pack: `coursework/NotebookLM-OSCE-Pack/` (24 PDFs: QLD protocols +
+  referenced sources merged by topic, link index of all 369 protocol links, URL batches).
+
 ### Phone-accessible plan (8 Oct)
 Claude Doc "Semester 2 2026 — Course Plan":
 https://claude.ai/code/artifact/735dfcdb-164c-4b81-a79f-7ebd35429bf4
