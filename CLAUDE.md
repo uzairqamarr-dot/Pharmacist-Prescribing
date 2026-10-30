@@ -164,6 +164,11 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   import — keep it in any store rebuild). Task ids are permanent. UI: `R.oplan` (Plan → OSCE plan, first sub-tab) +
   Home card; links via `data-oplink` (learn:/cond:/drug:/station:/sub:) and existing `data-ocirc`/`data-review`.
   Test: `outputs/oplantest.js` (12 checks).
+- v2026.10.30e: **Assessment 1 checklist** — `A1_GUIDE` (section AD, `drafts/a1_guide.py`): must-pass, 1A sections, 1B
+  reflections 1–5 (rubric criteria + "look for" case hints), 1C OPUs 1–7, DPP/Sonia paperwork; `R.a1` (Plan → Assessment 1);
+  11 dated tasks (ids `a1d-*`, `top:1`) merged into OSCE_PLAN days 2–13 Nov. Ticks share `store.oplan`. AI is NOT
+  permitted for Assessment 1 (Course Outline) — never write/review his portfolio or reflections. 30 Oct: he has NO DPP
+  yet; Placements team = Kylie Nesbitt, CHMW-AlliedHealthPlacements@newcastle.edu.au. Test: `outputs/a1test.js`.
 - **Autopush commits within seconds of a save** (seen 30 Oct) — every intermediate save goes live; keep each save valid.
 
 ### Phone-accessible plan (8 Oct)
