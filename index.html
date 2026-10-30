@@ -283,6 +283,9 @@ button.chip{min-height:44px}
 .op-dn.ok{background:var(--teal);color:#fff}
 .op-dn.late{background:var(--accent-t);color:var(--accent)}
 .op-home .op-next{margin-top:8px;line-height:1.4}
+.op-task.top .op-b::before{content:"Due 13 Nov \00b7 ";color:var(--accent);font-weight:750}
+.a1-rules{padding-left:1.2em;margin:6px 0 0}
+.a1-rules li{margin:.45em 0;line-height:1.5}
 /* selected state for the new multi-select chips */
 .chip-on{background:var(--teal-t);border-color:var(--teal);color:var(--teal)}
 .chip-n{display:inline-block;background:var(--surface);border-radius:20px;padding:0 6px;
@@ -357,7 +360,7 @@ button.chip{min-height:44px}
    Prescribing Study Hub — app script (ES5, no dependencies)
    ================================================================ */
 "use strict";
-var VERSION = "v2026.10.30d";
+var VERSION = "v2026.10.30e";
 var LSKEY = "phar-hub-v1";
 var DAY = 86400000;
 var INT = [0, 0, 1, 3, 8, 21];          /* Leitner intervals (days), boxes 1..5 */
@@ -842,13 +845,13 @@ var NAV = [
    reach it. Nothing was deleted and no progress key changed. */
 var GROUPS = {
   practise:  ["cards", "mcq", "papers", "viva", "mock", "osce", "oprep"],
-  myplan:    ["oplan", "plan", "progress", "sem", "guide"],
+  myplan:    ["oplan", "a1", "plan", "progress", "sem", "guide"],
   reference: ["drugs", "topics", "cram", "exams", "anat", "course", "links", "search"]
 };
 var SUBLABEL = {
   drugs:"Drug classes",
   cards:"Flashcards", mcq:"MCQs", papers:"Uni papers", viva:"Say it out loud", mock:"Timed exam", osce:"OSCE run", oprep:"OSCE guide",
-  oplan:"OSCE plan", plan:"Assessments", progress:"Progress", sem:"Semester", guide:"How to study",
+  oplan:"OSCE plan", a1:"Assessment 1", plan:"Assessments", progress:"Progress", sem:"Semester", guide:"How to study",
   topics:"Topic notes", cram:"Cram sheet", exams:"Exams & vitals", anat:"Anatomy", course:"Course weeks",
   links:"Links", search:"Search"
 };
@@ -2301,11 +2304,12 @@ function opLinkBtn(go){
 }
 function opTaskRow(t){
   var d = opDone(t.id);
-  return '<div class="op-task' + (d ? ' done' : '') + '" data-optask="' + esc(t.id) + '">' +
+  return '<div class="op-task' + (d ? ' done' : '') + (t.top ? ' top' : '') + '" data-optask="' + esc(t.id) + '">' +
     '<button type="button" class="op-cb" data-optk="' + esc(t.id) + '" aria-pressed="' + (d ? 'true' : 'false') + '" aria-label="Tick off: ' + esc(t.b) + '"><span class="op-tick">\u2713</span></button>' +
     '<div class="op-txt"><div class="op-b">' + esc(t.b) + '</div>' +
       (t.t ? '<div class="op-t">' + esc(t.t) + '</div>' : '') +
-      (t.m ? '<div class="op-m">' + t.m + ' min</div>' : '') + '</div>' +
+      (t.m ? '<div class="op-m">' + t.m + ' min</div>' : '') +
+      (t.s ? '<div class="op-m">Source: ' + esc(t.s) + '</div>' : '') + '</div>' +
     opLinkBtn(t.go) + '</div>';
 }
 function opDayBlock(entry, isToday){
@@ -2361,6 +2365,14 @@ R.oplan = function(v){
 };
 function opRefreshCounts(){
   var s = opStats(), all = opAllDays(), i, e;
+  if (typeof A1_GUIDE !== "undefined" && $("a1Done")){
+    var at = 0, ad = 0, gi, q2, k2;
+    for (gi = 0; gi < A1_GUIDE.groups.length; gi++){
+      var gg = A1_GUIDE.groups[gi], gn = a1Count(gg); at += gg.items.length; ad += gn;
+      q2 = document.querySelectorAll('[data-a1n="' + gg.id + '"]'); for (k2 = 0; k2 < q2.length; k2++) q2[k2].textContent = gn;
+    }
+    $("a1Done").textContent = ad; $("a1Bar").style.width = (at ? Math.round(100 * ad / at) : 0) + "%";
+  }
   if ((e = $("opDone"))) e.textContent = s.done;
   if ((e = $("opStreak"))) e.textContent = s.streak;
   if ((e = $("opBadges"))) e.textContent = s.badges;
@@ -2385,6 +2397,33 @@ function opToggle(id){
   }
   opRefreshCounts();
 }
+/* ---------- Assessment 1 checklist (30 Oct) — A1_GUIDE in ext; ticks share store.oplan ---------- */
+function a1Count(g){ var n = 0, i; for (i = 0; i < g.items.length; i++) if (opDone(g.items[i].id)) n++; return n; }
+R.a1 = function(v){
+  if (typeof A1_GUIDE === "undefined"){ v.innerHTML = '<h1>Assessment 1</h1><p class="muted">Checklist not loaded.</p>'; return; }
+  if (!store.oplan) store.oplan = {};
+  var G = A1_GUIDE, tot = 0, done = 0, i, j;
+  for (i = 0; i < G.groups.length; i++){ tot += G.groups[i].items.length; done += a1Count(G.groups[i]); }
+  var p = G.due.split("-"), due = new Date(+p[0], +p[1] - 1, +p[2]), now = new Date(); now.setHours(0, 0, 0, 0);
+  var left = Math.round((due - now) / 86400000);
+  var h = '<div class="card hero op-hero"><div class="k">Assessment 1 \u00b7 due Fri 13 Nov, 11:59 pm \u00b7 30%</div>' +
+    '<h1>' + (left > 1 ? left + ' days left' : left === 1 ? 'Due tomorrow' : left === 0 ? 'Due today' : 'Past due') + '</h1>' +
+    '<div class="op-bigbar"><i id="a1Bar" style="width:' + (tot ? Math.round(100 * done / tot) : 0) + '%"></i></div>' +
+    '<div class="op-stats"><span><b id="a1Done">' + done + '</b> of ' + tot + ' ticked</span></div></div>';
+  h += '<div class="card"><h2>Rules that apply to everything</h2><ul class="a1-rules">';
+  for (i = 0; i < G.rules.length; i++) h += '<li>' + esc(G.rules[i]) + '</li>';
+  h += '</ul></div>';
+  for (i = 0; i < G.groups.length; i++){
+    var g = G.groups[i], n = a1Count(g);
+    h += '<div class="card op-day' + (n === g.items.length ? ' complete' : '') + '"><div class="op-dhead"><div><h2>' + esc(g.name) + '</h2>' +
+      (g.why ? '<div class="op-focus">' + esc(g.why) + '</div>' : '') + '</div>' +
+      '<div class="op-count"><b data-a1n="' + esc(g.id) + '">' + n + '</b>/' + g.items.length + '</div></div>';
+    for (j = 0; j < g.items.length; j++) h += opTaskRow(g.items[j]);
+    h += '</div>';
+  }
+  h += '<p class="small muted mt">This lists what the assessment documents require. AI isn\u2019t permitted for Assessment 1, so the writing itself is yours.</p>';
+  v.innerHTML = h;
+};
 R.guide = function(v){
   function go(t, label, arg){ return '<button type="button" class="btn-g btn-sm" data-go="' + t + '"' + (arg ? ' data-arg="' + arg + '"' : '') + '>' + label + ' \u203a</button>'; }
   function step(n, title, body, btn){ return '<div class="listrow" style="display:block"><b>' + n + '. ' + title + '</b><div class="small" style="margin:4px 0 6px">' + body + '</div>' + (btn || '') + '</div>'; }
