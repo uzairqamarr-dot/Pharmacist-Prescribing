@@ -182,6 +182,11 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   BRIEFS, station **vz1** (David: wearable vs validated BP), EVENTS t6 cov+note (6202 T6 Tue 10 Nov, Canvas 6:30 pm AEST =
   7:30 pm NSW), plan tasks w11-261107 / w12-261109. The export's Week 12 item titles are shifted one page vs content — cite
   the heading inside the page. Interactive activities/padlets are not in exports. Gemini: Add-these-3 (files 33–34).
+- 4 Nov: **SimPatient** — Uzair's AI OSCE/role-play simulator product idea. Prototype in `ai-osce-sim/` (GIT-IGNORED —
+  holds UoN case pool + API-key UI; never publish from this public repo): Gemini Live voice person, hidden findings via
+  `ask_examiner` tool judged by a Flash call, Argon marking vs rubric. Test: `outputs/simtest.js` (24). Not yet run on the
+  real API. Business/build blueprint (Claude Doc): https://claude.ai/artifact/TcrVUS6j8iquBcRkAFBBws
+  Gem setup for Gemini app: `coursework/NotebookLM-OSCE-Pack/Gem-OSCE-Simulator-upload/` (Gems can't use Gemini Live voice).
 - **Autopush commits within seconds of a save** (seen 30 Oct) — every intermediate save goes live; keep each save valid.
 
 ### Phone-accessible plan (8 Oct)
