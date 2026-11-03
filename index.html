@@ -2163,15 +2163,18 @@ R.osce = function(v){
             'Your course does not publish a pass mark, so none is asserted here.</p>';
     var i, st, pool = osceFiltered(sem);
     h += '<div class="row wrap gap" style="margin:10px 0">';
-    var OT = [["", "All"], ["consult", "Consultation"], ["exam", "Examination"], ["interpret", "Interpret"], ["comm", "Communication / doc"], ["skill", "Skill"]];
+    var OT = [["", "All"], ["pool", "Intensive case pool"], ["consult", "Consultation"], ["exam", "Examination"], ["interpret", "Interpret"], ["comm", "Communication / doc"], ["skill", "Skill"]];
     for (i = 0; i < OT.length; i++)
       h += '<button type="button" class="chip' + (osceType === OT[i][0] ? ' chip-on' : '') + '" data-otype="' + OT[i][0] + '">' + OT[i][1] + '</button>';
     h += '</div><div class="row gap" style="margin-bottom:12px">' +
          '<button type="button" class="btn-p btn-sm" data-orand="1">Random station</button>' +
          '<button type="button" class="btn-g btn-sm" data-ocirc="1">4-station circuit</button>' +
          '<button type="button" class="btn-g btn-sm" data-go="oprep">OSCE guide</button></div>';
+    var lastStn = null;
+    if (osceType === "pool") h += '<p class="small muted">From the November intensive. Practice cases only &mdash; not the summative OSCE cases or rubric. Each: 2 minutes reading, 12-minute station, marked out of 25. &ldquo;4-station circuit&rdquo; picks one case per station.</p>';
     for (i = 0; i < pool.length; i++){
       st = pool[i];
+      if (osceType === "pool" && st.stnName && st.stnName !== lastStn){ lastStn = st.stnName; h += '<h3 class="op-h" style="margin:16px 0 4px">' + esc(st.stnName) + '</h3>'; }
       var prev = store.osce[keyOf(sem, st.id)];
       h += '<button type="button" class="listrow" data-ostart="' + esc(st.id) + '">' +
            '<span>' + esc(st.title) + '<br><span class="small muted">' + esc(st.time) + ' · ' + esc(condName(sem, st.cond)) +
@@ -2183,6 +2186,21 @@ R.osce = function(v){
   var stn = null, si;
   for (si = 0; si < DATA[sem].osce.length; si++) if (DATA[sem].osce[si].id === osceSess.id) stn = DATA[sem].osce[si];
   if (!stn){ osceSess.id = null; R.osce(v); return; }
+  if (!osceSess.finished && stn.sheet){
+    var rd = !!osceSess.reading;
+    var hs = '<div class="row between"><h1 style="margin:0">' + esc(stn.title) + '</h1>' +
+             '<button type="button" class="btn-g btn-sm" data-oend="1">End</button></div>' +
+             '<div class="card" style="text-align:center"><div class="small muted">' + (rd ? 'Reading time (wall clock)' : 'Station time remaining (wall clock)') + '</div>' +
+             '<div class="timer" id="oclock">--:--</div>' +
+             (rd ? '<button type="button" class="btn-p btn-block" data-ogo="1">Start the 12-minute station</button>'
+                 : '<button type="button" class="btn-a btn-block" data-ofinish="1">Finish station \u2014 show brief, model and rubric</button>') + '</div>' +
+             (osceCircuit.total ? '<div class="small muted">Circuit: station ' + (osceCircuit.total - osceCircuit.left.length) + ' of ' + osceCircuit.total + '</div>' : '') +
+             '<div class="card"><span class="pill">' + esc(stn.stnName || '') + '</span><h2 style="margin-top:10px">Student sheet</h2><div class="body">' + raw(stn.sheet) + '</div>' +
+             '<p class="small muted mt">Speak to the patient/examiner as you would on the day. The examiner brief, model response and rubric appear only after you finish.</p></div>';
+    v.innerHTML = hs;
+    startOsceClock();
+    return;
+  }
   if (!osceSess.finished){
     var h2 = '<div class="row between"><h1 style="margin:0">' + esc(stn.title) + '</h1>' +
              '<button type="button" class="btn-g btn-sm" data-oend="1">End</button></div>' +
@@ -2198,13 +2216,13 @@ R.osce = function(v){
     return;
   }
   /* scoring */
-  var got = 0, i2;
-  for (i2 = 0; i2 < stn.marks.length; i2++) if (osceSess.ticks[i2]) got++;
-  var pct = Math.round(100 * got / stn.marks.length);
+  var got = 0, i2, ofT = osceTotal(stn);
+  for (i2 = 0; i2 < stn.marks.length; i2++) if (osceSess.ticks[i2]) got += osceW(stn, i2);
+  var pct = Math.round(100 * got / ofT);
   var h3 = '<div class="row between"><h1 style="margin:0">Mark yourself</h1>' +
            '<button type="button" class="btn-g btn-sm" data-oend="1">Done</button></div>' +
-           '<div class="card"><div class="row between"><div><div class="big-n">' + got + ' / ' + stn.marks.length + '</div>' +
-           '<div class="small muted">' + pct + '% of items ticked</div></div>' +
+           '<div class="card"><div class="row between"><div><div class="big-n">' + got + ' / ' + ofT + '</div>' +
+           '<div class="small muted">' + pct + '%' + (stn.w ? ' of marks (practice rubric)' : ' of items ticked') + '</div></div>' +
            '<button type="button" class="btn-p" data-osave="1">Save score</button></div>' +
            '<div class="small muted" style="margin-top:8px">Tick only what you actually said or did.</div></div>';
   var misses = [];
@@ -2219,15 +2237,18 @@ R.osce = function(v){
     h3 += '</ul>';
   }
   h3 += '</div><div class="card"><h2>Mark scheme</h2>';
+  var lastDom = -1;
   for (i2 = 0; i2 < stn.marks.length; i2++){
     var on = !!osceSess.ticks[i2];
+    if (stn.doms && stn.dom && stn.dom[i2] !== lastDom){ lastDom = stn.dom[i2]; h3 += '<h3 class="op-h" style="margin:14px 0 2px;font-size:.95rem">' + esc(stn.doms[lastDom] || '') + '</h3>'; }
     h3 += '<button type="button" class="markrow' + (on ? " tick" : "") + '" data-omark="' + i2 + '">' +
           '<span class="cb">' + (on ? "✓" : "") + '</span><span class="mt">' + esc(markText(stn.marks[i2])) +
-          (isSafetyMark(stn.marks[i2]) ? ' <span class="pill warn">safety</span>' : '') + '</span></button>';
+          (isSafetyMark(stn.marks[i2]) ? ' <span class="pill warn">safety</span>' : '') + (stn.w ? ' <span class="pill">' + osceW(stn, i2) + '</span>' : '') + '</span></button>';
   }
   h3 += '</div>';
   /* What the patient/examiner would have revealed, and a model run-through. */
-  if (stn.patient) h3 += '<div class="card"><h2>What the patient / examiner would tell you</h2><div class="body">' + raw(stn.patient) + '</div></div>';
+  if (stn.sheet) h3 += '<details class="card"><summary><b>Student sheet</b> <span class="small muted">(tap to reopen)</span></summary><div class="body" style="margin-top:10px">' + raw(stn.sheet) + '</div></details>';
+  if (stn.patient) h3 += '<div class="card"><h2>' + (stn.pool ? 'Simulated patient &amp; examiner brief' : 'What the patient / examiner would tell you') + '</h2><div class="body">' + raw(stn.patient) + '</div></div>';
   if (stn.model) h3 += '<div class="card"><h2>Model performance</h2><div class="body">' + raw(stn.model) + '</div>' +
                        (stn.src ? '<p class="small muted mt">Source: ' + raw(stn.src) + '</p>' : '') + '</div>';
   v.innerHTML = h3;
@@ -2240,16 +2261,24 @@ function osceFiltered(sem){
   var out = [], i, st;
   for (i = 0; i < DATA[sem].osce.length; i++){
     st = DATA[sem].osce[i];
-    if (osceType && (st.type || "consult") !== osceType && !(osceType === "comm" && st.type === "doc")) continue;
+    if (osceType === "pool"){ if (!st.pool) continue; }
+    else if (osceType && (st.type || "consult") !== osceType && !(osceType === "comm" && st.type === "doc")) continue;
     out.push(st);
   }
   return out;
 }
+/* Case-pool stations have reading time: a reading clock first, then the station clock. */
+function newOsceSess(stn){
+  if (stn.read) return {id: stn.id, startTs: Date.now(), limitMs: stn.read * 60000, reading: true, finished: false, ticks: {}};
+  return {id: stn.id, startTs: Date.now(), limitMs: osceMins(stn.time) * 60000, finished: false, ticks: {}};
+}
+function osceW(stn, i){ return (stn.w && stn.w[i] != null) ? stn.w[i] : 1; }
+function osceTotal(stn){ var t = 0, i; for (i = 0; i < stn.marks.length; i++) t += osceW(stn, i); return t; }
 function startOsce(sem, id){
   var stn = null, i;
   for (i = 0; i < DATA[sem].osce.length; i++) if (DATA[sem].osce[i].id === id) stn = DATA[sem].osce[i];
   if (!stn) return false;
-  osceSess = {id: stn.id, startTs: Date.now(), limitMs: osceMins(stn.time) * 60000, finished: false, ticks: {}};
+  osceSess = newOsceSess(stn);
   return true;
 }
 function shuffled(a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--){ var r = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[r]; a[r] = t; } return a; }
@@ -3124,8 +3153,18 @@ document.addEventListener("click", function(ev){
     osceCircuit = {left: [], total: 0};
     startOsce(sem, rp[Math.floor(Math.random() * rp.length)].id); cur.sub.practise = "osce"; go("practise"); return;
   }
+  if (b.getAttribute("data-ogo") != null){
+    osceSess.reading = false; osceSess.startTs = Date.now();
+    for (var og = 0; og < DATA[sem].osce.length; og++) if (DATA[sem].osce[og].id === osceSess.id) osceSess.limitMs = osceMins(DATA[sem].osce[og].time) * 60000;
+    R.osce(v); return;
+  }
   if (b.getAttribute("data-ocirc") != null){
-    var cp = shuffled(osceFiltered(sem)).slice(0, 4); if (!cp.length) return;
+    var cp;
+    if (osceType === "pool"){   /* one case from each of the 4 real stations, in order */
+      cp = []; var allp = osceFiltered(sem);
+      for (var sn = 1; sn <= 4; sn++){ var byS = []; for (var q9 = 0; q9 < allp.length; q9++) if (allp[q9].stn === sn) byS.push(allp[q9]); if (byS.length) cp.push(shuffled(byS)[0]); }
+    } else cp = shuffled(osceFiltered(sem)).slice(0, 4);
+    if (!cp.length) return;
     osceCircuit = {left: [], total: cp.length};
     for (var ci2 = 1; ci2 < cp.length; ci2++) osceCircuit.left.push(cp[ci2].id);
     startOsce(sem, cp[0].id); cur.sub.practise = "osce"; go("practise"); return;
@@ -3134,7 +3173,7 @@ document.addEventListener("click", function(ev){
     var stn = null, i4;
     for (i4 = 0; i4 < DATA[sem].osce.length; i4++) if (DATA[sem].osce[i4].id === b.getAttribute("data-ostart")) stn = DATA[sem].osce[i4];
     if (!stn) return;
-    osceSess = {id: stn.id, startTs: Date.now(), limitMs: osceMins(stn.time) * 60000, finished: false, ticks: {}};
+    osceSess = newOsceSess(stn);
     R.osce(v); return;
   }
   if (b.getAttribute("data-ofinish") != null){ osceSess.finished = true; stopOsceClock(); R.osce(v); return; }
@@ -3148,9 +3187,9 @@ document.addEventListener("click", function(ev){
     for (i5 = 0; i5 < DATA[sem].osce.length; i5++) if (DATA[sem].osce[i5].id === osceSess.id) stn2 = DATA[sem].osce[i5];
     if (stn2){
       var g = 0, m2;
-      for (m2 = 0; m2 < stn2.marks.length; m2++) if (osceSess.ticks[m2]) g++;
+      for (m2 = 0; m2 < stn2.marks.length; m2++) if (osceSess.ticks[m2]) g += osceW(stn2, m2);
       var ok2 = keyOf(sem, stn2.id);
-      store.osce[ok2] = {got: g, of: stn2.marks.length, ts: Date.now()};
+      store.osce[ok2] = {got: g, of: osceTotal(stn2), ts: Date.now()};
       store.osceRuns[ok2] = (store.osceRuns[ok2] || 0) + 1;
       bumpDay(); save();
     }
