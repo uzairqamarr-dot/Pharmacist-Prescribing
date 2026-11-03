@@ -14,3 +14,7 @@ coursework/
 # app loads — it must be tracked. Re-adding an ignore rule for it will ship
 # an empty app to GitHub Pages, the exact failure this comment used to warn
 # about happening to hub/prescribing-data.js before it existed at this path.
+
+# AI OSCE simulator — private product prototype (holds API-key UI and the
+# university's practice cases). Never publish from this public repo.
+ai-osce-sim/
