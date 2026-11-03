@@ -176,6 +176,12 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   pool circuit = 1 case per station. Section AF: 21 pool tasks (ids `cpd-*`) in OSCE_PLAN + OSCE_GUIDE format box.
   **Real OSCE = 4 stations** (physical assessment; cultural safety history; reasoning & management; SOAP + ISBAR),
   2 min reading + 12 min each. Uzair chose to publish the pool in the public app. Test: `outputs/pooltest.js`.
+- v2026.11.04a: Nov-03 6202 export = Oct-29 + Weeks 11–12 + case-pool page (same docx as AE). No OSCE rubric yet.
+  Section **AG** (`drafts/week11_12.py`, quote-checked vs `src/nov03/` + `FIGURES_transcribed.txt` for page figures):
+  new topics **gov** (Wk 11 governance/leadership/reflection, 27/8) and **dig** (Wk 12 technology & AI, 21/8), cond pages,
+  BRIEFS, station **vz1** (David: wearable vs validated BP), EVENTS t6 cov+note (6202 T6 Tue 10 Nov, Canvas 6:30 pm AEST =
+  7:30 pm NSW), plan tasks w11-261107 / w12-261109. The export's Week 12 item titles are shifted one page vs content — cite
+  the heading inside the page. Interactive activities/padlets are not in exports. Gemini: Add-these-3 (files 33–34).
 - **Autopush commits within seconds of a save** (seen 30 Oct) — every intermediate save goes live; keep each save valid.
 
 ### Phone-accessible plan (8 Oct)
