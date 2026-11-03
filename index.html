@@ -360,7 +360,7 @@ button.chip{min-height:44px}
    Prescribing Study Hub — app script (ES5, no dependencies)
    ================================================================ */
 "use strict";
-var VERSION = "v2026.10.30e";
+var VERSION = "v2026.11.03a";
 var LSKEY = "phar-hub-v1";
 var DAY = 86400000;
 var INT = [0, 0, 1, 3, 8, 21];          /* Leitner intervals (days), boxes 1..5 */
@@ -2947,6 +2947,7 @@ document.addEventListener("click", function(ev){
     if (okd === "cond"){ condOpen = oa; go("cond"); return; }
     if (okd === "drug"){ drugOpen = oa; cur.sub.reference = "drugs"; go("reference"); return; }
     if (okd === "station"){ osceCircuit = {left: [], total: 0}; if (startOsce(sem, oa)){ cur.sub.practise = "osce"; go("practise"); } return; }
+    if (okd === "pool"){ osceType = "pool"; osceSess = {id: null, startTs: 0, limitMs: 0, finished: false, ticks: {}}; osceCircuit = {left: [], total: 0}; cur.sub.practise = "osce"; go("practise"); return; }
     if (okd === "sub"){ for (var ogk in GROUPS) if (GROUPS[ogk].indexOf(oa) >= 0){ cur.sub[ogk] = oa; go(ogk); return; } }
     return;
   }
