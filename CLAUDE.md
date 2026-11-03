@@ -169,6 +169,13 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   11 dated tasks (ids `a1d-*`, `top:1`) merged into OSCE_PLAN days 2–13 Nov. Ticks share `store.oplan`. AI is NOT
   permitted for Assessment 1 (Course Outline) — never write/review his portfolio or reflections. 30 Oct: he has NO DPP
   yet; Placements team = Kylie Nesbitt, CHMW-AlliedHealthPlacements@newcastle.edu.au. Test: `outputs/a1test.js`.
+- v2026.11.03a: **Nov intensive OSCE Practice Case Pool** — 28 cases (S1-01..S4-06; S2-05 had no header in the docx)
+  verbatim as S2_OSCE stations `cpS*` (section AE, `drafts/case_pool.py`): fields `sheet` (student sheet HTML), `patient`
+  (SP/examiner brief), `model`, `marks`+`w` (weights, each rubric sums to 25)+`dom`/`doms`, `read:2`, `time:"12 min"`,
+  `pool:1`, `stn` 1–4. R.osce: reading phase (`data-ogo`), weighted scoring, domain headings, "Intensive case pool" chip,
+  pool circuit = 1 case per station. Section AF: 21 pool tasks (ids `cpd-*`) in OSCE_PLAN + OSCE_GUIDE format box.
+  **Real OSCE = 4 stations** (physical assessment; cultural safety history; reasoning & management; SOAP + ISBAR),
+  2 min reading + 12 min each. Uzair chose to publish the pool in the public app. Test: `outputs/pooltest.js`.
 - **Autopush commits within seconds of a save** (seen 30 Oct) — every intermediate save goes live; keep each save valid.
 
 ### Phone-accessible plan (8 Oct)
