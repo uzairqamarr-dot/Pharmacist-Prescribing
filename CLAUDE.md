@@ -704,6 +704,12 @@ prescribing packs. Corpus 1208 chunks (ingested 3 Sep 2026).
   primary source; prefer it over ADS. Flag where eTG and the protocol differ**
   (e.g. protocol Table 2 says baseline LFT + CK; eTG says routine ALT/CK
   monitoring after that isn't needed unless muscle symptoms).
+- **Terminology (asked 5 Nov):** use the words the course and the QLD protocols use, not synonyms
+  from other guidelines or general writing. Check the Canvas text (`coursework/_review/src/`) and the
+  protocol texts before choosing a term (e.g. "escalation" as the course says, not "intensification";
+  don't coin terms like "capillary BGL" that appear nowhere in course content). Where eTG/AMH use a
+  different term, give the course term first and note the other. Plain, natural wording; no rhetorical
+  flourishes or arbitrary bold in anything he might reuse.
 - **Assessments:** before helping with ANY assessment, read the brief's AI rule
   and state it to him up front in one line. Don't write submission text for any
   assessment whose brief prohibits AI. Teach, quiz, explain and check facts instead. Where AI is allowed,
