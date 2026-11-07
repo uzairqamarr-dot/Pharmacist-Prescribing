@@ -187,6 +187,11 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   `ask_examiner` tool judged by a Flash call, Argon marking vs rubric. Test: `outputs/simtest.js` (24). Not yet run on the
   real API. Business/build blueprint (Claude Doc): https://claude.ai/artifact/TcrVUS6j8iquBcRkAFBBws
   Gem setup for Gemini app: `coursework/NotebookLM-OSCE-Pack/Gem-OSCE-Simulator-upload/` (Gems can't use Gemini Live voice).
+- v2026.11.08a, section **AH** (`drafts/osce_feedback.py`, quote-checked vs `src/nov08/`): PHAR6202 general OSCE
+  examiner feedback (Station 1 practice OSCE, Oct/Nov intensives) → red box at top of OSCE_GUIDE, 12 pa cards + 4 MCQ,
+  plan task ef-261109. Key rules: no finding unless technique correct, examiner won't prompt, apex beat NOT expected,
+  full exam even after a red flag, manage if eligible (don't refer without rationale), referral = where + time frame,
+  don't minimise BP (say "Grade 2 hypertension" + target). Also in Gemini/Gem instructions (EXAMINER FEEDBACK block).
 - **Autopush commits within seconds of a save** (seen 30 Oct) — every intermediate save goes live; keep each save valid.
 
 ### Phone-accessible plan (8 Oct)
