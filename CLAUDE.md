@@ -197,6 +197,12 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   AJ = MUST acknowledge communication with the GP/relevant provider at BOTH entry points (eligible-and-manage OR refer),
   COPD/asthma/all 3 CVD programs; missing it = overall station fail. Both as red boxes atop OSCE_GUIDE + 6 cards, 2 MCQ.
   Knowledge file "13 FINAL course reminders" added to the Claude Project + Gem packs.
+- v2026.11.24c, section **AK** (`drafts/student_guide.py`, quote-checked vs src/nov24/6202_OSCE_Student_Guide_Final.txt):
+  final OSCE Student Guide. **Real station order: 1 cultural safety, 2 physical assessment, 3 reasoning, 4 documentation+ISBAR
+  — the case pool's S1/S2 labels are swapped.** Each station has a critical safety criterion (= unsatisfactory regardless of
+  marks); Station 4 note by ~7–8 min, GP asks ≤2 questions; supplementary OSCE Mon 7 Dec. OSCE may be Thu 26 or Fri 27 Nov
+  (Blue/Green streams). Red box atop OSCE_GUIDE, 13 cards + 5 MCQ, plan task sg-261125. File 14 + STATION ORDER block added
+  to the Claude Project / Gem / Gemini packs (rezipped).
 - **Autopush commits within seconds of a save** (seen 30 Oct) — every intermediate save goes live; keep each save valid.
 
 ### Phone-accessible plan (8 Oct)
