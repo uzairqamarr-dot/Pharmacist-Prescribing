@@ -203,6 +203,11 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   marks); Station 4 note by ~7–8 min, GP asks ≤2 questions; supplementary OSCE Mon 7 Dec. OSCE may be Thu 26 or Fri 27 Nov
   (Blue/Green streams). Red box atop OSCE_GUIDE, 13 cards + 5 MCQ, plan task sg-261125. File 14 + STATION ORDER block added
   to the Claude Project / Gem / Gemini packs (rezipped).
+- v2026.11.25a, section **AL** (`drafts/redflag_scripts.py`, criteria quote-checked vs QLD protocols V2 p.2–3): red-flag
+  screening scripts — CVD (HTN/lipid/BGL share one ineligibility list, 10 steps) + respiratory (asthma/COPD, 10 steps).
+  Spoken lines are suggested wording, labelled so. Red box atop OSCE_GUIDE, 22 cards + 6 MCQ, plan task rf-261125.
+  Cheat sheet PDF (2 full + 2 recall pages): `coursework/OSCE-cheat-sheets/Red-flag-scripts-cheat-sheet.pdf`
+  (`drafts/redflag_pdf.py`). Pack file 15 + marking line in simulator instructions.
 - **Autopush commits within seconds of a save** (seen 30 Oct) — every intermediate save goes live; keep each save valid.
 
 ### Phone-accessible plan (8 Oct)
