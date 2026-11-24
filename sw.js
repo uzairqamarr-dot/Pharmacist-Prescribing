@@ -13,7 +13,7 @@
    semester dashboard), and this worker controls the whole origin now, so
    they need to work offline the same as everything else. */
 "use strict";
-var VERSION = "v2026.11.24a";
+var VERSION = "v2026.11.24b";
 var CACHE = "phar-hub-" + VERSION;
 var ASSETS = [
   "./",
