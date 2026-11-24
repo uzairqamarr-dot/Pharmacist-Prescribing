@@ -192,6 +192,11 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   plan task ef-261109. Key rules: no finding unless technique correct, examiner won't prompt, apex beat NOT expected,
   full exam even after a red flag, manage if eligible (don't refer without rationale), referral = where + time frame,
   don't minimise BP (say "Grade 2 hypertension" + target). Also in Gemini/Gem instructions (EXAMINER FEEDBACK block).
+- v2026.11.24a/b, sections **AI** + **AJ** (src/nov24, quote-checked): final course emails. AI = respiratory auscultation
+  (pass: L vs R each level, anterior upper + posterior upper/lower; full marks: + lower anterior for R middle/L lingula).
+  AJ = MUST acknowledge communication with the GP/relevant provider at BOTH entry points (eligible-and-manage OR refer),
+  COPD/asthma/all 3 CVD programs; missing it = overall station fail. Both as red boxes atop OSCE_GUIDE + 6 cards, 2 MCQ.
+  Knowledge file "13 FINAL course reminders" added to the Claude Project + Gem packs.
 - **Autopush commits within seconds of a save** (seen 30 Oct) — every intermediate save goes live; keep each save valid.
 
 ### Phone-accessible plan (8 Oct)
