@@ -212,6 +212,9 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   graduation. DPP for the reflection discussions = **Dr Ebrahim** (did the in-person physical assessment with him at UoN;
   confirm he is the Sonia-registered DPP). AI still NOT permitted for Assessment 1. The physical assessment session counts
   as in-person WIL hours; rest online or in person. He offered to meet Thu 26 / Fri 27 Nov (in person, online or call, TBC).
+- 25 Nov: PHAR6302 A2A conduct matter resolved — mark 12% with 2% removed (he admitted Grammarly etc.). Advice given:
+  he may reuse the A2A patient for Assessment 1B only if written fresh from his own memory/records (never from the
+  Claude-drafted plan) and with Alison Hooper's written OK. A second AI finding would likely be treated more seriously.
 - **Autopush commits within seconds of a save** (seen 30 Oct) — every intermediate save goes live; keep each save valid.
 
 ### Phone-accessible plan (8 Oct)
