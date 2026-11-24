@@ -208,6 +208,10 @@ Six-agent review. Done/open list: `coursework/_review/audit/OPEN.md` — read it
   Spoken lines are suggested wording, labelled so. Red box atop OSCE_GUIDE, 22 cards + 6 MCQ, plan task rf-261125.
   Cheat sheet PDF (2 full + 2 recall pages): `coursework/OSCE-cheat-sheets/Red-flag-scripts-cheat-sheet.pdf`
   (`drafts/redflag_pdf.py`). Pack file 15 + marking line in simulator instructions.
+- 25 Nov: **Assessment 1 extension to 9 Dec**, but everything must be marked and submitted by **Fri 4 Dec** to make
+  graduation. DPP for the reflection discussions = **Dr Ebrahim** (did the in-person physical assessment with him at UoN;
+  confirm he is the Sonia-registered DPP). AI still NOT permitted for Assessment 1. The physical assessment session counts
+  as in-person WIL hours; rest online or in person. He offered to meet Thu 26 / Fri 27 Nov (in person, online or call, TBC).
 - **Autopush commits within seconds of a save** (seen 30 Oct) — every intermediate save goes live; keep each save valid.
 
 ### Phone-accessible plan (8 Oct)
